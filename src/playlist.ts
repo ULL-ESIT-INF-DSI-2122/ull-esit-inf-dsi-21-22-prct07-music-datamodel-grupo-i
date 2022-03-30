@@ -4,8 +4,13 @@ import {Coleccion} from "./coleccionGenerica";
 type playlistType = {
   nombre: string,
   canciones: Coleccion<Cancion>,
-  duracion: number,
+  duracion: duracionHorMinType,
   generos: string[],
+}
+
+type duracionHorMinType = {
+  hor: number,
+  min: number
 }
 
 export class Playlist {
@@ -19,7 +24,7 @@ export class Playlist {
     return this.playlist.canciones;
   }
 
-  getDuracion(): number {
+  getDuracion(): duracionHorMinType {
     return this.playlist.duracion;
   }
 
@@ -35,7 +40,7 @@ export class Playlist {
     this.playlist.generos = generos;
   }
 
-  setDuracion(duracion: number): void {
+  setDuracion(duracion: duracionHorMinType): void {
     this.playlist.duracion = duracion;
   }
 

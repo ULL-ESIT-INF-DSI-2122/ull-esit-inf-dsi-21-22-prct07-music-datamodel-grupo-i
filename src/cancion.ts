@@ -2,10 +2,15 @@
 type cancionType = {
   nombre: string;
   autor: string;
-  duracion: string;
+  duracion: duracionMinSegType;
   generos: string[];
   single: boolean;
   reproducciones: number;
+}
+
+type duracionMinSegType = {
+  min: number,
+  seg: number
 }
 
 export class Cancion {
@@ -19,7 +24,7 @@ export class Cancion {
     return this.cancion.autor;
   }
 
-  getDuracion(): string {
+  getDuracion(): duracionMinSegType {
     return this.cancion.duracion;
   }
 
@@ -43,7 +48,7 @@ export class Cancion {
     this.cancion.autor = autor;
   }
 
-  setDuracion(duracion: string): void {
+  setDuracion(duracion: duracionMinSegType): void {
     this.cancion.duracion = duracion;
   }
 
