@@ -4,7 +4,7 @@ import {Album} from "./album";
 import {Artista} from "./artistas";
 import {Grupo} from "./grupo";
 
-export type generoMusicalType = {
+type generoMusicalType = {
   nombre: string,
   artistasGrupos: Coleccion<Artista> | Coleccion<Grupo>,
   albumes: Coleccion<Album>,

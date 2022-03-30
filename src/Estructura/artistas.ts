@@ -1,15 +1,18 @@
+import {Coleccion} from "./coleccionGenerica";
+import {Album} from "./album";
+import {Cancion} from "./cancion";
 
-export type artistaType = {
+type artistaType = {
   nombre: string,
   artistasGrupos: string[],
   generos: string[],
-  albumes: string[],
-  canciones: string[],
+  albumes: Coleccion<Album>,
+  canciones: Coleccion<Cancion>,
   oyentesMensuales: number
 }
 
 export class Artista {
-  constructor(private artista: artistaType) { }
+  constructor(private artista: artistaType) {}
 
   getNombre(): string {
     return this.artista.nombre;
@@ -23,16 +26,16 @@ export class Artista {
     return this.artista.generos;
   }
 
-  getAlbunes(): string[] {
+  getAlbunes(): Coleccion<Album> {
     return this.artista.albumes;
   }
 
-  getCanciones(): string[] {
+  getCanciones(): Coleccion<Cancion> {
     return this.artista.canciones;
   }
 
-  getOyentesMensuales(): string[] {
-    return this.artista.canciones;
+  getOyentesMensuales(): number {
+    return this.artista.oyentesMensuales;
   }
 
   setNombre(nombre: string): void {
@@ -47,11 +50,11 @@ export class Artista {
     this.artista.generos = generos;
   }
 
-  setAlbunes(albunes: string[]): void {
+  setAlbunes(albunes: Coleccion<Album>): void {
     this.artista.albumes = albunes;
   }
 
-  setCanciones(canciones: string[]): void {
+  setCanciones(canciones: Coleccion<Cancion>): void {
     this.artista.canciones = canciones;
   }
 

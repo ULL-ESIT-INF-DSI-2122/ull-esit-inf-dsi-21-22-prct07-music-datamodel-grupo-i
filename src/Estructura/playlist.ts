@@ -13,7 +13,7 @@ type duracionHorMinType = {
   min: number
 }
 
-export class Playlist {
+export class PlayList {
   constructor(private playlist: playlistType) { }
 
   getNombre(): string {

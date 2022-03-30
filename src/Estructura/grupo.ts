@@ -1,4 +1,5 @@
 import {Artista} from "./artistas";
+import {Album} from "./album";
 import {Coleccion} from "./coleccionGenerica";
 
 export type grupoType = {
@@ -6,7 +7,7 @@ export type grupoType = {
   artistas: Coleccion<Artista>,
   fechaCreacion: number,
   generos: string[],
-  albumes: string[],
+  albumes: Coleccion<Album>,
   oyentesMensuales: number
 }
 
@@ -29,7 +30,7 @@ export class Grupo {
     return this.grupo.generos;
   }
 
-  getAlbumes(): string[] {
+  getAlbumes(): Coleccion<Album> {
     return this.grupo.albumes;
   }
 
@@ -53,7 +54,7 @@ export class Grupo {
     this.grupo.generos = generos;
   }
 
-  setAlbumes(albumes: string[]): void {
+  setAlbumes(albumes: Coleccion<Album>): void {
     this.grupo.albumes = albumes;
   }
 

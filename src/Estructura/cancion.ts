@@ -1,7 +1,7 @@
 
 type cancionType = {
   nombre: string;
-  autor: string;
+  autor: string[];
   duracion: duracionMinSegType;
   generos: string[];
   single: boolean;
@@ -20,7 +20,7 @@ export class Cancion {
     return this.cancion.nombre;
   }
 
-  getAutor(): string {
+  getAutor(): string[] {
     return this.cancion.autor;
   }
 
@@ -44,7 +44,7 @@ export class Cancion {
     this.cancion.nombre = nombre;
   }
 
-  setAutor(autor: string): void {
+  setAutor(autor: string[]): void {
     this.cancion.autor = autor;
   }
 
