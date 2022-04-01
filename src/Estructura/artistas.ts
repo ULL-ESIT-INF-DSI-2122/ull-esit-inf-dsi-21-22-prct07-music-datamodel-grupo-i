@@ -4,7 +4,7 @@ import {Cancion} from "./cancion";
 
 type artistaType = {
   nombre: string,
-  artistasGrupos: string[],
+  grupos: string[],
   generos: string[],
   albumes: Coleccion<Album>,
   canciones: Coleccion<Cancion>,
@@ -12,14 +12,48 @@ type artistaType = {
 }
 
 export class Artista {
-  constructor(private artista: artistaType) {}
+  private artista: artistaType;
+  constructor(artista: artistaType) {
+    this.artista.nombre = artista.nombre;
+    this.artista.grupos = artista.grupos;
+    this.artista.generos = artista.generos;
+    
+    this.comprobarAlbumes(artista.albumes);
+    this.comprobarCanciones(artista.canciones);
+  }
+
+  private comprobarCanciones(canciones: Coleccion<Cancion>): void {
+    [...canciones].forEach((cancion) => {
+      if (this.artista.nombre === cancion.getAutor()) {
+        if (this.artista.generos.sort().length === cancion.getGeneros().sort().length &&
+            this.artista.generos.every((valor, index) => {
+              return valor === cancion.getGeneros()[index];
+            })) {
+          this.artista.canciones.addElemento(cancion);
+        }
+      }
+    });
+  }
+
+  private comprobarAlbumes(albumes: Coleccion<Album>): void {
+    [...albumes].forEach((album) => {
+      if (this.artista.nombre === album.getAutor()) {
+        if (this.artista.generos.sort().length === album.getGeneros().sort().length &&
+            this.artista.generos.every((valor, index) => {
+              return valor === album.getGeneros()[index];
+            })) {
+          this.artista.albumes.addElemento(album);
+        }
+      }
+    });
+  }
 
   getNombre(): string {
     return this.artista.nombre;
   }
 
-  getArtistaGrupos(): string[] {
-    return this.artista.artistasGrupos;
+  getGrupos(): string[] {
+    return this.artista.grupos;
   }
 
   getGeneros(): string[] {
@@ -42,23 +76,25 @@ export class Artista {
     this.artista.nombre = nombre;
   }
 
-  setArtistasGrupos(artistasGrupos: string[]): void {
-    this.artista.artistasGrupos = artistasGrupos;
+  setGrupos(artistasGrupos: string[]): void {
+    this.artista.grupos = artistasGrupos;
   }
 
   setGeneros(generos: string[]): void {
     this.artista.generos = generos;
   }
 
-  setAlbunes(albunes: Coleccion<Album>): void {
-    this.artista.albumes = albunes;
+  setAlbunes(albumes: Coleccion<Album>): void {
+    this.comprobarAlbumes(albumes);
   }
 
   setCanciones(canciones: Coleccion<Cancion>): void {
-    this.artista.canciones = canciones;
+    this.comprobarCanciones(canciones);
   }
 
   setOyentesMensuales(oyentes: number): void {
     this.artista.oyentesMensuales = oyentes;
   }
 }
+
+

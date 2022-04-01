@@ -6,19 +6,56 @@ import {Grupo} from "./grupo";
 
 type generoMusicalType = {
   nombre: string,
-  artistasGrupos: Coleccion<Artista> | Coleccion<Grupo>,
+  artistasGrupos: Coleccion<Artista | Grupo>,
   albumes: Coleccion<Album>,
   canciones: Coleccion<Cancion>
 }
 
 export class GenerosMusicales {
-  constructor(private genero: generoMusicalType) {}
+  private genero: generoMusicalType;
+  constructor(genero: generoMusicalType) {
+    this.genero.nombre = genero.nombre;
+
+    this.comprobarAlbumes(genero.albumes);
+    this.comprobarCanciones(genero.canciones);
+    this.comprobarArtistasGrupos(genero.artistasGrupos);
+  }
+
+  private comprobarArtistasGrupos(artistasGrupos: Coleccion<Artista | Grupo>): void {
+    [...artistasGrupos].forEach((creador) => {
+      creador.getGeneros().forEach((genero) => {
+        if (genero === this.genero.nombre) {
+          this.genero.artistasGrupos.addElemento(creador);
+        }
+      });
+    });
+  }
+
+  private comprobarAlbumes(albumes: Coleccion<Album>): void {
+    [...albumes].forEach((album) => {
+      album.getGeneros().forEach((genero) => {
+        if (genero === this.genero.nombre) {
+          this.genero.albumes.addElemento(album);
+        }
+      });
+    });
+  }
+
+  private comprobarCanciones(canciones: Coleccion<Cancion>): void {
+    [...canciones].forEach((cancion) => {
+      cancion.getGeneros().forEach((genero) => {
+        if (genero === this.genero.nombre) {
+          this.genero.canciones.addElemento(cancion);
+        }
+      });
+    });
+  }
 
   getNombre(): string {
     return this.genero.nombre;
   }
 
-  getArtistaGrupos(): Coleccion<Artista> | Coleccion<Grupo> {
+  getArtistaGrupos(): Coleccion<Artista | Grupo> {
     return this.genero.artistasGrupos;
   }
 
@@ -34,7 +71,7 @@ export class GenerosMusicales {
     this.genero.nombre = nombre;
   }
 
-  setArtistasGrupos(artistasGrupos: Coleccion<Artista> | Coleccion<Grupo>): void {
+  setArtistasGrupos(artistasGrupos: Coleccion<Artista | Grupo>): void {
     this.genero.artistasGrupos = artistasGrupos;
   }
 

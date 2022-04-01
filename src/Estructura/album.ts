@@ -3,21 +3,42 @@ import {Coleccion} from "./coleccionGenerica";
 
 type albumType = {
   nombre: string,
-  artistasGrupos: string[],
+  autor: string,
   fechaPublicacion: number,
   generos: string[],
   canciones: Coleccion<Cancion>
 }
 
 export class Album {
-  constructor(private album: albumType) {}
+  private album: albumType;
+  constructor(album: albumType) {
+    this.album.nombre = album.nombre;
+    this.album.autor = album.autor;
+    this.album.fechaPublicacion = album.fechaPublicacion;
+    this.album.generos = album.generos;
+
+    this.comprobarCanciones(album.canciones);
+  }
+
+  private comprobarCanciones(canciones: Coleccion<Cancion>): void {
+    [...canciones].forEach((cancion) => {
+      if (this.album.autor === cancion.getAutor()) {
+        if (this.album.generos.sort().length === cancion.getGeneros().sort().length &&
+            this.album.generos.every((valor, index) => {
+              return valor === cancion.getGeneros()[index];
+            })) {
+          this.album.canciones.addElemento(cancion);
+        }
+      }
+    });
+  }
 
   getNombre(): string {
     return this.album.nombre;
   }
 
-  getArtistaGrupos(): string[] {
-    return this.album.artistasGrupos;
+  getAutor(): string {
+    return this.album.autor;
   }
 
   getFechaPublicacion(): number {
@@ -36,8 +57,8 @@ export class Album {
     this.album.nombre = nombre;
   }
 
-  setArtistasGrupos(artistasGrupos: string[]): void {
-    this.album.artistasGrupos = artistasGrupos;
+  setAutor(autor: string): void {
+    this.album.autor = autor;
   }
 
   setFechaPublicacion(fechaPublicacion: number): void {
@@ -49,6 +70,6 @@ export class Album {
   }
 
   setCanciones(canciones: Coleccion<Cancion>): void {
-    this.album.canciones = canciones;
+    this.comprobarCanciones(canciones);
   }
 }
