@@ -8,7 +8,6 @@ type artistaType = {
   generos: string[],
   albumes: Coleccion<Album>,
   canciones: Coleccion<Cancion>,
-  oyentesMensuales: number
 }
 
 export class Artista {
@@ -23,12 +22,17 @@ export class Artista {
   }
 
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
+    let aux = 0;
     [...canciones].forEach((cancion) => {
       if (this.artista.nombre === cancion.getAutor()) {
-        if (this.artista.generos.sort().length === cancion.getGeneros().sort().length &&
-            this.artista.generos.every((valor, index) => {
-              return valor === cancion.getGeneros()[index];
-            })) {
+        cancion.getGeneros().forEach((genero) => {
+          this.artista.generos.forEach((generosArtista) => {
+            if (generosArtista === genero) {
+              aux++;
+            }
+          });
+        });
+        if (aux === cancion.getGeneros().length) {
           this.artista.canciones.addElemento(cancion);
         }
       }
@@ -36,12 +40,17 @@ export class Artista {
   }
 
   private comprobarAlbumes(albumes: Coleccion<Album>): void {
+    let aux = 0;
     [...albumes].forEach((album) => {
       if (this.artista.nombre === album.getAutor()) {
-        if (this.artista.generos.sort().length === album.getGeneros().sort().length &&
-            this.artista.generos.every((valor, index) => {
-              return valor === album.getGeneros()[index];
-            })) {
+        album.getGeneros().forEach((genero) => {
+          this.artista.generos.forEach((generosArtista) => {
+            if (generosArtista === genero) {
+              aux++;
+            }
+          });
+        });
+        if (aux === album.getGeneros().length) {
           this.artista.albumes.addElemento(album);
         }
       }
@@ -68,10 +77,6 @@ export class Artista {
     return this.artista.canciones;
   }
 
-  getOyentesMensuales(): number {
-    return this.artista.oyentesMensuales;
-  }
-
   setNombre(nombre: string): void {
     this.artista.nombre = nombre;
   }
@@ -90,10 +95,6 @@ export class Artista {
 
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.comprobarCanciones(canciones);
-  }
-
-  setOyentesMensuales(oyentes: number): void {
-    this.artista.oyentesMensuales = oyentes;
   }
 }
 

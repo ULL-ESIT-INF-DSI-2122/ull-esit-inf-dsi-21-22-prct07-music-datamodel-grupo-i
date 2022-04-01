@@ -21,12 +21,17 @@ export class Album {
   }
 
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
+    let aux = 0;
     [...canciones].forEach((cancion) => {
-      if (this.album.autor === cancion.getAutor()) {
-        if (this.album.generos.sort().length === cancion.getGeneros().sort().length &&
-            this.album.generos.every((valor, index) => {
-              return valor === cancion.getGeneros()[index];
-            })) {
+      if (!cancion.getSingle() && this.album.autor === cancion.getAutor()) {
+        cancion.getGeneros().forEach((genero) => {
+          this.album.generos.forEach((generosAlbum) => {
+            if (generosAlbum === genero) {
+              aux++;
+            }
+          });
+        });
+        if (aux === cancion.getGeneros().length) {
           this.album.canciones.addElemento(cancion);
         }
       }

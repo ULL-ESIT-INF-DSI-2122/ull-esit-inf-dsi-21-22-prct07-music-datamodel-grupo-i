@@ -9,8 +9,7 @@ export type grupoType = {
   fechaCreacion: number,
   generos: string[],
   albumes: Coleccion<Album>,
-  canciones: Coleccion<Cancion>,
-  oyentesMensuales: number
+  canciones: Coleccion<Cancion>
 }
 
 export class Grupo {
@@ -26,12 +25,17 @@ export class Grupo {
   }
 
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
+    let aux = 0;
     [...canciones].forEach((cancion) => {
       if (this.grupo.nombre === cancion.getAutor()) {
-        if (this.grupo.generos.sort().length === cancion.getGeneros().sort().length &&
-          this.grupo.generos.every((valor, index) => {
-            return valor === cancion.getGeneros()[index];
-          })) {
+        cancion.getGeneros().forEach((genero) => {
+          this.grupo.generos.forEach((generosCanciones) => {
+            if (generosCanciones === genero) {
+              aux++;
+            }
+          });
+        });
+        if (aux === cancion.getGeneros().length) {
           this.grupo.canciones.addElemento(cancion);
         }
       }
@@ -39,12 +43,17 @@ export class Grupo {
   }
 
   private comprobarAlbumes(albumes: Coleccion<Album>): void {
+    let aux = 0;
     [...albumes].forEach((album) => {
       if (this.grupo.nombre === album.getAutor()) {
-        if (this.grupo.generos.sort().length === album.getGeneros().sort().length &&
-          this.grupo.generos.every((valor, index) => {
-            return valor === album.getGeneros()[index];
-          })) {
+        album.getGeneros().forEach((genero) => {
+          this.grupo.generos.forEach((generosAlbum) => {
+            if (generosAlbum === genero) {
+              aux++;
+            }
+          });
+        });
+        if (aux === album.getGeneros().length) {
           this.grupo.albumes.addElemento(album);
         }
       }
@@ -81,10 +90,6 @@ export class Grupo {
     return this.grupo.albumes;
   }
 
-  getOyentesMensuales(): number {
-    return this.grupo.oyentesMensuales;
-  }
-
   getCanciones(): Coleccion<Cancion> {
     return this.grupo.canciones;
   }
@@ -111,9 +116,5 @@ export class Grupo {
 
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.comprobarCanciones(canciones);
-  }
-
-  setOyentesMensuales(oyentesMensuales: number): void {
-    this.grupo.oyentesMensuales = oyentesMensuales;
   }
 }
