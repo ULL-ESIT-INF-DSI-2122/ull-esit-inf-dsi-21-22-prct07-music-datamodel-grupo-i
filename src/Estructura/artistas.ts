@@ -11,7 +11,7 @@ type artistaType = {
 }
 
 export class Artista {
-  private artista: artistaType;
+  private artista: artistaType = {nombre: "", grupos: [], generos: [], albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
   constructor(artista: artistaType) {
     this.artista.nombre = artista.nombre;
     this.artista.grupos = artista.grupos;

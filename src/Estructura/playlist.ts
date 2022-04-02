@@ -15,6 +15,8 @@ type duracionHorMinType = {
 
 export class PlayList {
   constructor(private playlist: playlistType) {
+    this.playlist.duracion.hor = 0;
+    this.playlist.duracion.min = 0;
     this.incluirGeneros(playlist.canciones);
     this.calcularDuracion(playlist.canciones);
   }

@@ -4,14 +4,14 @@ interface NombreInterfaz {
 }
 
 export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
-  private coleccion: Set<T>;
+  private coleccion: T[];
   
   constructor(...coleccion: T[]) {
-    this.coleccion = new Set(coleccion);
+    this.coleccion = coleccion;
   } 
 
   getSize(): number {
-    return this.coleccion.size;
+    return this.coleccion.length;
   }
 
   getElemento(nombre: string) {
@@ -20,12 +20,21 @@ export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
   }
 
   addElemento(elemento: T) {
-    this.coleccion.add(elemento);
+    this.coleccion.push(elemento);
+  }
+
+  limpiarElementos(): void {
+    this.coleccion = [];
+  }
+
+  deleteElemento(elemento: T) { // Lo deja sin huecos revisar
+    this.coleccion.splice(this.coleccion.indexOf(elemento), 1);
   }
 
   [Symbol.iterator](): Iterator<T> {
     return this.coleccion.values();
   }
 }
+
 
 // [...new Set(myArr)] 

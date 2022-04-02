@@ -10,7 +10,7 @@ type albumType = {
 }
 
 export class Album {
-  private album: albumType;
+  private album: albumType = {nombre: "", autor: "", fechaPublicacion: 0, generos: [], canciones: new Coleccion<Cancion>()};
   constructor(album: albumType) {
     this.album.nombre = album.nombre;
     this.album.autor = album.autor;
@@ -36,6 +36,10 @@ export class Album {
         }
       }
     });
+  }
+
+  addCanciones(canciones: Coleccion<Cancion>): void {
+    this.comprobarCanciones(canciones);
   }
 
   getNombre(): string {
@@ -75,6 +79,7 @@ export class Album {
   }
 
   setCanciones(canciones: Coleccion<Cancion>): void {
+    this.album.canciones.limpiarElementos();
     this.comprobarCanciones(canciones);
   }
 }

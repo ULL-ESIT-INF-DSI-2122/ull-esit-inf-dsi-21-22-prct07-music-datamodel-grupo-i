@@ -12,7 +12,8 @@ type generoMusicalType = {
 }
 
 export class GenerosMusicales {
-  private genero: generoMusicalType;
+  private genero: generoMusicalType = {nombre: "", artistasGrupos: new Coleccion<Artista | Grupo>(), 
+    albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
   constructor(genero: generoMusicalType) {
     this.genero.nombre = genero.nombre;
 

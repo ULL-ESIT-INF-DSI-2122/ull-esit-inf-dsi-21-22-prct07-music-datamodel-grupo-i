@@ -201,6 +201,11 @@ const genero8 = new GenerosMusicales({nombre: "Country", artistasGrupos: new Col
 const genero10 = new GenerosMusicales({nombre: "Flamenco", artistasGrupos: new Coleccion<Artista | Grupo>(artista3, artista4, artista7, grupo3, grupo1),
   albumes: new Coleccion<Album>(album3, album4, album7), canciones: new Coleccion<Cancion>(cancion46, cancion47, cancion48, cancion49, cancion50)});
 
+export const generos = new Coleccion<GenerosMusicales>(genero1, genero2, genero3, genero4, genero5, genero6, genero7, genero8, genero9, genero10);
 
-
-const playlist1 = new PlayList({nombre: , canciones: new Coleccion<Cancion>(), duracion: , generos:});
+const playlist1 = new PlayList({nombre: "La mandanga", canciones: new Coleccion<Cancion>(cancion1, cancion3, cancion14, cancion38, cancion22, cancion33, cancion41, cancion19), 
+  duracion: {hor: 0, min: 0}, generos: []});
+const playlist2 = new PlayList({nombre: "Amor y Odio", canciones: new Coleccion<Cancion>(cancion13, cancion23, cancion36, cancion38, cancion11, cancion12, cancion2, cancion45, cancion49), 
+  duracion: {hor: 0, min: 0}, generos: []});
+const playlist3 = new PlayList({nombre: "Los de Socorro", canciones: new Coleccion<Cancion>(cancion33, cancion44, cancion22, cancion11, cancion2, cancion25, cancion50, cancion37), 
+  duracion: {hor: 0, min: 0}, generos: []});

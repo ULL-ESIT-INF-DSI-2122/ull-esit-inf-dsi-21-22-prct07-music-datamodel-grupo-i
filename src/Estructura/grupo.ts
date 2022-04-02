@@ -13,7 +13,8 @@ export type grupoType = {
 }
 
 export class Grupo {
-  private grupo: grupoType;
+  private grupo: grupoType = {nombre: "", artistas: new Coleccion<Artista>(), fechaCreacion: 0, generos: [], 
+    albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
   constructor(grupo: grupoType) {
     this.grupo.nombre = grupo.nombre;
     this.grupo.fechaCreacion = grupo.fechaCreacion;
