@@ -10,14 +10,16 @@ type albumType = {
 }
 
 export class Album {
-  private album: albumType = {nombre: "", autor: "", fechaPublicacion: 0, generos: [], canciones: new Coleccion<Cancion>()};
-  constructor(album: albumType) {
+  public album: albumType = {nombre: "", autor: "", fechaPublicacion: 0, generos: [], canciones: new Coleccion<Cancion>()};
+  constructor(album: albumType, pruebas: boolean = true) {
     this.album.nombre = album.nombre;
     this.album.autor = album.autor;
     this.album.fechaPublicacion = album.fechaPublicacion;
     this.album.generos = album.generos;
 
-    this.comprobarCanciones(album.canciones);
+    if (pruebas) {
+      this.comprobarCanciones(album.canciones);
+    }
   }
 
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
@@ -79,7 +81,18 @@ export class Album {
   }
 
   setCanciones(canciones: Coleccion<Cancion>): void {
-    this.album.canciones.limpiarElementos();
-    this.comprobarCanciones(canciones);
+    this.album.canciones = canciones;
+  }
+}
+
+export class PrintAlbum {
+  constructor(private album: Album) {}
+
+  print(): void {
+    console.log(`Nombre: ${this.album.getNombre()}`);
+    console.log(`Autor: ${this.album.getAutor()}`);
+    console.log(`Fecha Publicación: ${this.album.getFechaPublicacion()}`);
+    console.log(`Generos: ${this.album.getGeneros().join(', ')}`);
+    console.log(`Canciones: ${[...this.album.getCanciones()].join(', ')}`);
   }
 }

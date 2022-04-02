@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc-watch --onSuccess \"node dist/BaseDeDatos/dbManager.js\"",
+    "start": "tsc-watch --onSuccess \"node dist/App/app.js\"",
     "test": "mocha",
     "doc": "typedoc",
     "coveragelocal": "nyc npm test",
@@ -15,6 +15,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/chai": "^4.3.0",
+    "@types/inquirer": "^8.2.1",
     "@types/lowdb": "^1.0.11",
     "@types/mocha": "^9.1.0",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
@@ -22,7 +23,7 @@
     "chai": "^4.3.6",
     "eslint": "^8.9.0",
     "eslint-config-google": "^0.14.0",
-    "inquirer": "^8.2.2",
+    "inquirer": "^7.3.3",
     "lowdb": "^1.0.0",
     "mocha": "^9.2.1",
     "nyc": "^15.1.0",

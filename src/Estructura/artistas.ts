@@ -11,14 +11,16 @@ type artistaType = {
 }
 
 export class Artista {
-  private artista: artistaType = {nombre: "", grupos: [], generos: [], albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
-  constructor(artista: artistaType) {
+  public artista: artistaType = {nombre: "", grupos: [], generos: [], albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
+  constructor(artista: artistaType, pruebas: boolean = true) {
     this.artista.nombre = artista.nombre;
     this.artista.grupos = artista.grupos;
     this.artista.generos = artista.generos;
     
-    this.comprobarAlbumes(artista.albumes);
-    this.comprobarCanciones(artista.canciones);
+    if (pruebas) {
+      this.comprobarAlbumes(artista.albumes);
+      this.comprobarCanciones(artista.canciones);
+    }
   }
 
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
@@ -69,7 +71,7 @@ export class Artista {
     return this.artista.generos;
   }
 
-  getAlbunes(): Coleccion<Album> {
+  getAlbumes(): Coleccion<Album> {
     return this.artista.albumes;
   }
 
@@ -89,13 +91,28 @@ export class Artista {
     this.artista.generos = generos;
   }
 
-  setAlbunes(albumes: Coleccion<Album>): void {
+  setAlbumes(albumes: Coleccion<Album>): void {
     this.comprobarAlbumes(albumes);
   }
 
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.comprobarCanciones(canciones);
   }
+
+  addCancion(canciones: Cancion): void {
+    this.artista.canciones.addElemento(canciones);
+  }
 }
 
 
+export class PrintArtista {
+  constructor(private artista: Artista) {}
+
+  print(): void {
+    console.log(`Nombre: ${this.artista.getNombre()}`);
+    console.log(`Grupo: ${this.artista.getGrupos().join(", ")}`);
+    console.log(`Generos: ${this.artista.getGeneros().join(', ')}`);
+    console.log(`Albumes: ${[...this.artista.getAlbumes()].join(', ')}`);
+    console.log(`Canciones: ${[...this.artista.getCanciones()].join(', ')}`);
+  }
+}

@@ -14,7 +14,7 @@ type duracionMinSegType = {
 }
 
 export class Cancion {
-  constructor(private cancion: cancionType) {}
+  constructor(public cancion: cancionType) {}
 
   getNombre(): string {
     return this.cancion.nombre;
@@ -62,5 +62,19 @@ export class Cancion {
 
   setReproducciones(reproducciones: number): void {
     this.cancion.reproducciones = reproducciones;
+  }
+}
+
+
+export class PrintCancion {
+  constructor(private cancion: Cancion) {}
+
+  print(): void {
+    console.log(`Nombre: ${this.cancion.getNombre()}`);
+    console.log(`Autor: ${this.cancion.getAutor()}`);
+    console.log(`Duracion: ${this.cancion.getDuracion().min}:${this.cancion.getDuracion().seg}`);
+    console.log(`Generos: ${this.cancion.getGeneros().join(', ')}`);
+    console.log(`Single: ${this.cancion.getSingle()}`);
+    console.log(`Reproducciones: ${this.cancion.getReproducciones()}`);
   }
 }

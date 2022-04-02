@@ -4,11 +4,11 @@ interface NombreInterfaz {
 }
 
 export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
-  private coleccion: T[];
+  public coleccion: T[];
   
   constructor(...coleccion: T[]) {
     this.coleccion = coleccion;
-  } 
+  }
 
   getSize(): number {
     return this.coleccion.length;
@@ -17,6 +17,10 @@ export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
   getElemento(nombre: string) {
     return [...this.coleccion.values()].find((elemento) =>
       elemento.getNombre() === nombre);
+  }
+
+  changeElemento(valor: T, posicion: number): void {
+    this.coleccion[posicion] = valor;
   }
 
   addElemento(elemento: T) {

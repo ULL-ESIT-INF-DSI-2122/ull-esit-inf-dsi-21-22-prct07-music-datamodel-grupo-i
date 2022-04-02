@@ -81,3 +81,15 @@ export class PlayList {
     this.playlist.canciones = canciones;
   }
 }
+
+
+export class PrintPlayList {
+  constructor(private playlist: PlayList) {}
+
+  print(): void {
+    console.log(`Nombre: ${this.playlist.getNombre()}`);
+    console.log(`Canciones: ${[...this.playlist.getCanciones()].join(', ')}`);
+    console.log(`Duración: ${this.playlist.getDuracion().hor}h ${this.playlist.getDuracion().min}min`);
+    console.log(`Generos: ${this.playlist.getGeneros().join(', ')}`);
+  }
+}

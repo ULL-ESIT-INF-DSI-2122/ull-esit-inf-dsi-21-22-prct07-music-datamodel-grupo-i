@@ -13,16 +13,18 @@ export type grupoType = {
 }
 
 export class Grupo {
-  private grupo: grupoType = {nombre: "", artistas: new Coleccion<Artista>(), fechaCreacion: 0, generos: [], 
+  public grupo: grupoType = {nombre: "", artistas: new Coleccion<Artista>(), fechaCreacion: 0, generos: [], 
     albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
-  constructor(grupo: grupoType) {
+  constructor(grupo: grupoType, pruebas:boolean = true) {
     this.grupo.nombre = grupo.nombre;
     this.grupo.fechaCreacion = grupo.fechaCreacion;
     this.grupo.generos = grupo.generos;
 
-    this.comprobarAlbumes(grupo.albumes);
-    this.comprobarArtistas(grupo.artistas);
-    this.comprobarCanciones(grupo.canciones);
+    if (pruebas) {
+      this.comprobarAlbumes(grupo.albumes);
+      this.comprobarArtistas(grupo.artistas);
+      this.comprobarCanciones(grupo.canciones);
+    }
   }
 
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
@@ -117,5 +119,21 @@ export class Grupo {
 
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.comprobarCanciones(canciones);
+  }
+  addCancion(canciones: Cancion): void {
+    this.grupo.canciones.addElemento(canciones);
+  }
+}
+
+export class PrintGrupo {
+  constructor(private grupo: Grupo) {}
+
+  print(): void {
+    console.log(`Nombre: ${this.grupo.getNombre()}`);
+    console.log(`Artistas: ${[...this.grupo.getArtista()].join(', ')}`);
+    console.log(`Fecha de Creación: ${this.grupo.getFechaCreacion()}`);
+    console.log(`Generos: ${[...this.grupo.getGeneros()].join(', ')}`);
+    console.log(`Albumes: ${[...this.grupo.getAlbumes()].join(', ')}`);
+    console.log(`Canciones: ${[...this.grupo.getCanciones()].join(', ')}`);
   }
 }
