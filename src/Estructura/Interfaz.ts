@@ -6,10 +6,14 @@ import {PrintAlbum, Album} from "./album";
 import {PrintArtista, Artista} from "./artistas";
 import {PrintPlayList, PlayList} from "./playlist";
 import {PrintGrupo, Grupo} from "./grupo";
+const inquirerPrompt = require('inquirer-autocomplete-prompt');
+const fuzzy = require('fuzzy');
 
+inquirer.registerPrompt('autocomplete', inquirerPrompt);
 
 export class Interfaz {
   private static interfaz: Interfaz;
+  private searchAutores: string[];
   private generos: Coleccion<GenerosMusicales>;
   private constructor() { }
 
@@ -20,12 +24,36 @@ export class Interfaz {
     return Interfaz.interfaz;
   }
 
+  actualizarSearchAutores(): void {
+    this.searchAutores = [];
+    [...this.generos].forEach((genero) => {
+      [...genero.getArtistaGrupos()].forEach((autores) => {
+        this.searchAutores.push(autores.getNombre());
+      });
+    });
+    this.searchAutores = [...new Set(this.searchAutores)];
+  }
+
+  searchStates(search: string[], input: string = "") {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const results = fuzzy.filter(input, search).map((el: any) => el.original);
+  
+        results.splice(5, 0, new inquirer.Separator());
+        results.push(new inquirer.Separator());
+        resolve(results);
+      }, Math.random() * 470 + 30);
+    });
+  }
+  
+  
   getGeneros(): Coleccion<GenerosMusicales> {
     return this.generos;
   }
 
   setGeneros(generos: Coleccion<GenerosMusicales>): void {
     this.generos = generos;
+    this.actualizarSearchAutores();
   }
 
   run(): void {
@@ -113,12 +141,21 @@ export class Interfaz {
       message: "Nombre de la canción:",
     },
     {
+      type: "autocomplete",
       name: "autor",
       message: "Nombre del creador:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchAutores, input),
     },
     {
       name: "duracion",
       message: "Duracion de la canción en segundos:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "La duración debe ser un número";
+        }
+        return true;
+      },
     },
     {
       name: "generos",
@@ -127,31 +164,14 @@ export class Interfaz {
     {
       name: "reproducciones",
       message: "Reproducciones de la canción",
-    }]).then((answers) => {
-      let auxAutor = false;
-
-      [...this.generos].forEach((genero) => {
-        [...genero.getArtistaGrupos()].forEach((autor) => {
-          if (autor.getNombre() === answers["autor"]) {
-            auxAutor = true;
-          }
-        });
-      });
-      if (!auxAutor) {
-        console.log("¡¡¡¡¡ERROR: Nombre del autor incorrecto!!!!!");
-        throw error;
-      }
-  
-      const regex: RegExp = /^[0-9]*$/;
-      if (!regex.test(answers["duracion"])) {
-        console.log("¡¡¡¡¡ERROR: Duración de la canción incorrecta!!!!!");
-        throw error;       
-      }
-      if (!regex.test(answers["reproducciones"])) {
-        console.log("¡¡¡¡¡ERROR: Reproducciones incorrectas!!!!!");
-        throw error;
-      }
-  
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "Las reproducciones deben ser un número";
+        }
+        return true;
+      },
+    }]).then((answers) => {  
       const generos: string[] = answers["generos"].split(' ');
       let contador: number = 0;
       generos.forEach((valores) => {
