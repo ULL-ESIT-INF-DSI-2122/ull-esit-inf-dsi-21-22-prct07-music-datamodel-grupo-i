@@ -83,6 +83,17 @@ export class Album {
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.album.canciones = canciones;
   }
+  calcularReproduccionesTotales(): number {
+    let total = 0;
+    [...this.album.canciones].forEach((cancion) => {
+      total += cancion.getReproducciones();
+    });
+    return total;
+  }
+
+  addCancion(canciones: Cancion): void {
+    this.album.canciones.addElemento(canciones);
+  }
 }
 
 export class PrintAlbum {

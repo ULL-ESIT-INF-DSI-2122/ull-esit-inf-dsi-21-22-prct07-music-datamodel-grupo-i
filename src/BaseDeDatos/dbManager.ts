@@ -96,12 +96,3 @@ export class JsonDataBase {
     }
   }
 }
-
-const interfaz = Interfaz.getInterfazInstance();
-const dataBase = new JsonDataBase(interfaz, Data.generos);
-console.log(Data.generos instanceof Coleccion);
-
-function callback(genero: any): (value: GenerosMusicales, index: number, array: GenerosMusicales[]) => void {
-  throw new Error('Function not implemented.');
-}
-

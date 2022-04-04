@@ -94,6 +94,14 @@ export class GenerosMusicales {
   addCancion(canciones: Cancion): void {
     this.genero.canciones.addElemento(canciones);
   }
+
+  addAlbum(album: Album): void {
+    this.genero.albumes.addElemento(album);
+  }
+
+  addArtistaGrupo(nombre: Artista | Grupo): void {
+    this.genero.artistasGrupos.addElemento(nombre);
+  }
 }
 
 

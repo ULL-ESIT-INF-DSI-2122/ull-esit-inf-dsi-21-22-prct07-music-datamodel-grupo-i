@@ -120,8 +120,17 @@ export class Grupo {
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.comprobarCanciones(canciones);
   }
+
   addCancion(canciones: Cancion): void {
     this.grupo.canciones.addElemento(canciones);
+  }
+
+  addAlbum(album: Album): void {
+    this.grupo.albumes.addElemento(album);
+  }
+
+  addArtista(artista: Artista): void {
+    this.grupo.artistas.addElemento(artista);
   }
 }
 

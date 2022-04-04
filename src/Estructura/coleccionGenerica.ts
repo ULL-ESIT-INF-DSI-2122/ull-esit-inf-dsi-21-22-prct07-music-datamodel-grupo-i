@@ -19,6 +19,10 @@ export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
       elemento.getNombre() === nombre);
   }
 
+  removeElemento(nombre: string) {
+    this.coleccion = this.coleccion.filter((item) => item.getNombre() !== nombre);
+  }
+
   changeElemento(valor: T, posicion: number): void {
     this.coleccion[posicion] = valor;
   }

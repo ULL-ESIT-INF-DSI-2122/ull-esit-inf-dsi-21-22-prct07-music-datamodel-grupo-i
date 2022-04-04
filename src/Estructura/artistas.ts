@@ -102,6 +102,10 @@ export class Artista {
   addCancion(canciones: Cancion): void {
     this.artista.canciones.addElemento(canciones);
   }
+
+  addAlbum(album: Album): void {
+    this.artista.albumes.addElemento(album);
+  }
 }
 
 
