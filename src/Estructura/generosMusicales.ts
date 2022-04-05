@@ -14,11 +14,11 @@ type generoMusicalType = {
 export class GenerosMusicales {
   public genero: generoMusicalType = {nombre: "", artistasGrupos: new Coleccion<Artista | Grupo>(), 
     albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
-  constructor(genero: generoMusicalType, prueba: boolean = true) {
+  constructor(genero: generoMusicalType, memoria: boolean = true) {
     this.genero.nombre = genero.nombre;
 
     
-    if (prueba) {
+    if (memoria) {
       this.comprobarAlbumes(genero.albumes);
       this.comprobarCanciones(genero.canciones);
       this.comprobarArtistasGrupos(genero.artistasGrupos);

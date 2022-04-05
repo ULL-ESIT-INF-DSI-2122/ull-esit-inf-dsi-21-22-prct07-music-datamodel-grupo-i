@@ -6,10 +6,27 @@ import {PrintAlbum, Album} from "./album";
 import {PrintArtista, Artista} from "./artistas";
 import {PrintPlayList, PlayList} from "./playlist";
 import {PrintGrupo, Grupo} from "./grupo";
+import {Gestor} from "./gestor";
+
 const inquirerPrompt = require('inquirer-autocomplete-prompt');
 const fuzzy = require('fuzzy');
 
 inquirer.registerPrompt('autocomplete', inquirerPrompt);
+
+enum visualizarEnum {
+    canciones,
+    albumes,
+    playList,
+}
+
+enum filterType {
+    titulo,
+    single,
+    reproducciones,
+    reproduccionesTotales,
+    fechaPublicacion,
+}
+
 
 export class Interfaz {
   private static interfaz: Interfaz;
@@ -19,6 +36,7 @@ export class Interfaz {
   private searchCanciones: string[];
   private searchGeneros: string[];
   private generos: Coleccion<GenerosMusicales>;
+  private gestor: Gestor = Gestor.getGestorInstance();
   private constructor() { }
 
   public static getInterfazInstance(): Interfaz {
@@ -116,6 +134,10 @@ export class Interfaz {
     this.actualizarSearchArtistasGrupos();
     this.actualizarSearchAlbumes();
     this.actualizarSearchCanciones();
+  }
+
+  setDataGestor(playList: Coleccion<PlayList>): void {
+    this.gestor.setPlayList(playList);
   }
 
   run(): void {
@@ -348,12 +370,24 @@ export class Interfaz {
         }
         return true;
       },
+    },
+    {
+      name: "oyentes",
+      message: "Cantidad de oyentes mensuales:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "El valor debe ser un número";
+        }
+        return true;
+      },
     }]).then((answers) => {
       [...this.generos].forEach((genero) => {
         [...genero.getArtistaGrupos()].forEach((autor) => {
           if (autor.getNombre() === answers["nombre"] && autor instanceof Grupo) {
             autor.setNombre(answers["nombreNuevo"]);
             autor.setFechaCreacion(parseInt(answers["fechaNuevo"]));
+            autor.setOyentes(parseInt(answers["oyentes"]));
           }
         });
       });
@@ -374,11 +408,23 @@ export class Interfaz {
     {
       name: "nombreNuevo",
       message: "Nuevo nombre del artista:",
+    },
+    {
+      name: "oyentes",
+      message: "Nueva cantidad de oyentes mensuales:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "El valor debe ser un número";
+        }
+        return true;
+      },
     }]).then((answers) => {
       [...this.generos].forEach((genero) => {
         [...genero.getArtistaGrupos()].forEach((autor) => {
           if (autor.getNombre() === answers["nombre"]) {
             autor.setNombre(answers["nombreNuevo"]);
+            autor.setOyentes(parseInt(answers["oyentes"]));
           }
         });
       });
@@ -512,9 +558,6 @@ export class Interfaz {
         case "Album":
           this.añadirAlbum();
           break;
-        case "Canción a un album":
-          this.añadirCancionAlbum();
-          break;
         case "Artista":
           this.añadirArtista();
           break;
@@ -575,6 +618,17 @@ export class Interfaz {
     {
       name: "generos",
       message: "Generos de la canción:",
+    },
+    {
+      name: "oyentes",
+      message: "Cantidad de oyentes mensuales:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "El valor debe ser un número";
+        }
+        return true;
+      },
     }]).then((answers) => {  
       const generos: string[] = answers["generos"].split(' ');
   
@@ -584,7 +638,7 @@ export class Interfaz {
       }
       
       const grupo = new Grupo({nombre: answers["nombre"], artistas: new Coleccion<Artista>(), fechaCreacion: answers["fecha"],
-        generos: generos, albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()});
+        generos: generos, albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>(), oyentes: answers["oyentes"]});
 
       [...this.generos].forEach((genero) => {
         grupo.getGeneros().forEach((generosGrupo) => {
@@ -618,6 +672,17 @@ export class Interfaz {
     {
       name: "generos",
       message: "Generos del artista:",
+    },
+    {
+      name: "oyentes",
+      message: "Cantidad de oyentes mensuales:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "El valor debe ser un número";
+        }
+        return true;
+      },
     }]).then((answers) => {  
       const generos: string[] = answers["generos"].split(' ');
 
@@ -627,22 +692,22 @@ export class Interfaz {
       }
 
       const artista = new Artista({nombre: answers["nombre"], grupos: answers["grupos"].split(' '), 
-        generos: generos, albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()});
+        generos: generos, albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>(), oyentes: parseInt(answers["oyentes"])});
 
       [...this.generos].forEach((genero) => {
         artista.getGeneros().forEach((generosArtista) => {
           if (generosArtista === genero.getNombre()) {
             genero.addArtistaGrupo(artista);
-          }
-        });
-        [...artista.getGrupos()].forEach((grupo) => {
-          [...this.generos].forEach((genero) => {
-            [...genero.getArtistaGrupos()].forEach((grupoGenero) => {
-              if (grupo === grupoGenero.getNombre() && grupoGenero instanceof Grupo) {
-                grupoGenero.addArtista(artista);
-              } 
+            [...artista.getGrupos()].forEach((grupo) => {
+              [...this.generos].forEach((genero) => {
+                [...genero.getArtistaGrupos()].forEach((grupoGenero) => {
+                  if (grupo === grupoGenero.getNombre() && grupoGenero instanceof Grupo) {
+                    grupoGenero.addArtista(artista);
+                  } 
+                });
+              });
             });
-          });
+          }
         });
       });
       
@@ -666,7 +731,7 @@ export class Interfaz {
       type: "autocomplete",
       name: "autor",
       message: "Nombre del creador:",
-      source: (answersSoFar: any, input: string) => this.searchStates([...this.searchGrupos, ...this.searchArtistas], input),
+      source: (answersSoFar: any, input: string) => this.searchStates([...this.searchArtistas, ...this.searchGrupos], input),
     },
     {
       name: "creacion",
@@ -682,6 +747,20 @@ export class Interfaz {
     {
       name: "generos",
       message: "Generos del album:",
+    },
+    {
+      name: "canciones",
+      message: "Cantidad de canciones del album:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "La cantidad debe ser un número";
+        }
+        if (parseInt(value) <= 0) {
+          return "La cantidad mínima es 1";
+        }
+        return true;
+      },
     }]).then((answers) => {
       const generos: string[] = answers["generos"].split(' ');
 
@@ -697,17 +776,17 @@ export class Interfaz {
         album.getGeneros().forEach((generoAlbum) => {
           if (generoAlbum === genero.getNombre()) {
             genero.addAlbum(album);
-          }
-        });
-        [...genero.getArtistaGrupos()].forEach((autor) => {
-          if (autor.getNombre() === album.getAutor()) {
-            autor.addAlbum(album);
+            [...genero.getArtistaGrupos()].forEach((autor) => {
+              if (autor.getNombre() === album.getAutor()) {
+                autor.addAlbum(album);
+              }
+            });
           }
         });
       });
       
       this.actualizarSearchAlbumes();
-      this.añadir();
+      this.añadirCancion(false, answers["nombre"], parseInt(answers["canciones"]) - 1);
     }).catch((error) => {
       setTimeout(() => {
         this.añadir();
@@ -715,19 +794,7 @@ export class Interfaz {
     });
   }
 
-  añadirCancionAlbum(): void {
-    console.clear();
-    inquirer.prompt([{
-      type: "autocomplete",
-      name: "nombre",
-      message: "Nombre del album:",
-      source: (answersSoFar: any, input: string) => this.searchStates([...this.searchAlbumes, ...this.searchArtistas], input),
-    }]).then((answers) => {
-      this.añadirCancion(false, answers["nombre"]);
-    });
-  }
-
-  añadirCancion(single: boolean = true, nombreAlbum = ""): void {
+  añadirCancion(single: boolean = true, nombreAlbum: string = "", cantidad: number = 0): void {
     console.clear();
     const error = 0;
     inquirer.prompt([{
@@ -738,7 +805,7 @@ export class Interfaz {
       type: "autocomplete",
       name: "autor",
       message: "Nombre del creador:",
-      source: (answersSoFar: any, input: string) => this.searchStates([...this.searchGrupos, ...this.searchArtistas], input),
+      source: (answersSoFar: any, input: string) => this.searchStates([...this.searchArtistas, ...this.searchGrupos], input),
     },
     {
       name: "duracion",
@@ -782,35 +849,37 @@ export class Interfaz {
       [...this.generos].forEach((genero) => {
         cancion.getGeneros().forEach((generoCancion) => {
           if (generoCancion === genero.getNombre()) {
-            if (single) {
-              genero.addCancion(cancion);
-            } else {
+            genero.addCancion(cancion);
+            if (!single) {
               [...genero.getAlbumes()].forEach((album) => {
                 if (album.getNombre() === nombreAlbum) {
                   album.addCancion(cancion);
                 }
-              }); 
+              });
             }
-          }
-        });
-
-        [...genero.getArtistaGrupos()].forEach((autor) => {
-          if (autor.getNombre() === cancion.getAutor()) {
-            if (single) {
-              autor.addCancion(cancion);  
-            } else {
-              [...autor.getAlbumes()].forEach((album) => {
-                if (album.getNombre() === nombreAlbum) {
-                  album.addCancion(cancion);
+            [...genero.getArtistaGrupos()].forEach((autor) => {
+              if (autor.getNombre() === cancion.getAutor()) {
+                if (single) {
+                  autor.addCancion(cancion);  
+                } else {
+                  [...autor.getAlbumes()].forEach((album) => {
+                    if (album.getNombre() === nombreAlbum) {
+                      album.addCancion(cancion);
+                    }
+                  }); 
                 }
-              }); 
-            }
+              }
+            });
           }
         });
       });
 
       this.actualizarSearchCanciones();
-      this.añadir();
+      if (cantidad) {
+        this.añadirCancion(single, nombreAlbum, cantidad - 1);
+      } else {
+        this.añadir();
+      }
     }).catch((error) => {
       setTimeout(() => {
         this.añadir();
@@ -835,48 +904,22 @@ export class Interfaz {
     }]).then((answers) => {
       switch (answers["opcion"]) {
         case "Albumes":
-          // this.visualizarAlbumes();
+          this.visualizarAlbumes(answers["comando"]);
           break;
         case "Canciones":
-          this.visualizarCanciones();
+          this.visualizarCanciones(answers["comando"]);
           break;
         case "Playlists":
-          // this.visualizarPlaylists();
+          this.visualizarPlaylist(answers["comando"]);
           break;
-        default:
+        case "Salir":
+          this.run();
           break;
       }
     });
   }
-  
-  filtrosCanciones(opcion:any, value: number) {
-    let aux: any[] = [];
-    [...this.generos].forEach((genero) => {
-      [...genero.getCanciones()].forEach((cancion) => {
-        if (cancion.getAutor() === opcion) {
-          if (value === 1) {
-            aux.push(cancion.getNombre());
-          }
-          if (value === 2) {
-            if (cancion.getSingle()) {
-              aux.push(cancion.getNombre());
-            }
-          }
-          if (value === 3) {
-            aux.push([cancion.getNombre(), cancion.getReproducciones()]);
-          }
-        }
-      });
-    });
-    if (value === 3) {
-      aux = aux.sort((a, b) => {
-        return b[1] - a[1];
-      });
-    }
-    return aux;
-  }
 
-  visualizarCanciones(): void {
+  visualizarCanciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -885,19 +928,73 @@ export class Interfaz {
       choices: ["Titulo", "Single", "Reproducciones", "Salir"],
       default: "Titulo",
     }]).then((answers) => {
-      if (answers["opciondeFiltrado"] === "Salir") {
-        this.visualizarLista();
-      } else if (answers["opciondeFiltrado"] === "Titulo") {
-        this.filtradoTiTulo(answers["opciondeFiltrado"]);
-      } else if (answers["opciondeFiltrado"] === "Single") {
-        this.filtradoSingle(answers["opciondeFiltrado"]);
-      } else if (answers["opciondeFiltrado"] === "Reproducciones") {
-        this.filtradoReproducciones(answers["opciondeFiltrado"]);
+      switch (answers["opciondeFiltrado"]) {
+        case "Titulo":
+          this.filtradoTiTulo(opcion, visualizarEnum.canciones);
+          break;
+        case "Single":
+          this.filtradoSingle(opcion, visualizarEnum.canciones);
+          break;
+        case "Reproducciones":
+          this.filtradoReproducciones(opcion, visualizarEnum.canciones);
+          break;
+        case "Salir":
+          this.visualizarLista();
+          break;
       }
     });
   }
 
-  filtradoTiTulo(opcion: any): void {
+  visualizarAlbumes(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "opciondeFiltrado",
+      message: "Que filtro quiere aplicar",
+      choices: ["Titulo", "Año Lanzamiento", "Reproducciones Totales", "Salir"],
+      default: "Titulo",
+    }]).then((answers) => {
+      switch (answers["opciondeFiltrado"]) {
+        case "Titulo":
+          this.filtradoTiTulo(opcion, visualizarEnum.albumes);
+          break;
+        case "Año Lanzamiento":
+          this.fechaPublicacion(opcion, visualizarEnum.albumes);
+          break;
+        case "Reproducciones Totales":
+          this.filtradoReproduccionesTotales(opcion, visualizarEnum.albumes);
+          break;
+        case "Salir":
+          this.visualizarLista();
+          break;
+      }
+    });
+  }
+
+  visualizarPlaylist(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "opciondeFiltrado",
+      message: "Que filtro quiere aplicar",
+      choices: ["Titulo", "Reproducciones Totales", "Salir"],
+      default: "Titulo",
+    }]).then((answers) => {
+      switch (answers["opciondeFiltrado"]) {
+        case "Titulo":
+          this.filtradoTiTulo(opcion, visualizarEnum.playList);
+          break;
+        case "Reproducciones Totales":
+          this.filtradoReproduccionesTotales(opcion, visualizarEnum.playList);
+          break;
+        case "Salir":
+          this.visualizarLista();
+          break;
+      }
+    });
+  }
+
+  filtradoTiTulo(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -906,22 +1003,35 @@ export class Interfaz {
       choices: ["ASC", "DESC", "Salir"],
       default: "ASC",
     }]).then((answers) => {
-      let aux: any[] = [];
-      aux = this.filtrosCanciones(opcion, 1);
-      if (answers["filtroTitulo"] === "ASC") {
-        let print;
-        aux.sort();
-        aux.forEach((cancion) => { 
-          print = new PrintCancion(cancion);
-          print.print();
-        });
-      } else if (answers["filtroTitulo"] === "DESC") {
-        console.log(aux.sort().reverse());
+      switch (answers["filtroTitulo"]) {
+        case "ASC":
+          if (tipo === visualizarEnum.canciones) {
+            console.log("Estamos entrando en filtro Canciones");
+            this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.titulo));
+          }
+          if (tipo === visualizarEnum.albumes) {
+            this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.titulo));
+          }
+          if (tipo === visualizarEnum.playList) {
+            // this.imprimirPlaylist(this.filtrosPlaylist(opcion, filterType.titulo).sort());
+          }
+          break;
+        case "DESC":
+          if (tipo === visualizarEnum.canciones) {
+            this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.titulo).reverse());
+          }
+          if (tipo === visualizarEnum.albumes) {
+            this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.titulo).reverse());
+          }
+          break;
+        case "Salir":
+          this.visualizarLista();
+          break;
       }
     });
   }
 
-  filtradoSingle(opcion: any): void {
+  filtradoSingle(opcion: string, tipo: number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -931,22 +1041,26 @@ export class Interfaz {
       default: "SI",
     }]).then((answers) => {
       let aux: any[] = [];
-      aux = this.filtrosCanciones(opcion, 2);
-      if (answers["filtroSingle"] === "SI") {
-        if (aux.length === 0) {
-          console.log("No hay canciones con este filtro");
-        }
-        console.log(aux.sort());
-      } else if (answers["filtroSingle"] === "NO") {
-        if (aux.length === 0) {
-          console.log("No hay canciones con este filtro");
-        }
-        console.log(aux);
+      switch (answers["filtroSingle"]) {
+        case "SI":
+          aux = this.filtrosCanciones(opcion, filterType.single);
+          if (aux.length === 0) {
+            console.log("No hay canciones con este filtro");
+          } else {
+            this.imprimirCanciones(aux);
+          }
+          break;
+        case "NO":
+          this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.titulo));
+          break;
+        case "Salir":
+          this.visualizarLista();
+          break;
       }
     });
   }
 
-  filtradoReproducciones(opcion: any): void {
+  filtradoReproducciones(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -955,162 +1069,200 @@ export class Interfaz {
       choices: ["ASC", "DESC", "Salir"],
       default: "ASC",
     }]).then((answers) => {
-      let aux: any[] = [];
-      aux = this.filtrosCanciones(opcion, 3);
+      let reproducciones: string[] = [];
+      const nombre: string[] = [];
+      let primeraVez: boolean = false;
       if (answers["filtroReproduciones"] === "ASC") {
-        aux.forEach((element) => {
-          console.log(element[0]);
-        });
-        console.log(aux.sort());
-      } else if (answers["filtroReproduciones"] === "DESC") {
-        aux.forEach((element) => {
-          console.log(element[0]);
-        });
-        console.log(aux.sort().reverse());
+        reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones);
+      } else {
+        reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones).reverse();
       }
-    });
-  }
-
-  visualizarAlbumes(opcion: any): void {
-    console.clear();
-    inquirer.prompt([{
-      type: "list",
-      name: "filtro",
-      message: "¿Desea filtrar ASC o DSC?",
-      choices: ["ASC", "DSC", "Salir"],
-      default: "ASC",
-    },
-    {
-      name: "filtroAnio",
-      message: "Filtrar por año de lanzamiento",
-      choices: ["ASC", "DSC", "Salir"],
-      default: "No",
-    },
-    {
-      name: "filtroReproducciones",
-      message: "Filtrar por numero de reproducciones",
-      choices: ["ASC", "DSC", "Salir"],
-      default: "No",
-    }]).then((answers) => {
-      const aux: any[] = [];
-      if (answers["filtro"] === "ASC") {
-        [...this.generos].forEach((genero) => {
-          [...genero.getAlbumes()].forEach((album) => {
-            if (album.getAutor() === opcion) {
-              aux.push(album.getNombre());
-            }
-          });
-        });
-        console.log(aux.sort());
-      } else if (answers["filtro"] === "DSC") {
-        console.log(aux.reverse());
-      }
-      if (answers["filtroAnio"] === "DSC") {
-        [...this.generos].forEach((genero) => {
-          [...genero.getAlbumes()].forEach((album) => {
-            if (album.getAutor() === opcion) {
-              aux.push([album.getNombre(), album.getFechaPublicacion()]);
-            }
-          });
-        });
-        aux.sort((a, b) => {
-          return a[1] - b[1];
-        });
-        aux.forEach((element) => {
-          console.log(element[0]);
-        });
-      }
-      if (answers["filtroReproducciones"] === "ASC") {
-        [...this.generos].forEach((genero) => {
-          [...genero.getAlbumes()].forEach((album) => {
-            if (album.getAutor() === opcion) {
-              aux.push([album.getNombre(), album.calcularReproduccionesTotales()]);
-            }
-          });
-        });
-        aux.sort((a, b) => {
-          return a[1] - b[1];
-        });
-        aux.forEach((element) => {
-          console.log(element[0]);
-        });
-      } else if (answers["filtroReproducciones"] === "DSC") {
-        [...this.generos].forEach((genero) => {
-          [...genero.getAlbumes()].forEach((album) => {
-            if (album.getAutor() === opcion) {
-              aux.push([album.getNombre(), album.calcularReproduccionesTotales()]);
-            }
-          });
-        });
-        aux.sort((a, b) => {
-          return a[1] - b[1];
-        });
-        aux.forEach((element) => {
-          console.log(element[0]);
-        });
-        console.log(aux.sort().reverse());
-      }
-    });
-  }
-  
-  visualizarPlaylists(opcion: any): void {
-    console.clear();
-    inquirer.prompt([{
-      type: "list",
-      name: "filtro",
-      message: "¿Desea filtrar ASC o DSC?",
-      choices: ["ASC", "DSC", "Salir"],
-      default: "ASC",
-    }]).then((answers) => {
-      const aux: any[] = [];
-      if (answers["filtro"] === "ASC") {
+      [...reproducciones].forEach((element) => {
         [...this.generos].forEach((genero) => {
           [...genero.getCanciones()].forEach((cancion) => {
-            if (cancion.getAutor() === opcion) {
-              aux.push(cancion.getNombre());
+            if (cancion.getAutor() === opcion && cancion.getReproducciones() === +element && !primeraVez) {
+              nombre.push(cancion.getNombre());
+              primeraVez = true;
             }
           });
         });
-        console.log(aux.sort());
-      } else {
-        console.log(aux.reverse());
+        primeraVez = false;
+      });
+      this.imprimirCanciones(nombre);
+    });
+  }
+  // JOSEPH QUEDA POR HACER EL FILTRO REPRODUCCIONES TOTALES
+  filtradoReproduccionesTotales(opcion: any, tipo:number): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroReproducionesTotales",
+      message: "Eliga Una Opción",
+      choices: ["ASC", "DESC", "Salir"],
+      default: "ASC",
+    }]).then((answers) => {
+      switch (answers["filtroReproducionesTotales"]) {
+        case visualizarEnum.albumes:
+          if (tipo === visualizarEnum.albumes) {
+            console.log(this.filtrosAlbumes(opcion, filterType.reproduccionesTotales).sort());
+            this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.reproduccionesTotales).sort());
+          }
+          if (tipo === visualizarEnum.playList) {
+            // this.imprimirPlaylist(this.filtrosPlaylist(opcion, filterType.reproduccionesTotales).sort());
+          }
+          inquirer.prompt([{
+            message: "Desea volver a la lista principal?",
+            type: "confirm",
+            name: "confirmar",
+            default: true,
+          }]).then((answers) => {
+            if (answers["confirmar"]) {
+              this.visualizarLista();
+            }
+          });
+          console.log("HOLAAAAAAAAAAAAA");
+          break;
+        case "DESC":
+          if (tipo === visualizarEnum.albumes) {
+            this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.reproduccionesTotales).sort().reverse());
+          }
+          if (tipo === visualizarEnum.playList) {
+            // this.imprimirPlaylist(this.filtrosPlaylist(opcion, filterType.reproduccionesTotales).sort().reverse());
+          }
+          break;
+        case "Salir":
+          this.visualizarLista();
+          break;
       }
     });
   }
-}
 
+  fechaPublicacion(opcion: any, tipo:number): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "fechaPublicacion",
+      message: "Eliga Una Opción",
+      choices: ["ASC", "DESC", "Salir"],
+      default: "ASC",
+    }]).then((answers) => {
+      let publicaciones: string[] = [];
+      const nombre: string[] = [];
+      let primeraVez: boolean = false;
+      if (answers["fechaPublicacion"] === "ASC") {
+        publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion);
+      } else {
+        publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion).reverse();
+      }
+      [...publicaciones].forEach((element) => {
+        [...this.generos].forEach((genero) => {
+          [...genero.getAlbumes()].forEach((album) => {
+            if (album.getAutor() === opcion && album.getFechaPublicacion() === +element && !primeraVez) {
+              nombre.push(album.getNombre());
+              primeraVez = true;
+            }
+          });
+        });
+        primeraVez = false;
+      });
+      this.imprimirAlbumes(nombre);
+    });
+  }
 
-/* [...this.generos].forEach((genero) => {
-  [...genero.getArtistaGrupos()].forEach((elemento) => {
-    if (elemento instanceof Artista) {
-      aux = new PrintArtista(elemento);
-      aux.print();
-    } else {
-      aux = new PrintGrupo(elemento);
-      aux.print();
+  imprimirCanciones(aux: string[]): void {
+    let print;
+    let primeraVez: boolean = false;
+    aux.forEach((cancion) => {
+      [...this.generos].forEach((genero) => {
+        [...genero.getCanciones()].forEach((cancionGenero) => {
+          if (cancion === cancionGenero.getNombre() && !primeraVez) {
+            print = new PrintCancion(cancionGenero);
+            print.print();
+            primeraVez = true;
+          }
+        });
+      });
+      primeraVez = false;
+    });
+  }
+
+  imprimirAlbumes(aux: string[]): void {
+    let print;
+    let primeraVez: boolean = false;
+    aux.forEach((cancion) => {
+      [...this.generos].forEach((genero) => {
+        [...genero.getAlbumes()].forEach((albumGenero) => {
+          if (cancion === albumGenero.getNombre() && !primeraVez) {
+            print = new PrintAlbum(albumGenero);
+            primeraVez = true;
+            print.print();
+          }
+        });
+      });
+      primeraVez = false;
+    });
+  }
+
+  imprimirPlaylist(aux: string[]): void {
+    let print;
+    let primeraVez: boolean = false;
+    aux.forEach((elemento) => {
+      [...this.gestor.getPlayList()].forEach((playlist) => {
+        if (elemento === playlist.getNombre() && !primeraVez) {
+          print = new PrintPlayList(playlist);
+          primeraVez = true;
+          print.print();
+        }
+      });
+      primeraVez = false;
+    });
+  }
+
+  filtrosCanciones(opcion: string, value: number): string[] {
+    const aux: string[] = [];
+    [...this.generos].forEach((genero) => {
+      [...genero.getCanciones()].forEach((cancion) => {
+        if (cancion.getAutor() === opcion) {
+          if (value === filterType.titulo) {
+            aux.push(cancion.getNombre());
+          }
+          if (value === filterType.single && cancion.getSingle()) {
+            aux.push(cancion.getNombre());
+          }
+          if (value === filterType.reproducciones) {
+            aux.push(String(cancion.getReproducciones()));
+          }
+        }
+      });
+    });
+    if (value === filterType.reproducciones) {
+      aux.sort();
     }
-  });
-});
-}); */
+    return [...new Set(aux)].sort(); // Sale Ordenado
+  }
 
-
-/* if (answers["filtroSingle"] === "SI") {
-  aux = this.filtrosCanciones(opcion, false, true, false);
-  console.log(aux.sort());
-} else if (answers["filtroSingle"] === "NO") {
-  aux = this.filtrosCanciones(opcion, false, true, false);
-  console.log(aux);
+  filtrosAlbumes(opcion:string, value: number): any[] {  
+    let aux: any[] = [];
+    [...this.generos].forEach((genero) => {
+      [...genero.getAlbumes()].forEach((album) => {
+        if (album.getAutor() === opcion) {
+          if (value === filterType.titulo) {
+            aux.push(album.getNombre());
+          }
+          if (value === filterType.fechaPublicacion) {
+            aux.push(album.getFechaPublicacion());
+          }
+          if (value === filterType.reproduccionesTotales) {
+            aux.push(album.calcularReproduccionesTotales());
+          }
+        }
+      });
+    });
+    if (value === filterType.fechaPublicacion || value === filterType.reproduccionesTotales) {
+      aux = aux.sort((a, b) => {
+        return b[1] - a[1];
+      });
+    }
+    return [...new Set(aux)].sort(); // Sale Ordenado
+  }
 }
-if (answers["filtroReproduciones"] === "ASC") {
-  aux = this.filtrosCanciones(opcion, false, false, true);
-  aux.forEach((element) => {
-    console.log(element[0]);
-  });
-  console.log(aux.sort());
-} else if (answers["filtroReproduciones"] === "DESC") {
-  aux = this.filtrosCanciones(opcion, false, false, true);
-  aux.forEach((element) => {
-    console.log(element[0]);
-  });
-  console.log(aux.sort().reverse()); */
-//}

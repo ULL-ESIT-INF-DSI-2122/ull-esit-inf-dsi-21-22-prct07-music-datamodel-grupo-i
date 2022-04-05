@@ -11,16 +11,19 @@ import {Album} from '../Estructura/album';
 import {Cancion} from '../Estructura/cancion';
 
 type schemaType = {
-  generos: Coleccion<GenerosMusicales>,
+  datos: {
+    estructura: Coleccion<GenerosMusicales>,
+    playList: Coleccion<PlayList>,
+  }
 }
 
 export class JsonDataBase {
   private database: lowdb.LowdbSync<schemaType>;
 
-  constructor(private interfaz: Interfaz, datos: Coleccion<GenerosMusicales>) {
-    this.database = lowdb(new FileSync('src/BaseDeDatos/Hola.json'));
-    if (this.database.has('generos').value()) {      
-      const aux = new Coleccion<GenerosMusicales>(...this.database.get('generos').value().coleccion);
+  constructor(private interfaz: Interfaz, estructura: Coleccion<GenerosMusicales>, playList: Coleccion<PlayList>) {
+    this.database = lowdb(new FileSync('src/BaseDeDatos/DataBase.json'));
+    if (this.database.has('estructura').value()) {      
+      const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
     
       let contadorGenero = 0;
       let contadorAutor = 0;
@@ -92,7 +95,30 @@ export class JsonDataBase {
       });
       interfaz.setGeneros(aux);
     } else {
-      this.database.set('generos', datos).write();
+      this.database.set('estructura', estructura).write();
+      interfaz.setGeneros(estructura);
+    }
+    if (this.database.has('playList').value()) {
+      const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
+      let contadorPlayList: number = 0;
+      let contadorCancion: number = 0;
+
+      [...aux].forEach((playlist) => {
+        playlist = new PlayList(playlist.playlist, false);
+        playlist.setCanciones(new Coleccion<Cancion>(...playlist.getCanciones().coleccion));
+        [...playlist.getCanciones()].forEach((cancion) => {
+          cancion = new Cancion(cancion.cancion);
+          playlist.getCanciones().changeElemento(cancion, contadorCancion);
+          contadorCancion ++;
+        });
+        contadorCancion = 0;
+        aux.changeElemento(playlist, contadorPlayList);
+        contadorPlayList++;
+      });
+      interfaz.setDataGestor(aux);
+    } else {
+      this.database.set('playList', playList).write();
+      interfaz.setDataGestor(playList);
     }
   }
 }

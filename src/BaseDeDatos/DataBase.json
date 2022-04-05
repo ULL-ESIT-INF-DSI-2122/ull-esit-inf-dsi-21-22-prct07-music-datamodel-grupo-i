@@ -1,5 +1,5 @@
 {
-  "generos": {
+  "estructura": {
     "coleccion": [
       {
         "genero": {
@@ -72,7 +72,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 500
                 }
               },
               {
@@ -126,7 +127,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 12098
                 }
               },
               {
@@ -161,7 +163,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 111111
                 }
               },
               {
@@ -230,7 +233,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 12411
                 }
               },
               {
@@ -304,7 +308,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 500
                         }
                       },
                       {
@@ -358,7 +363,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       }
                     ]
@@ -410,7 +416,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -670,7 +677,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 500
                 }
               },
               {
@@ -738,7 +746,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 4567
                 }
               },
               {
@@ -775,7 +784,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1234
                 }
               },
               {
@@ -848,7 +858,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 4567
                         }
                       },
                       {
@@ -904,7 +915,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 123
                         }
                       }
                     ]
@@ -956,7 +968,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -995,7 +1008,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 3456
                         }
                       },
                       {
@@ -1030,7 +1044,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1200
                         }
                       }
                     ]
@@ -1063,7 +1078,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -1103,7 +1119,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 111111
                         }
                       },
                       {
@@ -1172,7 +1189,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 12411
                         }
                       }
                     ]
@@ -1206,7 +1224,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -1383,7 +1402,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 3456
                 }
               },
               {
@@ -1418,7 +1438,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1200
                 }
               },
               {
@@ -1492,7 +1513,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 500
                         }
                       },
                       {
@@ -1546,7 +1568,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       }
                     ]
@@ -1598,7 +1621,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -1638,7 +1662,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 111111
                         }
                       },
                       {
@@ -1707,7 +1732,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 12411
                         }
                       }
                     ]
@@ -1741,7 +1767,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -1780,7 +1807,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 3456
                         }
                       },
                       {
@@ -1815,7 +1843,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1200
                         }
                       }
                     ]
@@ -1848,7 +1877,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -1907,7 +1937,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       },
                       {
@@ -1944,7 +1975,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1234
                         }
                       }
                     ]
@@ -1992,7 +2024,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -2285,7 +2318,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 500
                 }
               },
               {
@@ -2339,7 +2373,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 12098
                 }
               },
               {
@@ -2408,7 +2443,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 12411
                 }
               },
               {
@@ -2464,7 +2500,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 123
                 }
               },
               {
@@ -2538,7 +2575,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 500
                         }
                       },
                       {
@@ -2592,7 +2630,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       }
                     ]
@@ -2644,7 +2683,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -2684,7 +2724,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 111111
                         }
                       },
                       {
@@ -2753,7 +2794,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 12411
                         }
                       }
                     ]
@@ -2787,7 +2829,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -3061,7 +3104,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1200
                 }
               },
               {
@@ -3098,7 +3142,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1234
                 }
               },
               {
@@ -3154,7 +3199,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 123
                 }
               },
               {
@@ -3194,7 +3240,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 111111
                         }
                       },
                       {
@@ -3263,7 +3310,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 12411
                         }
                       }
                     ]
@@ -3297,7 +3345,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -3356,7 +3405,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       },
                       {
@@ -3393,7 +3443,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1234
                         }
                       }
                     ]
@@ -3441,7 +3492,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -3668,7 +3720,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 12098
                 }
               },
               {
@@ -3702,7 +3755,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 3456
                 }
               },
               {
@@ -3770,7 +3824,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 4567
                 }
               },
               {
@@ -3809,7 +3864,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 3456
                         }
                       },
                       {
@@ -3844,7 +3900,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1200
                         }
                       }
                     ]
@@ -3877,7 +3934,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -3950,7 +4008,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 4567
                         }
                       },
                       {
@@ -4006,7 +4065,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 123
                         }
                       }
                     ]
@@ -4058,7 +4118,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -4316,7 +4377,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 500
                 }
               },
               {
@@ -4385,7 +4447,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 12411
                 }
               },
               {
@@ -4453,7 +4516,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 4567
                 }
               },
               {
@@ -4509,7 +4573,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 123
                 }
               },
               {
@@ -4583,7 +4648,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 500
                         }
                       },
                       {
@@ -4637,7 +4703,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       }
                     ]
@@ -4689,7 +4756,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -4762,7 +4830,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 4567
                         }
                       },
                       {
@@ -4818,7 +4887,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 123
                         }
                       }
                     ]
@@ -4870,7 +4940,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -5225,7 +5296,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 12098
                 }
               },
               {
@@ -5260,7 +5332,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 111111
                 }
               },
               {
@@ -5297,7 +5370,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1234
                 }
               },
               {
@@ -5365,7 +5439,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 4567
                 }
               },
               {
@@ -5424,7 +5499,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       },
                       {
@@ -5461,7 +5537,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1234
                         }
                       }
                     ]
@@ -5509,7 +5586,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -5582,7 +5660,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 4567
                         }
                       },
                       {
@@ -5638,7 +5717,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 123
                         }
                       }
                     ]
@@ -5690,7 +5770,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -5979,7 +6060,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 500
                 }
               },
               {
@@ -6014,7 +6096,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1200
                 }
               },
               {
@@ -6070,7 +6153,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 123
                 }
               },
               {
@@ -6110,7 +6194,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 111111
                         }
                       },
                       {
@@ -6179,7 +6264,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 12411
                         }
                       }
                     ]
@@ -6213,7 +6299,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -6286,7 +6373,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 4567
                         }
                       },
                       {
@@ -6342,7 +6430,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 123
                         }
                       }
                     ]
@@ -6394,7 +6483,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -6619,7 +6709,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 111111
                 }
               },
               {
@@ -6688,7 +6779,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 12411
                 }
               },
               {
@@ -6725,7 +6817,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 1234
                 }
               },
               {
@@ -6764,7 +6857,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 3456
                         }
                       },
                       {
@@ -6799,7 +6893,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 1200
                         }
                       }
                     ]
@@ -6832,7 +6927,8 @@
                         }
                       }
                     ]
-                  }
+                  },
+                  "oyentes": 0
                 }
               },
               {
@@ -6906,7 +7002,8 @@
                                 }
                               }
                             ]
-                          }
+                          },
+                          "oyentes": 500
                         }
                       },
                       {
@@ -6960,7 +7057,8 @@
                           },
                           "canciones": {
                             "coleccion": []
-                          }
+                          },
+                          "oyentes": 12098
                         }
                       }
                     ]
@@ -7012,7 +7110,8 @@
                   },
                   "canciones": {
                     "coleccion": []
-                  }
+                  },
+                  "oyentes": 0
                 }
               }
             ]
@@ -7099,6 +7198,459 @@
               }
             ]
           }
+        }
+      }
+    ]
+  },
+  "playList": {
+    "coleccion": [
+      {
+        "playlist": {
+          "nombre": "La mandanga",
+          "canciones": {
+            "coleccion": [
+              {
+                "cancion": {
+                  "nombre": "Ular SciencE",
+                  "autor": "Bayside",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 4
+                  },
+                  "generos": [
+                    "Pop",
+                    "Rock"
+                  ],
+                  "single": true,
+                  "reproducciones": 200
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "J Smoov",
+                  "autor": "Stephen Malkmus",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 50
+                  },
+                  "generos": [
+                    "Rock"
+                  ],
+                  "single": true,
+                  "reproducciones": 5000
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Pack Up",
+                  "autor": "Paul McCartney",
+                  "duracion": {
+                    "min": 6,
+                    "seg": 35
+                  },
+                  "generos": [
+                    "Trap"
+                  ],
+                  "single": true,
+                  "reproducciones": 123
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "The Monkees",
+                  "autor": "Mesita",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 11
+                  },
+                  "generos": [
+                    "Country"
+                  ],
+                  "single": false,
+                  "reproducciones": 98756
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "La Turra Rica",
+                  "autor": "Pink Floyd",
+                  "duracion": {
+                    "min": 3,
+                    "seg": 33
+                  },
+                  "generos": [
+                    "Drill"
+                  ],
+                  "single": true,
+                  "reproducciones": 555555
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "S.A.D",
+                  "autor": "Duki",
+                  "duracion": {
+                    "min": 1,
+                    "seg": 32
+                  },
+                  "generos": [
+                    "Jazz"
+                  ],
+                  "single": false,
+                  "reproducciones": 10
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Na na na Batman",
+                  "autor": "Pink Floyd",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 10
+                  },
+                  "generos": [
+                    "Rap"
+                  ],
+                  "single": true,
+                  "reproducciones": 76244
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "La La",
+                  "autor": "Bayside",
+                  "duracion": {
+                    "min": 3,
+                    "seg": 47
+                  },
+                  "generos": [
+                    "Metal"
+                  ],
+                  "single": true,
+                  "reproducciones": 77650
+                }
+              }
+            ]
+          },
+          "duracion": {
+            "hor": 0,
+            "min": 24
+          },
+          "generos": [
+            "Pop",
+            "Rock",
+            "Trap",
+            "Country",
+            "Drill",
+            "Jazz",
+            "Rap",
+            "Metal"
+          ],
+          "creador": "SYSTEM"
+        }
+      },
+      {
+        "playlist": {
+          "nombre": "Amor y Odio",
+          "canciones": {
+            "coleccion": [
+              {
+                "cancion": {
+                  "nombre": "Pacific Rim",
+                  "autor": "George Harrison",
+                  "duracion": {
+                    "min": 7,
+                    "seg": 15
+                  },
+                  "generos": [
+                    "Trap"
+                  ],
+                  "single": true,
+                  "reproducciones": 210
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "R.I.C.O.",
+                  "autor": "Paul McCartney",
+                  "duracion": {
+                    "min": 12,
+                    "seg": 0
+                  },
+                  "generos": [
+                    "Drill"
+                  ],
+                  "single": true,
+                  "reproducciones": 990
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Mamon Loco",
+                  "autor": "Queen",
+                  "duracion": {
+                    "min": 1,
+                    "seg": 30
+                  },
+                  "generos": [
+                    "Country"
+                  ],
+                  "single": false,
+                  "reproducciones": 18762
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "The Monkees",
+                  "autor": "Mesita",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 11
+                  },
+                  "generos": [
+                    "Country"
+                  ],
+                  "single": false,
+                  "reproducciones": 98756
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Karate Chop",
+                  "autor": "Duki",
+                  "duracion": {
+                    "min": 1,
+                    "seg": 32
+                  },
+                  "generos": [
+                    "Trap",
+                    "Metal"
+                  ],
+                  "single": false,
+                  "reproducciones": 5460
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Kate",
+                  "autor": "Queen",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 22
+                  },
+                  "generos": [
+                    "Trap"
+                  ],
+                  "single": false,
+                  "reproducciones": 5320
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Starting Over",
+                  "autor": "John Lennon",
+                  "duracion": {
+                    "min": 3,
+                    "seg": 40
+                  },
+                  "generos": [
+                    "Rock"
+                  ],
+                  "single": false,
+                  "reproducciones": 10000
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "U 2 Luv",
+                  "autor": "Paul McCartney",
+                  "duracion": {
+                    "min": 6,
+                    "seg": 30
+                  },
+                  "generos": [
+                    "Rap"
+                  ],
+                  "single": true,
+                  "reproducciones": 11723
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "V.E.N.O.M",
+                  "autor": "Stephen Malkmus",
+                  "duracion": {
+                    "min": 1,
+                    "seg": 23
+                  },
+                  "generos": [
+                    "Flamenco"
+                  ],
+                  "single": true,
+                  "reproducciones": 14567
+                }
+              }
+            ]
+          },
+          "duracion": {
+            "hor": 0,
+            "min": 38
+          },
+          "generos": [
+            "Trap",
+            "Drill",
+            "Country",
+            "Metal",
+            "Rock",
+            "Rap",
+            "Flamenco"
+          ],
+          "creador": "SYSTEM"
+        }
+      },
+      {
+        "playlist": {
+          "nombre": "Los de Socorro",
+          "canciones": {
+            "coleccion": [
+              {
+                "cancion": {
+                  "nombre": "S.A.D",
+                  "autor": "Duki",
+                  "duracion": {
+                    "min": 1,
+                    "seg": 32
+                  },
+                  "generos": [
+                    "Jazz"
+                  ],
+                  "single": false,
+                  "reproducciones": 10
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "U Get Me High",
+                  "autor": "Duki",
+                  "duracion": {
+                    "min": 5,
+                    "seg": 23
+                  },
+                  "generos": [
+                    "Rap"
+                  ],
+                  "single": false,
+                  "reproducciones": 20201
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "La Turra Rica",
+                  "autor": "Pink Floyd",
+                  "duracion": {
+                    "min": 3,
+                    "seg": 33
+                  },
+                  "generos": [
+                    "Drill"
+                  ],
+                  "single": true,
+                  "reproducciones": 555555
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Karate Chop",
+                  "autor": "Duki",
+                  "duracion": {
+                    "min": 1,
+                    "seg": 32
+                  },
+                  "generos": [
+                    "Trap",
+                    "Metal"
+                  ],
+                  "single": false,
+                  "reproducciones": 5460
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "Starting Over",
+                  "autor": "John Lennon",
+                  "duracion": {
+                    "min": 3,
+                    "seg": 40
+                  },
+                  "generos": [
+                    "Rock"
+                  ],
+                  "single": false,
+                  "reproducciones": 10000
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "R.A.F.",
+                  "autor": "Duki",
+                  "duracion": {
+                    "min": 8,
+                    "seg": 11
+                  },
+                  "generos": [
+                    "Drill"
+                  ],
+                  "single": false,
+                  "reproducciones": 2348
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "V-2 Schneider",
+                  "autor": "Gunna",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 30
+                  },
+                  "generos": [
+                    "Flamenco"
+                  ],
+                  "single": false,
+                  "reproducciones": 120000
+                }
+              },
+              {
+                "cancion": {
+                  "nombre": "No Mames Wey",
+                  "autor": "John Lennon",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 15
+                  },
+                  "generos": [
+                    "Country"
+                  ],
+                  "single": false,
+                  "reproducciones": 354978
+                }
+              }
+            ]
+          },
+          "duracion": {
+            "hor": 0,
+            "min": 28
+          },
+          "generos": [
+            "Jazz",
+            "Rap",
+            "Drill",
+            "Trap",
+            "Metal",
+            "Rock",
+            "Flamenco",
+            "Country"
+          ],
+          "creador": "SYSTEM"
         }
       }
     ]

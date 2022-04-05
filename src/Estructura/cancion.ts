@@ -76,5 +76,6 @@ export class PrintCancion {
     console.log(`Generos: ${this.cancion.getGeneros().join(', ')}`);
     console.log(`Single: ${this.cancion.getSingle()}`);
     console.log(`Reproducciones: ${this.cancion.getReproducciones()}`);
+    console.log("////////////////////\n\n");
   }
 }

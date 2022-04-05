@@ -6,18 +6,18 @@ type albumType = {
   autor: string,
   fechaPublicacion: number,
   generos: string[],
-  canciones: Coleccion<Cancion>
+  canciones: Coleccion<Cancion>,
 }
 
 export class Album {
   public album: albumType = {nombre: "", autor: "", fechaPublicacion: 0, generos: [], canciones: new Coleccion<Cancion>()};
-  constructor(album: albumType, pruebas: boolean = true) {
+  constructor(album: albumType, memoria: boolean = true) {
     this.album.nombre = album.nombre;
     this.album.autor = album.autor;
     this.album.fechaPublicacion = album.fechaPublicacion;
     this.album.generos = album.generos;
 
-    if (pruebas) {
+    if (memoria) {
       this.comprobarCanciones(album.canciones);
     }
   }
@@ -83,6 +83,7 @@ export class Album {
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.album.canciones = canciones;
   }
+
   calcularReproduccionesTotales(): number {
     let total = 0;
     [...this.album.canciones].forEach((cancion) => {
@@ -100,10 +101,15 @@ export class PrintAlbum {
   constructor(private album: Album) {}
 
   print(): void {
+    let result = "";
+    [...this.album.getCanciones()].forEach((cancion) => {
+      result += cancion.getNombre() + "," + " ";
+    });
     console.log(`Nombre: ${this.album.getNombre()}`);
     console.log(`Autor: ${this.album.getAutor()}`);
     console.log(`Fecha Publicación: ${this.album.getFechaPublicacion()}`);
     console.log(`Generos: ${this.album.getGeneros().join(', ')}`);
-    console.log(`Canciones: ${[...this.album.getCanciones()].join(', ')}`);
+    console.log(`Canciones: ${result}`);
+    console.log("////////////////////\n\n");  
   }
 }

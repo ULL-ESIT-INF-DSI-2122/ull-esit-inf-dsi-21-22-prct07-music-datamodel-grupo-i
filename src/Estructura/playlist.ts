@@ -6,6 +6,7 @@ type playlistType = {
   canciones: Coleccion<Cancion>,
   duracion: duracionHorMinType,
   generos: string[],
+  creador: string
 }
 
 type duracionHorMinType = {
@@ -14,11 +15,14 @@ type duracionHorMinType = {
 }
 
 export class PlayList {
-  constructor(private playlist: playlistType) {
+  constructor(public playlist: playlistType, memoria: boolean = true ) {
     this.playlist.duracion.hor = 0;
     this.playlist.duracion.min = 0;
-    this.incluirGeneros(playlist.canciones);
-    this.calcularDuracion(playlist.canciones);
+
+    if (memoria) {
+      this.incluirGeneros(playlist.canciones);
+      this.calcularDuracion(playlist.canciones);
+    }
   }
 
   private incluirGeneros(canciones: Coleccion<Cancion>): void {
