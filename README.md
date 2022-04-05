@@ -5,5 +5,4 @@
 * José Antonio Trujillo Mendoza | alu0101059037@ull.edu.es 
 * Javier Mendoza López          | alu0101320779@ull.edu.es 
 
-En esta práctica se hará un modelo de datos de un sistema de información que permite almacenar una biblioteca musicalTarea
-
+En esta práctica se hará un modelo de datos de un sistema de información que permite almacenar una biblioteca musical.
