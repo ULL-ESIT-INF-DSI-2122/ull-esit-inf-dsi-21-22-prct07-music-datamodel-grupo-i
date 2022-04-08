@@ -15,13 +15,17 @@ type duracionHorMinType = {
 }
 
 export class PlayList {
-  constructor(public playlist: playlistType, memoria: boolean = true ) {
-    this.playlist.duracion.hor = 0;
-    this.playlist.duracion.min = 0;
+  public playlist: playlistType = {nombre: "", canciones: new Coleccion(), duracion: {hor: 0, min: 0}, generos: [], creador: ""};
+  constructor(playlist: playlistType, memoria: boolean = true ) {
+    this.playlist.nombre = playlist.nombre;
+    this.playlist.creador = playlist.creador;
+    this.playlist.duracion = playlist.duracion;
+    this.playlist.generos = playlist.generos;
 
     if (memoria) {
       this.incluirGeneros(playlist.canciones);
       this.calcularDuracion(playlist.canciones);
+      this.playlist.canciones = playlist.canciones;
     }
   }
 
@@ -46,11 +50,6 @@ export class PlayList {
     min += seg / 60 >> 0;
     this.playlist.duracion.hor += min / 60 >> 0;
     this.playlist.duracion.min += min % 60;
-
-    if (this.playlist.duracion.min > 59) {
-      this.playlist.duracion.hor += this.playlist.duracion.min / 60 >> 0;
-      this.playlist.duracion.min %= 60;
-    }
   }
 
   getNombre(): string {

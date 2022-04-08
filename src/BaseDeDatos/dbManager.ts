@@ -19,7 +19,7 @@ type schemaType = {
 export class JsonDataBase {
   private database: lowdb.LowdbSync<schemaType>;
 
-  constructor(private interfaz: Interfaz, private estructura: Coleccion<GenerosMusicales>, private playList: Coleccion<PlayList>) {
+  constructor(private estructura: Coleccion<GenerosMusicales>, private playList: Coleccion<PlayList>) {
     this.database = lowdb(new FileSync('src/BaseDeDatos/DataBase.json'));
     if (this.database.has('estructura').value()) {      
       const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
@@ -93,10 +93,8 @@ export class JsonDataBase {
         contadorGenero++;
       });
       this.estructura = aux;
-      interfaz.setGeneros(this.estructura);
     } else {
       this.database.set('estructura', this.estructura).write();
-      interfaz.setGeneros(this.estructura);
     }
     if (this.database.has('playList').value()) {
       const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
@@ -116,15 +114,21 @@ export class JsonDataBase {
         contadorPlayList++;
       });
       this.playList = aux;
-      interfaz.setDataGestor(this.playList);
     } else {
       this.database.set('playList', playList).write();
-      interfaz.setDataGestor(this.playList);
     }
   }
 
   almacenarInformacion() {
     this.database.set('estructura', this.estructura).write();
     this.database.set('playList', this.playList).write();
+  }
+
+  getEstructura(): Coleccion<GenerosMusicales> {
+    return this.estructura;
+  }
+  
+  getPlayList(): Coleccion<PlayList> {
+    return this.playList;
   }
 }

@@ -1,12 +1,13 @@
 import {Coleccion} from "./coleccionGenerica";
-import {GenerosMusicales, PrintGenerosMusicales} from "./generosMusicales";
+import {GenerosMusicales} from "./generosMusicales";
 import inquirer from 'inquirer';
 import {PrintCancion, Cancion} from "./cancion";
 import {PrintAlbum, Album} from "./album";
-import {PrintArtista, Artista} from "./artistas";
-import {PrintPlayList, PlayList} from "./playlist";
-import {PrintGrupo, Grupo} from "./grupo";
+import {Artista} from "./artistas";
+import {PrintPlayList} from "./playlist";
+import {Grupo} from "./grupo";
 import {Gestor} from "./gestor";
+import {JsonDataBase} from "../BaseDeDatos/dbManager";
 
 const inquirerPrompt = require('inquirer-autocomplete-prompt');
 const fuzzy = require('fuzzy');
@@ -36,11 +37,18 @@ export class Interfaz {
   private searchGeneros: string[];
   private generos: Coleccion<GenerosMusicales>;
   private gestor: Gestor = Gestor.getGestorInstance();
-  private constructor() { }
+  private constructor(private dataBase: JsonDataBase) {
+    this.generos = this.dataBase.getEstructura();
+    this.actualizarSearchArtistasGrupos();
+    this.actualizarSearchAlbumes();
+    this.actualizarSearchCanciones();
 
-  public static getInterfazInstance(): Interfaz {
+    this.gestor.setPlayList(this.dataBase.getPlayList());
+  }
+
+  public static getInterfazInstance(datos: JsonDataBase): Interfaz {
     if (!Interfaz.interfaz) {
-      Interfaz.interfaz = new Interfaz();
+      Interfaz.interfaz = new Interfaz(datos);
     }
     return Interfaz.interfaz;
   }
@@ -128,17 +136,6 @@ export class Interfaz {
     return this.generos;
   }
 
-  setGeneros(generos: Coleccion<GenerosMusicales>): void {
-    this.generos = generos;
-    this.actualizarSearchArtistasGrupos();
-    this.actualizarSearchAlbumes();
-    this.actualizarSearchCanciones();
-  }
-
-  setDataGestor(playList: Coleccion<PlayList>): void {
-    this.gestor.setPlayList(playList);
-  }
-
   run(): void {
     console.clear();
     inquirer.prompt([{
@@ -155,6 +152,7 @@ export class Interfaz {
           this.visualizarLista();
           break;
         case "Salir":
+          this.dataBase.almacenarInformacion();
           break;
       }
     });
@@ -909,7 +907,7 @@ export class Interfaz {
           this.visualizarCanciones(answers["autor"]);
           break;
         case "Playlists":
-          this.visualizarPlaylist(answers["comando"]);
+          this.visualizarPlaylist(answers["autor"]);
           break;
         case "Salir":
           this.run();
@@ -922,9 +920,11 @@ export class Interfaz {
     inquirer.prompt([{
       type: "confirm",
       name: "confirmacion",
-      message: "¿Está seguro que desea salir?",
+      message: "¿Desea seguir filtrando o no?",
     }]).then((answers) => {
       if (answers["confirmacion"]) {
+        this.visualizarLista();
+      } else {
         this.run();
       }
     });
@@ -945,7 +945,7 @@ export class Interfaz {
           this.filtradoTiTulo(opcion, visualizarEnum.canciones);
           break;
         case "Single":
-          this.filtradoSingle(opcion);
+          this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.single));
           break;
         case "Reproducciones":
           this.filtradoReproducciones(opcion);
@@ -1044,36 +1044,6 @@ export class Interfaz {
     });
   }
 
-  // Revisado
-  filtradoSingle(opcion: string): void {
-    console.clear();
-    inquirer.prompt([{
-      type: "list",
-      name: "filtroSingle",
-      message: "Eliga una opción:",
-      choices: ["SI", "NO", "Salir"],
-      default: "SI",
-    }]).then((answers) => {
-      let aux: string[] = [];
-      switch (answers["filtroSingle"]) {
-        case "SI":
-          aux = this.filtrosCanciones(opcion, filterType.single);
-          if (aux.length === 0) {
-            console.log("No hay canciones con este filtro");
-          } else {
-            this.imprimirCanciones(aux);
-          }
-          break;
-        case "NO":
-          this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.titulo));
-          break;
-        case "Salir":
-          this.visualizarLista();
-          break;
-      }
-    });
-  }
-
   // Revisado.
   filtradoReproducciones(opcion: string): void {
     console.clear();
@@ -1153,7 +1123,7 @@ export class Interfaz {
             });
           });
         });
-        this.imprimirAlbumes([...new Set(nombre)]);
+        this.imprimirPlaylist([...new Set(nombre)]);
       } else {
         this.visualizarLista();
       }
@@ -1178,12 +1148,30 @@ export class Interfaz {
         }
       });
     });
+    if (value === filterType.reproducciones) {
+      return this.ordenar([...new Set(aux)]);
+    } else {
+      return [...new Set(aux)].sort();
+    }
+  }
 
-    return [...new Set(aux)].sort();
+  ordenar(numeros: string[]): string[] {
+    let aux: string;
+    for (let i = 0; i < numeros.length; i++) {
+      for (let j = i + 1; j < numeros.length; j++) {
+        if (Number(numeros[i]) > Number(numeros[j])) {
+          aux = numeros[i];
+          numeros[i] = numeros[j];
+          numeros[j] = aux;
+        }
+      }
+    }
+    
+    return numeros;
   }
 
   // Revisado
-  filtrosAlbumes(opcion:string, value: number): any[] {  
+  filtrosAlbumes(opcion:string, value: number): string[] {  
     const aux: string[] = [];
     [...this.generos].forEach((genero) => {
       [...genero.getAlbumes()].forEach((album) => {
@@ -1200,12 +1188,15 @@ export class Interfaz {
         }
       });
     });
-
-    return [...new Set(aux)].sort();
+    if (value !== filterType.titulo) {
+      return this.ordenar([...new Set(aux)]);
+    } else {
+      return [...new Set(aux)].sort();
+    }
   }
 
-  // Revisado
-  filtrosPlayList(opcion:string, value: number): any[] {  
+
+  filtrosPlayList(opcion:string, value: number): string[] {  
     const aux: string[] = [];
     [...this.gestor.getPlayList()].forEach((play) => {
       [...play.getCanciones()].forEach((cancion) => {
@@ -1219,11 +1210,13 @@ export class Interfaz {
         }
       });
     });
-
-    return [...new Set(aux)].sort();
+    if (value === filterType.reproducciones) {
+      return this.ordenar([...new Set(aux)]);
+    } else {
+      return [...new Set(aux)].sort();
+    }
   }
 
-  // Revisado.
   fechaPublicacion(opcion: any): void {
     console.clear();
     inquirer.prompt([{
@@ -1258,22 +1251,26 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   imprimirCanciones(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
-    aux.forEach((cancion) => {
-      [...this.generos].forEach((genero) => {
-        [...genero.getCanciones()].forEach((cancionGenero) => {
-          if (cancion === cancionGenero.getNombre() && !primeraVez) {
-            print = new PrintCancion(cancionGenero);
-            print.print();
-            primeraVez = true;
-          }
+    if (aux.length === 0) {
+      console.log("No hay canciones disponibles con los requisitos especificados");
+    } else {
+      aux.forEach((cancion) => {
+        [...this.generos].forEach((genero) => {
+          [...genero.getCanciones()].forEach((cancionGenero) => {
+            if (cancion === cancionGenero.getNombre() && !primeraVez) {
+              print = new PrintCancion(cancionGenero);
+              print.print();
+              primeraVez = true;
+            }
+          });
         });
+        primeraVez = false;
       });
-      primeraVez = false;
-    });
+    }
     this.visualizarSalir();
   }
 
@@ -1281,18 +1278,22 @@ export class Interfaz {
   imprimirAlbumes(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
-    aux.forEach((cancion) => {
-      [...this.generos].forEach((genero) => {
-        [...genero.getAlbumes()].forEach((albumGenero) => {
-          if (cancion === albumGenero.getNombre() && !primeraVez) {
-            print = new PrintAlbum(albumGenero);
-            primeraVez = true;
-            print.print();
-          }
+    if (aux.length === 0) {
+      console.log("No hay albumes disponibles con los requisitos especificados");
+    } else {
+      aux.forEach((cancion) => {
+        [...this.generos].forEach((genero) => {
+          [...genero.getAlbumes()].forEach((albumGenero) => {
+            if (cancion === albumGenero.getNombre() && !primeraVez) {
+              print = new PrintAlbum(albumGenero);
+              primeraVez = true;
+              print.print();
+            }
+          });
         });
+        primeraVez = false;
       });
-      primeraVez = false;
-    });
+    }
     this.visualizarSalir();
   }
 
@@ -1300,16 +1301,20 @@ export class Interfaz {
   imprimirPlaylist(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
-    aux.forEach((elemento) => {
-      [...this.gestor.getPlayList()].forEach((playlist) => {
-        if (elemento === playlist.getNombre() && !primeraVez) {
-          print = new PrintPlayList(playlist);
-          primeraVez = true;
-          print.print();
-        }
+    if (aux.length === 0) {
+      console.log("No hay playlists disponibles con los requisitos especificados");
+    } else {
+      aux.forEach((elemento) => {
+        [...this.gestor.getPlayList()].forEach((playlist) => {
+          if (elemento === playlist.getNombre() && !primeraVez) {
+            print = new PrintPlayList(playlist);
+            primeraVez = true;
+            print.print();
+          }
+        });
+        primeraVez = false;
       });
-      primeraVez = false;
-    });
+    }
     this.visualizarSalir();
   }
 }
