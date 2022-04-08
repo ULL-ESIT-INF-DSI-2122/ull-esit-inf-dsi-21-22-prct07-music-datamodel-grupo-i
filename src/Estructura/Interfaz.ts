@@ -23,7 +23,6 @@ enum filterType {
     titulo,
     single,
     reproducciones,
-    reproduccionesTotales,
     fechaPublicacion,
 }
 
@@ -887,27 +886,27 @@ export class Interfaz {
     });
   }
   
-  // Elegir Artista o Grupo
+  // Revisado
   visualizarLista(): void {
     console.clear();
     inquirer.prompt([{  
       type: "autocomplete",
-      name: "comando",
-      message: "¿Que Artistas|Grupos desea visualizar?",
+      name: "autor",
+      message: "¿Qué Artistas o Grupos desea visualizar?",
       source: (answersSoFar: any, input: string) => this.searchStates([...this.searchArtistas, ...this.searchGrupos], input),
     }, 
     {
       type: "list",
       name: "opcion",
-      message: "Que desea ver respecto a ...",
+      message: "¿Qué desea ver del autor seleccionado?",
       choices: ["Albumes", "Canciones", "Playlists", "Salir"],
     }]).then((answers) => {
       switch (answers["opcion"]) {
         case "Albumes":
-          this.visualizarAlbumes(answers["comando"]);
+          this.visualizarAlbumes(answers["autor"]);
           break;
         case "Canciones":
-          this.visualizarCanciones(answers["comando"]);
+          this.visualizarCanciones(answers["autor"]);
           break;
         case "Playlists":
           this.visualizarPlaylist(answers["comando"]);
@@ -919,24 +918,37 @@ export class Interfaz {
     });
   }
 
+  visualizarSalir(): void {
+    inquirer.prompt([{
+      type: "confirm",
+      name: "confirmacion",
+      message: "¿Está seguro que desea salir?",
+    }]).then((answers) => {
+      if (answers["confirmacion"]) {
+        this.run();
+      }
+    });
+  }
+
+  // Revisado
   visualizarCanciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "opciondeFiltrado",
-      message: "Que filtro quiere aplicar",
-      choices: ["Titulo", "Single", "Reproducciones", "Salir"],
+      message: "¿Qué filtro quiere aplicar?",
+      choices: ["Título", "Single", "Reproducciones", "Salir"],
       default: "Titulo",
     }]).then((answers) => {
       switch (answers["opciondeFiltrado"]) {
-        case "Titulo":
+        case "Título":
           this.filtradoTiTulo(opcion, visualizarEnum.canciones);
           break;
         case "Single":
-          this.filtradoSingle(opcion, visualizarEnum.canciones);
+          this.filtradoSingle(opcion);
           break;
         case "Reproducciones":
-          this.filtradoReproducciones(opcion, visualizarEnum.canciones);
+          this.filtradoReproducciones(opcion);
           break;
         case "Salir":
           this.visualizarLista();
@@ -945,12 +957,13 @@ export class Interfaz {
     });
   }
 
+  // Revisado
   visualizarAlbumes(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "opciondeFiltrado",
-      message: "Que filtro quiere aplicar",
+      message: "¿Qué filtro quiere aplicar?",
       choices: ["Titulo", "Año Lanzamiento", "Reproducciones Totales", "Salir"],
       default: "Titulo",
     }]).then((answers) => {
@@ -959,7 +972,7 @@ export class Interfaz {
           this.filtradoTiTulo(opcion, visualizarEnum.albumes);
           break;
         case "Año Lanzamiento":
-          this.fechaPublicacion(opcion, visualizarEnum.albumes);
+          this.fechaPublicacion(opcion);
           break;
         case "Reproducciones Totales":
           this.filtradoReproduccionesTotales(opcion, visualizarEnum.albumes);
@@ -971,12 +984,13 @@ export class Interfaz {
     });
   }
 
+  // Revisado
   visualizarPlaylist(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "opciondeFiltrado",
-      message: "Que filtro quiere aplicar",
+      message: "¿Qué filtro quiere aplicar?",
       choices: ["Titulo", "Reproducciones Totales", "Salir"],
       default: "Titulo",
     }]).then((answers) => {
@@ -994,34 +1008,33 @@ export class Interfaz {
     });
   }
 
+  // Revisado
   filtradoTiTulo(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "filtroTitulo",
-      message: "Eliga Una Opción",
+      message: "Eliga una opción:",
       choices: ["ASC", "DESC", "Salir"],
       default: "ASC",
     }]).then((answers) => {
       switch (answers["filtroTitulo"]) {
         case "ASC":
           if (tipo === visualizarEnum.canciones) {
-            console.log("Estamos entrando en filtro Canciones");
             this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.titulo));
-          }
-          if (tipo === visualizarEnum.albumes) {
+          } else if (tipo === visualizarEnum.albumes) {
             this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.titulo));
-          }
-          if (tipo === visualizarEnum.playList) {
-            // this.imprimirPlaylist(this.filtrosPlaylist(opcion, filterType.titulo).sort());
+          } else if (tipo === visualizarEnum.playList) {
+            this.imprimirPlaylist(this.filtrosPlayList(opcion, filterType.titulo));
           }
           break;
         case "DESC":
           if (tipo === visualizarEnum.canciones) {
             this.imprimirCanciones(this.filtrosCanciones(opcion, filterType.titulo).reverse());
-          }
-          if (tipo === visualizarEnum.albumes) {
+          } else if (tipo === visualizarEnum.albumes) {
             this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.titulo).reverse());
+          } else if (tipo === visualizarEnum.playList) {
+            this.imprimirPlaylist(this.filtrosPlayList(opcion, filterType.titulo).reverse());
           }
           break;
         case "Salir":
@@ -1031,16 +1044,17 @@ export class Interfaz {
     });
   }
 
-  filtradoSingle(opcion: string, tipo: number): void {
+  // Revisado
+  filtradoSingle(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "filtroSingle",
-      message: "Eliga Una Opción",
+      message: "Eliga una opción:",
       choices: ["SI", "NO", "Salir"],
       default: "SI",
     }]).then((answers) => {
-      let aux: any[] = [];
+      let aux: string[] = [];
       switch (answers["filtroSingle"]) {
         case "SI":
           aux = this.filtrosCanciones(opcion, filterType.single);
@@ -1060,164 +1074,93 @@ export class Interfaz {
     });
   }
 
-  filtradoReproducciones(opcion: string, tipo:number): void {
+  // Revisado.
+  filtradoReproducciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "filtroReproduciones",
-      message: "Eliga Una Opción",
+      message: "Eliga una opción:",
       choices: ["ASC", "DESC", "Salir"],
       default: "ASC",
     }]).then((answers) => {
       let reproducciones: string[] = [];
       const nombre: string[] = [];
-      let primeraVez: boolean = false;
-      if (answers["filtroReproduciones"] === "ASC") {
-        reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones);
-      } else {
-        reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones).reverse();
-      }
-      [...reproducciones].forEach((element) => {
-        [...this.generos].forEach((genero) => {
-          [...genero.getCanciones()].forEach((cancion) => {
-            if (cancion.getAutor() === opcion && cancion.getReproducciones() === +element && !primeraVez) {
-              nombre.push(cancion.getNombre());
-              primeraVez = true;
-            }
+
+      if (answers["filtroReproduciones"] !== "Salir") {
+        if (answers["filtroReproduciones"] === "ASC") {
+          reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones);
+        } else {
+          reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones).reverse();
+        }
+        [...reproducciones].forEach((element) => {
+          [...this.generos].forEach((genero) => {
+            [...genero.getCanciones()].forEach((cancion) => {
+              if (cancion.getAutor() === opcion && cancion.getReproducciones() === +element) {
+                nombre.push(cancion.getNombre());
+              }
+            });
           });
         });
-        primeraVez = false;
-      });
-      this.imprimirCanciones(nombre);
+        this.imprimirCanciones([...new Set(nombre)]);
+      } else {
+        this.visualizarLista();
+      }
     });
   }
-  // JOSEPH QUEDA POR HACER EL FILTRO REPRODUCCIONES TOTALES
-  filtradoReproduccionesTotales(opcion: any, tipo:number): void {
+
+  // Revisado
+  filtradoReproduccionesTotales(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "filtroReproducionesTotales",
-      message: "Eliga Una Opción",
+      message: "Eliga una opción:",
       choices: ["ASC", "DESC", "Salir"],
       default: "ASC",
     }]).then((answers) => {
-      switch (answers["filtroReproducionesTotales"]) {
-        case visualizarEnum.albumes:
-          if (tipo === visualizarEnum.albumes) {
-            console.log(this.filtrosAlbumes(opcion, filterType.reproduccionesTotales).sort());
-            this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.reproduccionesTotales).sort());
-          }
-          if (tipo === visualizarEnum.playList) {
-            // this.imprimirPlaylist(this.filtrosPlaylist(opcion, filterType.reproduccionesTotales).sort());
-          }
-          inquirer.prompt([{
-            message: "Desea volver a la lista principal?",
-            type: "confirm",
-            name: "confirmar",
-            default: true,
-          }]).then((answers) => {
-            if (answers["confirmar"]) {
-              this.visualizarLista();
-            }
-          });
-          console.log("HOLAAAAAAAAAAAAA");
-          break;
-        case "DESC":
-          if (tipo === visualizarEnum.albumes) {
-            this.imprimirAlbumes(this.filtrosAlbumes(opcion, filterType.reproduccionesTotales).sort().reverse());
-          }
-          if (tipo === visualizarEnum.playList) {
-            // this.imprimirPlaylist(this.filtrosPlaylist(opcion, filterType.reproduccionesTotales).sort().reverse());
-          }
-          break;
-        case "Salir":
-          this.visualizarLista();
-          break;
-      }
-    });
-  }
-
-  fechaPublicacion(opcion: any, tipo:number): void {
-    console.clear();
-    inquirer.prompt([{
-      type: "list",
-      name: "fechaPublicacion",
-      message: "Eliga Una Opción",
-      choices: ["ASC", "DESC", "Salir"],
-      default: "ASC",
-    }]).then((answers) => {
-      let publicaciones: string[] = [];
+      let reproducciones: string[] = [];
       const nombre: string[] = [];
-      let primeraVez: boolean = false;
-      if (answers["fechaPublicacion"] === "ASC") {
-        publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion);
-      } else {
-        publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion).reverse();
+
+      if (answers["filtroReproducionesTotales"] === "ASC" && tipo === visualizarEnum.albumes) {
+        reproducciones = this.filtrosAlbumes(opcion, filterType.reproducciones);
+      } else if (answers["filtroReproducionesTotales"] === "DESC" && tipo === visualizarEnum.albumes) {
+        reproducciones = this.filtrosAlbumes(opcion, filterType.reproducciones).reverse();
+      } else if (answers["filtroReproducionesTotales"] === "ASC" && tipo === visualizarEnum.playList) {
+        reproducciones = this.filtrosPlayList(opcion, filterType.reproducciones);
+      } else if (answers["filtroReproducionesTotales"] === "DESC" && tipo === visualizarEnum.playList) {
+        reproducciones = this.filtrosPlayList(opcion, filterType.reproducciones).reverse();
       }
-      [...publicaciones].forEach((element) => {
-        [...this.generos].forEach((genero) => {
-          [...genero.getAlbumes()].forEach((album) => {
-            if (album.getAutor() === opcion && album.getFechaPublicacion() === +element && !primeraVez) {
-              nombre.push(album.getNombre());
-              primeraVez = true;
-            }
+
+      if (answers["filtroReproducionesTotales"] !== "Salir" && tipo === visualizarEnum.albumes) {
+        [...reproducciones].forEach((element) => {
+          [...this.generos].forEach((genero) => {
+            [...genero.getAlbumes()].forEach((album) => {
+              if (album.getAutor() === opcion && album.calcularReproduccionesTotales() === +element) {
+                nombre.push(album.getNombre());
+              }
+            });
           });
         });
-        primeraVez = false;
-      });
-      this.imprimirAlbumes(nombre);
-    });
-  }
-
-  imprimirCanciones(aux: string[]): void {
-    let print;
-    let primeraVez: boolean = false;
-    aux.forEach((cancion) => {
-      [...this.generos].forEach((genero) => {
-        [...genero.getCanciones()].forEach((cancionGenero) => {
-          if (cancion === cancionGenero.getNombre() && !primeraVez) {
-            print = new PrintCancion(cancionGenero);
-            print.print();
-            primeraVez = true;
-          }
+        this.imprimirAlbumes([...new Set(nombre)]);
+      } else if (answers["filtroReproducionesTotales"] !== "Salir" && tipo === visualizarEnum.playList) {
+        [...reproducciones].forEach((element) => {
+          [...this.gestor.getPlayList()].forEach((play) => {
+            [...play.getCanciones()].forEach((cancion) => {
+              if (cancion.getAutor() === opcion && play.calcularReproduccionesTotales() === +element) {
+                nombre.push(play.getNombre());
+              }
+            });
+          });
         });
-      });
-      primeraVez = false;
+        this.imprimirAlbumes([...new Set(nombre)]);
+      } else {
+        this.visualizarLista();
+      }
     });
   }
 
-  imprimirAlbumes(aux: string[]): void {
-    let print;
-    let primeraVez: boolean = false;
-    aux.forEach((cancion) => {
-      [...this.generos].forEach((genero) => {
-        [...genero.getAlbumes()].forEach((albumGenero) => {
-          if (cancion === albumGenero.getNombre() && !primeraVez) {
-            print = new PrintAlbum(albumGenero);
-            primeraVez = true;
-            print.print();
-          }
-        });
-      });
-      primeraVez = false;
-    });
-  }
-
-  imprimirPlaylist(aux: string[]): void {
-    let print;
-    let primeraVez: boolean = false;
-    aux.forEach((elemento) => {
-      [...this.gestor.getPlayList()].forEach((playlist) => {
-        if (elemento === playlist.getNombre() && !primeraVez) {
-          print = new PrintPlayList(playlist);
-          primeraVez = true;
-          print.print();
-        }
-      });
-      primeraVez = false;
-    });
-  }
-
+  // Revisado
   filtrosCanciones(opcion: string, value: number): string[] {
     const aux: string[] = [];
     [...this.generos].forEach((genero) => {
@@ -1235,14 +1178,13 @@ export class Interfaz {
         }
       });
     });
-    if (value === filterType.reproducciones) {
-      aux.sort();
-    }
-    return [...new Set(aux)].sort(); // Sale Ordenado
+
+    return [...new Set(aux)].sort();
   }
 
+  // Revisado
   filtrosAlbumes(opcion:string, value: number): any[] {  
-    let aux: any[] = [];
+    const aux: string[] = [];
     [...this.generos].forEach((genero) => {
       [...genero.getAlbumes()].forEach((album) => {
         if (album.getAutor() === opcion) {
@@ -1250,19 +1192,124 @@ export class Interfaz {
             aux.push(album.getNombre());
           }
           if (value === filterType.fechaPublicacion) {
-            aux.push(album.getFechaPublicacion());
+            aux.push(String(album.getFechaPublicacion()));
           }
-          if (value === filterType.reproduccionesTotales) {
-            aux.push(album.calcularReproduccionesTotales());
+          if (value === filterType.reproducciones) {
+            aux.push(String(album.calcularReproduccionesTotales()));
           }
         }
       });
     });
-    if (value === filterType.fechaPublicacion || value === filterType.reproduccionesTotales) {
-      aux = aux.sort((a, b) => {
-        return b[1] - a[1];
+
+    return [...new Set(aux)].sort();
+  }
+
+  // Revisado
+  filtrosPlayList(opcion:string, value: number): any[] {  
+    const aux: string[] = [];
+    [...this.gestor.getPlayList()].forEach((play) => {
+      [...play.getCanciones()].forEach((cancion) => {
+        if (cancion.getAutor() === opcion) {
+          if (value === filterType.titulo) {
+            aux.push(play.getNombre());
+          }
+          if (value === filterType.reproducciones) {
+            aux.push(String(play.calcularReproduccionesTotales()));
+          }
+        }
       });
-    }
-    return [...new Set(aux)].sort(); // Sale Ordenado
+    });
+
+    return [...new Set(aux)].sort();
+  }
+
+  // Revisado.
+  fechaPublicacion(opcion: any): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "fechaPublicacion",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+      default: "ASC",
+    }]).then((answers) => {
+      let publicaciones: string[] = [];
+      const nombre: string[] = [];
+
+      if (answers["fechaPublicacion"] !== "Salir") {
+        if (answers["fechaPublicacion"] === "ASC") {
+          publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion);
+        } else {
+          publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion).reverse();
+        }
+        [...publicaciones].forEach((element) => {
+          [...this.generos].forEach((genero) => {
+            [...genero.getAlbumes()].forEach((album) => {
+              if (album.getAutor() === opcion && album.getFechaPublicacion() === +element) {
+                nombre.push(album.getNombre());
+              }
+            });
+          });
+        });
+        this.imprimirAlbumes([...new Set(nombre)]);
+      } else {
+        this.visualizarLista();
+      }
+    });
+  }
+
+  // Revisado
+  imprimirCanciones(aux: string[]): void {
+    let print;
+    let primeraVez: boolean = false;
+    aux.forEach((cancion) => {
+      [...this.generos].forEach((genero) => {
+        [...genero.getCanciones()].forEach((cancionGenero) => {
+          if (cancion === cancionGenero.getNombre() && !primeraVez) {
+            print = new PrintCancion(cancionGenero);
+            print.print();
+            primeraVez = true;
+          }
+        });
+      });
+      primeraVez = false;
+    });
+    this.visualizarSalir();
+  }
+
+  // Revisado
+  imprimirAlbumes(aux: string[]): void {
+    let print;
+    let primeraVez: boolean = false;
+    aux.forEach((cancion) => {
+      [...this.generos].forEach((genero) => {
+        [...genero.getAlbumes()].forEach((albumGenero) => {
+          if (cancion === albumGenero.getNombre() && !primeraVez) {
+            print = new PrintAlbum(albumGenero);
+            primeraVez = true;
+            print.print();
+          }
+        });
+      });
+      primeraVez = false;
+    });
+    this.visualizarSalir();
+  }
+
+  // Revisado.
+  imprimirPlaylist(aux: string[]): void {
+    let print;
+    let primeraVez: boolean = false;
+    aux.forEach((elemento) => {
+      [...this.gestor.getPlayList()].forEach((playlist) => {
+        if (elemento === playlist.getNombre() && !primeraVez) {
+          print = new PrintPlayList(playlist);
+          primeraVez = true;
+          print.print();
+        }
+      });
+      primeraVez = false;
+    });
+    this.visualizarSalir();
   }
 }

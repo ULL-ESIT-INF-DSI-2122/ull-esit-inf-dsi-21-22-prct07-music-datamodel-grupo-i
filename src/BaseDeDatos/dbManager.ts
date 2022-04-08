@@ -3,7 +3,6 @@ import FileSync from 'lowdb/adapters/FileSync';
 import {PlayList} from "../Estructura/playlist";
 import {GenerosMusicales} from "../Estructura/generosMusicales";
 import {Coleccion} from "../Estructura/coleccionGenerica"; 
-import * as Data from "./dataBase";
 import {Interfaz} from '../Estructura/Interfaz';
 import {Artista} from '../Estructura/artistas';
 import {Grupo} from '../Estructura/grupo';
@@ -20,7 +19,7 @@ type schemaType = {
 export class JsonDataBase {
   private database: lowdb.LowdbSync<schemaType>;
 
-  constructor(private interfaz: Interfaz, estructura: Coleccion<GenerosMusicales>, playList: Coleccion<PlayList>) {
+  constructor(private interfaz: Interfaz, private estructura: Coleccion<GenerosMusicales>, private playList: Coleccion<PlayList>) {
     this.database = lowdb(new FileSync('src/BaseDeDatos/DataBase.json'));
     if (this.database.has('estructura').value()) {      
       const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
@@ -93,10 +92,11 @@ export class JsonDataBase {
         aux.changeElemento(genero, contadorGenero);
         contadorGenero++;
       });
-      interfaz.setGeneros(aux);
+      this.estructura = aux;
+      interfaz.setGeneros(this.estructura);
     } else {
-      this.database.set('estructura', estructura).write();
-      interfaz.setGeneros(estructura);
+      this.database.set('estructura', this.estructura).write();
+      interfaz.setGeneros(this.estructura);
     }
     if (this.database.has('playList').value()) {
       const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
@@ -115,10 +115,16 @@ export class JsonDataBase {
         aux.changeElemento(playlist, contadorPlayList);
         contadorPlayList++;
       });
-      interfaz.setDataGestor(aux);
+      this.playList = aux;
+      interfaz.setDataGestor(this.playList);
     } else {
       this.database.set('playList', playList).write();
-      interfaz.setDataGestor(playList);
+      interfaz.setDataGestor(this.playList);
     }
+  }
+
+  almacenarInformacion() {
+    this.database.set('estructura', this.estructura).write();
+    this.database.set('playList', this.playList).write();
   }
 }

@@ -84,6 +84,14 @@ export class PlayList {
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.playlist.canciones = canciones;
   }
+
+  calcularReproduccionesTotales(): number {
+    let total = 0;
+    [...this.playlist.canciones].forEach((cancion) => {
+      total += cancion.getReproducciones();
+    });
+    return total;
+  }
 }
 
 
@@ -91,8 +99,12 @@ export class PrintPlayList {
   constructor(private playlist: PlayList) {}
 
   print(): void {
+    let result = "";
+    [...this.playlist.getCanciones()].forEach((cancion) => {
+      result += cancion.getNombre() + "," + " ";
+    });
     console.log(`Nombre: ${this.playlist.getNombre()}`);
-    console.log(`Canciones: ${[...this.playlist.getCanciones()].join(', ')}`);
+    console.log(`Canciones: ${result}`);
     console.log(`Duración: ${this.playlist.getDuracion().hor}h ${this.playlist.getDuracion().min}min`);
     console.log(`Generos: ${this.playlist.getGeneros().join(', ')}`);
   }
