@@ -4,15 +4,14 @@ import inquirer from 'inquirer';
 import {PrintCancion, Cancion} from "./cancion";
 import {PrintAlbum, Album} from "./album";
 import {Artista} from "./artistas";
-import {PrintPlayList} from "./playlist";
+import {PlayList, PrintPlayList} from "./playlist";
 import {Grupo} from "./grupo";
-import {Gestor} from "./gestor";
 import {JsonDataBase} from "../BaseDeDatos/dbManager";
 
 const inquirerPrompt = require('inquirer-autocomplete-prompt');
 const fuzzy = require('fuzzy');
-
 inquirer.registerPrompt('autocomplete', inquirerPrompt);
+
 
 enum visualizarEnum {
     canciones,
@@ -20,30 +19,47 @@ enum visualizarEnum {
     playList,
 }
 
+
 enum filterType {
     titulo,
     single,
     reproducciones,
     fechaPublicacion,
+    nombreGrupoArtista,
+    duracion,
+    genero,
+}
+
+enum avanzadaPlaylist {
+  playListInfoBasica,
+  playListInfoAvanzada,
 }
 
 
 export class Interfaz {
   private static interfaz: Interfaz;
+
   private searchArtistas: string[];
   private searchGrupos: string[];
   private searchAlbumes: string[];
   private searchCanciones: string[];
   private searchGeneros: string[];
+  private searchPlayList: string[];
+
   private generos: Coleccion<GenerosMusicales>;
-  private gestor: Gestor = Gestor.getGestorInstance();
+  private playList: Coleccion<PlayList>;
+
+  private usuarioNick: string = "";
+
   private constructor(private dataBase: JsonDataBase) {
     this.generos = this.dataBase.getEstructura();
+    this.playList = this.dataBase.getPlayList();
+    
     this.actualizarSearchArtistasGrupos();
     this.actualizarSearchAlbumes();
     this.actualizarSearchCanciones();
-
-    this.gestor.setPlayList(this.dataBase.getPlayList());
+    this.actualizarSearchGeneros();
+    this.actualizarSearchPlalist();
   }
 
   public static getInterfazInstance(datos: JsonDataBase): Interfaz {
@@ -72,6 +88,19 @@ export class Interfaz {
       });
     });
     return contador;
+  }
+
+  searchCancionesPlaylist(nombre: string): string[] {
+    const aux: string[] = [];
+    [...this.playList].forEach((playList) => {
+      if (playList.getNombre() === nombre) {
+        [...playList.getCanciones()].forEach((cancion) => {
+          aux.push(cancion.getNombre());
+        });
+      }
+    });
+
+    return aux;
   }
 
   actualizarSearchGeneros(): void {
@@ -119,6 +148,14 @@ export class Interfaz {
     this.searchArtistas = [...new Set(this.searchArtistas)];
   }
 
+  actualizarSearchPlalist(): void {
+    this.searchPlayList = [];
+    [...this.playList].forEach((playList) => {
+      this.searchPlayList.push(playList.getNombre());
+    });
+    this.searchPlayList = [...new Set(this.searchPlayList)];
+  }
+
   searchStates(search: string[], input: string = "") {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -142,7 +179,7 @@ export class Interfaz {
       type: "list",
       name: "comando",
       message: "¿Qué desea hacer?",
-      choices: ["Añadir, modificar o eliminar", "Visualizar", "Salir"],
+      choices: ["Añadir, modificar o eliminar", "Visualizar", "Gestión avanzada de PlayLists", "Salir"],
     }]).then((answers) => {
       switch (answers["comando"]) {
         case "Añadir, modificar o eliminar":
@@ -151,8 +188,10 @@ export class Interfaz {
         case "Visualizar":
           this.visualizarLista();
           break;
+        case "Gestión avanzada de PlayLists":
+          this.inicioPlayList();
+          break;
         case "Salir":
-          this.dataBase.almacenarInformacion();
           break;
       }
     });
@@ -220,9 +259,10 @@ export class Interfaz {
       source: (answersSoFar: any, input: string) => this.searchStates(this.searchGeneros, input),
     }]).then((answers) => {
       this.generos.removeElemento(answers["nombre"]);
+      this.dataBase.almacenarInformacion();
 
       this.actualizarSearchGeneros();
-      this.modificar();
+      this.eliminar();
     });
   }
 
@@ -238,8 +278,9 @@ export class Interfaz {
         genero.getArtistaGrupos().removeElemento(answers["nombre"]);
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchArtistasGrupos();
-      this.modificar();
+      this.eliminar();
     });
   }
 
@@ -259,6 +300,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchAlbumes();
       this.eliminar();
     });
@@ -286,6 +328,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchCanciones();
       this.eliminar();
     });
@@ -340,6 +383,7 @@ export class Interfaz {
         }
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchGeneros();
       this.modificar();
     });
@@ -389,6 +433,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchArtistasGrupos();
       this.modificar();
     });
@@ -426,6 +471,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchArtistasGrupos();
       this.modificar();
     });
@@ -472,6 +518,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchAlbumes();
       this.modificar();
     });
@@ -535,6 +582,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchCanciones();
       this.modificar();
     });
@@ -582,17 +630,14 @@ export class Interfaz {
 
       this.generos.addElemento(genero);
 
+      this.actualizarSearchGeneros();
+      this.dataBase.almacenarInformacion();
       this.añadir();
-    }).catch((error) => {
-      setTimeout(() => {
-        this.añadir();
-      }, 3000);
     });
   }
 
   añadirGrupo(): void {
     console.clear();
-    const error = 0;
     inquirer.prompt([{
       name: "nombre",
       message: "Nombre del grupo:",
@@ -630,8 +675,7 @@ export class Interfaz {
       const generos: string[] = answers["generos"].split(' ');
   
       if (this.mirarGeneros(generos, answers["autor"]) !== generos.length) {
-        console.log("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
-        throw error;
+        throw new Error("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
       }
       
       const grupo = new Grupo({nombre: answers["nombre"], artistas: new Coleccion<Artista>(), fechaCreacion: answers["fecha"],
@@ -645,9 +689,11 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchArtistasGrupos();
       this.añadir();
     }).catch((error) => {
+      console.log(error.message);
       setTimeout(() => {
         this.añadir();
       }, 3000);
@@ -656,8 +702,7 @@ export class Interfaz {
 
 
   añadirArtista(): void {
-    console.clear();
-    const error = 0;
+    console.clear();    
     inquirer.prompt([{
       name: "nombre",
       message: "Nombre del artista:",
@@ -684,8 +729,7 @@ export class Interfaz {
       const generos: string[] = answers["generos"].split(' ');
 
       if (this.mirarGeneros(generos, answers["autor"]) !== generos.length) {
-        console.log("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
-        throw error;
+        throw new Error("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
       }
 
       const artista = new Artista({nombre: answers["nombre"], grupos: answers["grupos"].split(' '), 
@@ -708,9 +752,11 @@ export class Interfaz {
         });
       });
       
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchArtistasGrupos();
       this.añadir();
     }).catch((error) => {
+      console.log(error.message);
       setTimeout(() => {
         this.añadir();
       }, 3000);
@@ -719,7 +765,6 @@ export class Interfaz {
 
   añadirAlbum(): void {
     console.clear();
-    const error = 0;
     inquirer.prompt([{
       name: "nombre",
       message: "Nombre de album:",
@@ -762,8 +807,7 @@ export class Interfaz {
       const generos: string[] = answers["generos"].split(' ');
 
       if (this.mirarGeneros(generos, answers["autor"]) !== generos.length) {
-        console.log("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
-        throw error;
+        throw new Error("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
       }
 
       const album = new Album({nombre: answers["nombre"], autor: answers["autor"], 
@@ -782,18 +826,20 @@ export class Interfaz {
         });
       });
       
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchAlbumes();
       this.añadirCancion(false, answers["nombre"], parseInt(answers["canciones"]) - 1);
     }).catch((error) => {
+      console.log(error.message);
       setTimeout(() => {
         this.añadir();
       }, 3000);
     });
   }
 
+  
   añadirCancion(single: boolean = true, nombreAlbum: string = "", cantidad: number = 0): void {
     console.clear();
-    const error = 0;
     inquirer.prompt([{
       name: "nombre",
       message: "Nombre de la canción:",
@@ -833,8 +879,7 @@ export class Interfaz {
       const generos: string[] = answers["generos"].split(' ');
   
       if (this.mirarGeneros(generos, answers["autor"]) !== generos.length) {
-        console.log("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
-        throw error;
+        throw new Error("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
       }
   
       const min = parseInt(answers["duracion"]) / 60 << 0;
@@ -871,6 +916,7 @@ export class Interfaz {
         });
       });
 
+      this.dataBase.almacenarInformacion();
       this.actualizarSearchCanciones();
       if (cantidad) {
         this.añadirCancion(single, nombreAlbum, cantidad - 1);
@@ -878,13 +924,14 @@ export class Interfaz {
         this.añadir();
       }
     }).catch((error) => {
+      console.log(error.message);
       setTimeout(() => {
         this.añadir();
       }, 3000);
     });
   }
   
-  // Revisado
+
   visualizarLista(): void {
     console.clear();
     inquirer.prompt([{  
@@ -930,7 +977,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   visualizarCanciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
@@ -957,7 +1004,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   visualizarAlbumes(opcion: string): void {
     console.clear();
     inquirer.prompt([{
@@ -984,7 +1031,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   visualizarPlaylist(opcion: string): void {
     console.clear();
     inquirer.prompt([{
@@ -1008,7 +1055,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   filtradoTiTulo(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
@@ -1044,7 +1091,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado.
+
   filtradoReproducciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
@@ -1079,7 +1126,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   filtradoReproduccionesTotales(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
@@ -1115,7 +1162,7 @@ export class Interfaz {
         this.imprimirAlbumes([...new Set(nombre)]);
       } else if (answers["filtroReproducionesTotales"] !== "Salir" && tipo === visualizarEnum.playList) {
         [...reproducciones].forEach((element) => {
-          [...this.gestor.getPlayList()].forEach((play) => {
+          [...this.playList].forEach((play) => {
             [...play.getCanciones()].forEach((cancion) => {
               if (cancion.getAutor() === opcion && play.calcularReproduccionesTotales() === +element) {
                 nombre.push(play.getNombre());
@@ -1130,7 +1177,7 @@ export class Interfaz {
     });
   }
 
-  // Revisado
+
   filtrosCanciones(opcion: string, value: number): string[] {
     const aux: string[] = [];
     [...this.generos].forEach((genero) => {
@@ -1170,7 +1217,7 @@ export class Interfaz {
     return numeros;
   }
 
-  // Revisado
+
   filtrosAlbumes(opcion:string, value: number): string[] {  
     const aux: string[] = [];
     [...this.generos].forEach((genero) => {
@@ -1198,7 +1245,7 @@ export class Interfaz {
 
   filtrosPlayList(opcion:string, value: number): string[] {  
     const aux: string[] = [];
-    [...this.gestor.getPlayList()].forEach((play) => {
+    [...this.playList].forEach((play) => {
       [...play.getCanciones()].forEach((cancion) => {
         if (cancion.getAutor() === opcion) {
           if (value === filterType.titulo) {
@@ -1217,6 +1264,7 @@ export class Interfaz {
     }
   }
 
+  
   fechaPublicacion(opcion: any): void {
     console.clear();
     inquirer.prompt([{
@@ -1252,7 +1300,7 @@ export class Interfaz {
   }
 
 
-  imprimirCanciones(aux: string[]): void {
+  imprimirCanciones(aux: string[], value:boolean = true): void {
     let print;
     let primeraVez: boolean = false;
     if (aux.length === 0) {
@@ -1271,10 +1319,14 @@ export class Interfaz {
         primeraVez = false;
       });
     }
-    this.visualizarSalir();
+    if (value) {
+      this.visualizarSalir();
+    } else {
+      this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+    }
   }
 
-  // Revisado
+
   imprimirAlbumes(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
@@ -1297,7 +1349,6 @@ export class Interfaz {
     this.visualizarSalir();
   }
 
-  // Revisado.
   imprimirPlaylist(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
@@ -1305,7 +1356,7 @@ export class Interfaz {
       console.log("No hay playlists disponibles con los requisitos especificados");
     } else {
       aux.forEach((elemento) => {
-        [...this.gestor.getPlayList()].forEach((playlist) => {
+        [...this.playList].forEach((playlist) => {
           if (elemento === playlist.getNombre() && !primeraVez) {
             print = new PrintPlayList(playlist);
             primeraVez = true;
@@ -1316,5 +1367,640 @@ export class Interfaz {
       });
     }
     this.visualizarSalir();
+  }
+
+  inicioPlayList(): void {
+    console.clear();
+    inquirer.prompt([{
+      name: "nombre",
+      message: "Nombre de usuario:",
+      validate: (value: any) => {
+        if (value === "SYSTEM") {
+          return "Ese nombre está reservado, pruebe con otro!!!";
+        }
+        return true;
+      },
+    }]).then((answers) => {  
+      this.usuarioNick = answers["nombre"];
+      this.gestionAvanzadaPlayList();
+    });
+  }
+
+  gestionAvanzadaPlayList(): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "opcion",
+      message: "Eliga una opción:",
+      choices: ["Informarción básica de una playlist", "Información avanzada de una playlist", "Gestionar playlist", "Salir"],
+    }]).then((answers) => {
+      switch (answers["opcion"]) {
+        case "Informarción básica de una playlist":
+          this.playListInfoBasica();
+          break;
+        case "Información avanzada de una playlist":
+          this.playListInfoAvanzada();
+          break;
+        case "Gestionar playlist":
+          this.playListGestion();
+          break;
+        case "Salir":
+          this.usuarioNick = "";
+          this.run();
+          break;
+      }
+    });
+  }
+
+  playListInfoBasica() {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "opcion",
+      message: "Que playlist desea ver:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
+    }]).then((answers) => {
+      if (answers["opcion"] !== "Salir") {
+        [...this.playList].forEach((playlist) => {
+          if (playlist.getNombre() === answers["opcion"]) {
+            console.log(`Nombre: ${playlist.getNombre()}`);
+            console.log(`Generos: ${playlist.getGeneros().join(', ')}`);
+            console.log(`Duración: ${playlist.getDuracion().hor}h ${playlist.getDuracion().min}min`);
+          }
+        });
+            
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoBasica);
+      } else {
+        this.gestionAvanzadaPlayList();
+      }
+    });
+  }
+
+
+  playListInfoAvanzada() {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "opcion",
+      message: "Que playlist desea navegar",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
+    },
+    {
+      type: "list",
+      name: "filtro",
+      message: "Que filtro desea aplicar a las canciones:",
+      choices: ["Titulo", "Artista/Grupo", "Año de Lanzamiento", "duracion", "Genero", "Reproducciones", "Salir"],
+
+    }]).then((answers) => {
+      if (answers["opcion"] !== "Salir") {
+        switch (answers["filtro"]) {
+          case "Titulo":
+            this.filtradoAvanzadoTiTulo(answers["opcion"]);
+            break;
+          case "Artista/Grupo":
+            this.filtradoAvanzadoArtistaGrupo(answers["opcion"]);
+            break;
+          case "Año de Lanzamiento":
+            this.filtradoAvanzadoLanzamiento(answers["opcion"]);
+            break;
+          case "duracion":
+            this.filtradoAvanzadoDuracion(answers["opcion"]);
+            break;
+          case "Genero":
+            this.filtradoAvanzadoGenero(answers["opcion"]);
+            break;
+          case "Reproducciones":
+            this.filtradoAvanzadoReproducciones(answers["opcion"]);
+            break;
+        }
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+      } else {
+        this.gestionAvanzadaPlayList();
+      }
+    });
+  }
+
+  filtradoAvanzadoTiTulo(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroTitulo",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+      default: "ASC",
+    }]).then((answers) => {
+      switch (answers["filtroTitulo"]) {
+        case "ASC":
+          this.imprimirCanciones(this.filtrosAvanzadoPlayList(opcion, filterType.titulo), false);
+          break;
+        case "DESC":
+          this.imprimirCanciones(this.filtrosAvanzadoPlayList(opcion, filterType.titulo).reverse(), false);
+          break;
+        case "Salir":
+          this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+          break;
+      }
+    });
+  }
+
+  filtradoAvanzadoArtistaGrupo(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroArtistaGrupo",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+    }]).then((answers) => {
+      let artistaGrupos: string[] = [];
+      const nombreCancion: string[] = [];
+      if (answers["filtroArtistaGrupo"] !== "Salir") {
+        if (answers["filtroArtistaGrupo"] === "ASC") {
+          artistaGrupos = this.filtrosAvanzadoPlayList(opcion, filterType.nombreGrupoArtista);
+        } else {
+          artistaGrupos = this.filtrosAvanzadoPlayList(opcion, filterType.nombreGrupoArtista).reverse();
+        }
+        [...artistaGrupos].forEach((elemento) => {
+          [...this.playList].forEach((playlist) => {
+            if (playlist.getNombre() === opcion) {
+              [...playlist.getCanciones()].forEach((cancion) => {
+                if (cancion.getAutor() === elemento) {
+                  nombreCancion.push(cancion.getNombre());
+                }
+              });
+            }
+          });
+        });
+        this.imprimirCanciones(nombreCancion, false);
+      } else {
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+      }
+    });
+  }
+
+  filtradoAvanzadoLanzamiento(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroLanzamiento",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+    }]).then((answers) => {
+      let fechaspublicacion: string[] = [];
+      const nombreCancion: string[] = [];
+      if (answers["filtroLanzamiento"] !== "Salir") {
+        if (answers["filtroLanzamiento"] === "ASC") {
+          fechaspublicacion = this.filtrosAvanzadoPlayList(opcion, filterType.fechaPublicacion);
+        } else {
+          fechaspublicacion = this.filtrosAvanzadoPlayList(opcion, filterType.fechaPublicacion).reverse();
+        }
+        [...fechaspublicacion].forEach((elemento) => {
+          [...this.generos].forEach((genero) => {
+            [...genero.getAlbumes()].forEach((album) => {
+              [...album.getCanciones()].forEach((cancion) => {
+                if (String(album.getFechaPublicacion()) === elemento) {
+                  nombreCancion.push(cancion.getNombre());
+                }
+              });
+            });
+          });
+        });
+        this.imprimirCanciones(nombreCancion, false);
+      } else {
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+      }
+    });
+  }
+
+  filtradoAvanzadoDuracion(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroDuracion",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+    }]).then((answers) => {
+      let tiempoTotal: string[] = [];
+      const nombreCancion: string[] = [];
+      if (answers["filtroDuracion"] !== "Salir") {
+        if (answers["filtroDuracion"] === "ASC") {
+          tiempoTotal = this.filtrosAvanzadoPlayList(opcion, filterType.duracion);
+        } else {
+          tiempoTotal = this.filtrosAvanzadoPlayList(opcion, filterType.duracion).reverse();
+        }
+        [...tiempoTotal].forEach((elemento) => {
+          [...this.playList].forEach((playlist) => {
+            if (playlist.getNombre() === opcion) {
+              [...playlist.getCanciones()].forEach((cancion) => {
+                if (cancion.devolverTiempoTotal() === elemento) {
+                  nombreCancion.push(cancion.getNombre());
+                }
+              });
+            }
+          });
+        });
+        this.imprimirCanciones(nombreCancion, false);
+      } else {
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+      }
+    });
+  }
+
+  filtradoAvanzadoGenero(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroGenero",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+    }]).then((answers) => {
+      let generos: string[] = [];
+      const nombreCancion: string[] = [];
+      if (answers["filtroGenero"] !== "Salir") {
+        if (answers["filtroGenero"] === "ASC") {
+          generos = this.filtrosAvanzadoPlayList(opcion, filterType.genero);
+        } else {
+          generos = this.filtrosAvanzadoPlayList(opcion, filterType.genero).reverse();
+        }
+        [...generos].forEach((elemento) => {
+          [...this.playList].forEach((playlist) => {
+            if (playlist.getNombre() === opcion) {
+              [...playlist.getCanciones()].forEach((cancion) => {
+                if (cancion.getGeneros()[0] === elemento) {
+                  nombreCancion.push(cancion.getNombre());
+                }
+              });
+            }
+          });
+        });
+        this.imprimirCanciones(nombreCancion, false);
+      } else {
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+      }
+    });
+  }
+
+  filtradoAvanzadoReproducciones(opcion: string): void {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "filtroReproducciones",
+      message: "Eliga una opción:",
+      choices: ["ASC", "DESC", "Salir"],
+    }]).then((answers) => {
+      let reproducciones: string[] = [];
+      const nombreCancion: string[] = [];
+      if (answers["filtroReproducciones"] !== "Salir") {
+        if (answers["filtroReproducciones"] === "ASC") {
+          reproducciones = this.filtrosAvanzadoPlayList(opcion, filterType.reproducciones);
+        } else {
+          reproducciones = this.filtrosAvanzadoPlayList(opcion, filterType.reproducciones).reverse();
+        }
+        [...reproducciones].forEach((elemento) => {
+          [...this.playList].forEach((playlist) => {
+            if (playlist.getNombre() === opcion) {
+              [...playlist.getCanciones()].forEach((cancion) => {
+                if (cancion.getReproducciones() === Number(elemento)) {
+                  nombreCancion.push(cancion.getNombre());
+                }
+              });
+            }
+          });
+        });
+        this.imprimirCanciones(nombreCancion, false);
+      } else {
+        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
+      }
+    });
+  }
+  
+  // REVISAR
+  filtrosAvanzadoPlayList(nombre:string, tipoFiltro: number): string[] {  
+    const aux: string[] = [];
+    [...this.playList].forEach((playlist) => {
+      if (playlist.getNombre() === nombre) {
+        [...playlist.getCanciones()].forEach((cancion) => {
+          switch (tipoFiltro) {
+            case filterType.titulo:
+              aux.push(cancion.getNombre());
+              break;
+            case filterType.nombreGrupoArtista:
+              aux.push(cancion.getAutor());
+              break;
+            case filterType.fechaPublicacion:
+              const nombreAux = cancion.getAutor();
+              [...this.generos].forEach((genero) => {
+                [...genero.getAlbumes()].forEach((album) => {
+                  [...album.getCanciones()].forEach((cancion) => {
+                    if (cancion.getAutor() === nombreAux) {
+                      aux.push(String(album.getFechaPublicacion()));
+                    }
+                  });
+                });
+              });    
+              break;
+            case filterType.duracion:
+              aux.push(String(cancion.devolverTiempoTotal()));
+              break;
+            case filterType.genero:
+              aux.push(cancion.getGeneros()[0]);
+              break;
+            case filterType.reproducciones:
+              aux.push(String(cancion.getReproducciones()));
+              break;
+          }
+        });
+      }
+    });
+    if (tipoFiltro === filterType.reproducciones || tipoFiltro === filterType.fechaPublicacion || tipoFiltro === filterType.duracion) {
+      return this.ordenar([...new Set(aux)]);
+    } else {
+      return [...new Set(aux)].sort();
+    }
+  }
+
+  visualizarAvanzadoSalir(opcion: number): void {
+    inquirer.prompt([{
+      type: "confirm",
+      name: "confirmacion",
+      message: "¿Desea continuar?",
+    }]).then((answers) => {
+      if (answers["confirmacion"]) {
+        switch (opcion) {
+          case avanzadaPlaylist.playListInfoBasica:
+            this.playListInfoBasica();
+            break;
+          case avanzadaPlaylist.playListInfoAvanzada:
+            this.playListInfoAvanzada();
+          default:
+            break;
+        }
+      } else {
+        this.gestionAvanzadaPlayList();
+      }
+    });
+  }
+
+  playListGestion() {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "comando",
+      message: "¿Qué desea hacer?",
+      choices: ["Crear una playlist a partir de otra", "Crear una playlist desde 0", "Modificar una playlist", "Eliminar una playlist", "Salir"],
+    }]).then((answers) => {
+      switch (answers["comando"]) {
+        case "Crear una playlist a partir de otra":
+          this.crearPlayListExistente();
+          break;
+        case "Crear una playlist desde 0":
+          this.crearPlayListDesde0();
+          break;
+        case "Modificar una playlist":
+          this.borrarPlayList();
+          break;
+        case "Eliminar una playlist":
+          this.modificarPlayList();
+          break;
+        case "Salir":
+          this.gestionAvanzadaPlayList();
+          break;
+      }
+    });
+  }
+  
+  crearPlayListExistente() {
+    console.clear();
+    inquirer.prompt([{
+      type: "autocomplete",
+      name: "nombre",
+      message: "Seleccione la playlist de la que partir:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
+    },
+    {
+      name: "nuevoNombre",
+      message: "Nombre de la nueva playlist:",
+    },
+    {
+      name: "cantidadCanciones",
+      message: "¿Cuántas canciones quiere añadir?:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "La cantidad debe ser un número";
+        }
+        return true;
+      },
+    }]).then((answers) => {
+      if (this.searchPlayList.indexOf(answers["nuevoNombre"]) !== -1) {
+        throw new Error("Ya existe una playlist con ese nombre");
+      }
+
+      let play: PlayList = new PlayList({nombre: "", canciones: new Coleccion(), duracion: {hor: 0, min: 0}, generos: [], creador: ""});
+
+      [...this.playList].forEach((playlist) => {
+        if (answers["nombre"] === playlist.getNombre()) {
+          play = playlist;
+          play.setCreador(this.usuarioNick);
+          play.setNombre(answers["nuevoNombre"]);
+        }
+      });
+      
+      this.playList.addElemento(play);
+      this.actualizarSearchPlalist();
+
+      this.añadirCancionPlayList(play.getNombre(), parseInt(answers["cantidadCanciones"]) - 1);
+    }).catch((error) => {
+      console.log(error.message);
+      setTimeout(() => {
+        this.playListGestion();
+      }, 3000);
+    });
+  }
+
+  crearPlayListDesde0() {
+    console.clear();
+    inquirer.prompt([{
+      name: "nuevoNombre",
+      message: "Nombre de la nueva playlist:",
+    },
+    {
+      name: "cantidadCanciones",
+      message: "¿Cuántas canciones quiere añadir?:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "La cantidad debe ser un número";
+        }
+        return true;
+      },
+    }]).then((answers) => {
+      if (this.searchPlayList.indexOf(answers["nuevoNombre"]) !== -1) {
+        throw new Error("Ya existe una playlist con ese nombre");
+      }
+
+      const play: PlayList = new PlayList({nombre: answers["nuevoNombre"], canciones: new Coleccion(), duracion: {hor: 0, min: 0}, generos: [], creador: this.usuarioNick});
+      
+      this.playList.addElemento(play);
+      this.actualizarSearchPlalist();
+
+      this.añadirCancionPlayList(play.getNombre(), parseInt(answers["cantidadCanciones"]) - 1);
+    }).catch((error) => {
+      console.log(error.message);
+      setTimeout(() => {
+        this.playListGestion();
+      }, 3000);
+    });
+  }
+
+  borrarPlayList() {
+    console.clear();
+    inquirer.prompt([{
+      type: "autocomplete",
+      name: "nombre",
+      message: "Nombre de la playlist:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
+    }]).then((answers) => {
+      [...this.playList].forEach((playlist) => {
+        if (answers["nombre"] === playlist.getNombre()) {
+          if (this.usuarioNick === playlist.getCreador()) {
+            this.playList.removeElemento(answers["nombre"]);
+          } else {
+            throw new Error("No tiene permisos para eliminar esta playlist");
+          }
+        }
+      });
+      
+      this.dataBase.almacenarInformacion();
+      this.actualizarSearchPlalist();
+      this.playListGestion();
+    }).catch((error) => {
+      console.log(error.message);
+      setTimeout(() => {
+        this.playListGestion();
+      }, 3000);
+    });
+  }
+
+  modificarPlayList() {
+    console.clear();
+    inquirer.prompt([{
+      type: "autocomplete",
+      name: "nombre",
+      message: "Nombre de la playlist:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
+    }]).then((answers) => {
+      this.gestionModificarPlayList(answers["nombre"]);
+      [...this.playList].forEach((playlist) => {
+        if (answers["nombre"] === playlist.getNombre()) {
+          if (this.usuarioNick !== playlist.getCreador()) {
+            throw new Error("No tiene permisos para modificar esta playlist");
+          }
+        }
+      });
+      this.gestionModificarPlayList(answers["nombre"]);
+    }).catch((error) => {
+      console.log(error.message);
+      setTimeout(() => {
+        this.playListGestion();
+      }, 3000);
+    });
+  }
+
+  gestionModificarPlayList(nombre: string) {
+    console.clear();
+    inquirer.prompt([{
+      type: "list",
+      name: "comando",
+      message: "¿Qué desea hacer?",
+      choices: ["Cambiar nombre", "Eliminar canción", "Añadir canción", "Salir"],
+      validate: (value: any) => {
+        if (this.searchCancionesPlaylist(nombre) === [] && value === "Eliminar canción") {
+          return "No se puede eliminar un elemento de una playlist vacía";
+        }
+        return true;
+      },
+    }]).then((answers) => {
+      switch (answers["comando"]) {
+        case "Cambiar nombre":
+          this.modificarNombrePlayList(nombre);
+          break;
+        case "Eliminar canción":
+          this.eliminarCancionPlayList(nombre);
+          break;
+        case "Añadir canción":
+          this.añadirCancionPlayList(nombre);
+          break;
+        case "Salir":
+          this.playListGestion();
+          break;
+      }
+    });
+  }
+  
+  modificarNombrePlayList(nombre: string) {
+    console.clear();
+    inquirer.prompt([{
+      name: "nombreNuevo",
+      message: "Nuevo nombre de la playlist:",
+    }]).then((answers) => {
+      [...this.playList].forEach((playlist) => {
+        if (playlist.getNombre() === nombre) {
+          playlist.setNombre(answers["nombreNuevo"]);
+        }
+      });
+
+      this.dataBase.almacenarInformacion();
+      this.actualizarSearchPlalist();
+      this.playListGestion();
+    });
+  }
+
+  eliminarCancionPlayList(nombre: string) {
+    console.clear();
+    inquirer.prompt([{
+      type: "autocomplete",
+      name: "nombre",
+      message: "Nombre del canción a elimianr:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchCancionesPlaylist(nombre), input),
+    }]).then((answers) => {
+      [...this.playList].forEach((playlist) => {
+        if (playlist.getNombre() === nombre) {
+          playlist.eliminarCancion(answers["nombre"]);
+        }
+      });
+      
+      this.dataBase.almacenarInformacion();
+      this.playListGestion();
+    });
+  }
+
+  añadirCancionPlayList(nombre: string, contador: number = 0) {
+    console.clear();
+    inquirer.prompt([{
+      type: "autocomplete",
+      name: "nombre",
+      message: "Nombre del canción a añadir:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchCanciones.filter((elemento) => this.searchCancionesPlaylist(nombre).indexOf(elemento) === -1), input),
+    }]).then((answers) => {
+      let primeraVez = false;
+      [...this.playList].forEach((playlist) => {
+        if (playlist.getNombre() === nombre) {
+          [...this.generos].forEach((genero) => {
+            [...genero.getCanciones()].forEach((cancion) => {
+              if (cancion.getNombre() === answers["nombre"] && !primeraVez) {
+                playlist.addCancion(cancion);
+                primeraVez = true;
+              }
+            });
+          });
+        }
+      });
+      if (contador > 0) {
+        this.añadirCancionPlayList(nombre, contador - 1);
+      } else {
+        this.dataBase.almacenarInformacion();
+        this.playListGestion();
+      }
+    });
   }
 }

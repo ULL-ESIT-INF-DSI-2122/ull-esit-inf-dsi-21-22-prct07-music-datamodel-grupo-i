@@ -63,6 +63,13 @@ export class Cancion {
   setReproducciones(reproducciones: number): void {
     this.cancion.reproducciones = reproducciones;
   }
+
+  devolverTiempoTotal(): string {
+    let minutos: number = this.getDuracion().min;
+    const segundos: number = this.getDuracion().seg;
+    minutos = minutos * 60;
+    return String(minutos + segundos);
+  }
 }
 
 

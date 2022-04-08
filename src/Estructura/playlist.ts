@@ -47,6 +47,7 @@ export class PlayList {
       seg += cancion.getDuracion().seg;
     });
 
+    // seg = seg % 60;
     min += seg / 60 >> 0;
     this.playlist.duracion.hor += min / 60 >> 0;
     this.playlist.duracion.min += min % 60;
@@ -68,6 +69,14 @@ export class PlayList {
     return this.playlist.generos;
   }
 
+  getCreador(): string {
+    return this.playlist.creador;
+  }
+
+  setCreador(creador: string): void {
+    this.playlist.creador = creador;
+  }
+
   setNombre(nombre: string): void {
     this.playlist.nombre = nombre;
   }
@@ -82,6 +91,19 @@ export class PlayList {
 
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.playlist.canciones = canciones;
+  }
+
+  addCancion(cancion: Cancion): void {
+    this.playlist.canciones.addElemento(cancion);
+    this.calcularDuracion(this.playlist.canciones);
+    this.incluirGeneros(this.playlist.canciones);
+  }
+
+  eliminarCancion(nombre: string): void {
+    this.playlist.canciones.removeElemento(nombre);
+    this.calcularDuracion(this.playlist.canciones);
+    this.playlist.generos = [];
+    this.incluirGeneros(this.playlist.canciones);
   }
 
   calcularReproduccionesTotales(): number {
