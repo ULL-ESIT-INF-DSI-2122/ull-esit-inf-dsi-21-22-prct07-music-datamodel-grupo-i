@@ -324,7 +324,7 @@ export class Interfaz {
       source: (answersSoFar: any, input: string) => this.searchStates(this.searchGeneros, input),
     }]).then((answers) => {
       this.generos.removeElemento(answers["nombre"]);
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
 
       this.actualizarSearchGeneros();
       this.eliminar();
@@ -346,7 +346,7 @@ export class Interfaz {
         genero.getArtistaGrupos().removeElemento(answers["nombre"]);
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchArtistasGrupos();
       this.eliminar();
     });
@@ -371,7 +371,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchAlbumes();
       this.eliminar();
     });
@@ -403,7 +403,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchCanciones();
       this.eliminar();
     });
@@ -464,7 +464,7 @@ export class Interfaz {
         }
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchGeneros();
       this.modificar();
     });
@@ -517,7 +517,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchArtistasGrupos();
       this.modificar();
     });
@@ -558,7 +558,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchArtistasGrupos();
       this.modificar();
     });
@@ -608,7 +608,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchAlbumes();
       this.modificar();
     });
@@ -675,7 +675,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchCanciones();
       this.modificar();
     });
@@ -730,7 +730,7 @@ export class Interfaz {
       this.generos.addElemento(genero);
 
       this.actualizarSearchGeneros();
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.añadir();
     });
   }
@@ -791,7 +791,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchArtistasGrupos();
       this.añadir();
     }).catch((error) => {
@@ -856,7 +856,7 @@ export class Interfaz {
         });
       });
       
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchArtistasGrupos();
       this.añadir();
     }).catch((error) => {
@@ -933,7 +933,7 @@ export class Interfaz {
         });
       });
       
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchAlbumes();
       this.añadirCancion(answers["nombre"], parseInt(answers["canciones"]) - 1, answers["autor"]);
     }).catch((error) => {
@@ -1058,7 +1058,7 @@ export class Interfaz {
         });
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarEstructura();
       this.actualizarSearchCanciones();
       if (cantidad) {
         this.añadirCancion(nombreAlbum, cantidad - 1, autor);
@@ -2065,6 +2065,7 @@ export class Interfaz {
       [...this.playList].forEach((playlist) => {
         if (answers["nombre"] === playlist.getNombre()) {
           play.setCanciones(playlist.getCanciones());
+          play.setDuracion(playlist.getDuracion());
           play.setCreador(this.usuarioNick);
           play.setNombre(answers["nuevoNombre"]);
         }
@@ -2141,7 +2142,7 @@ export class Interfaz {
         }
       });
       
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarPlayList();
       this.actualizarSearchPlalist();
       this.playListGestion();
     }).catch((error) => {
@@ -2226,7 +2227,7 @@ export class Interfaz {
         }
       });
 
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarPlayList();
       this.actualizarSearchPlalist();
       this.playListGestion();
     });
@@ -2250,7 +2251,7 @@ export class Interfaz {
         }
       });
       
-      this.dataBase.almacenarInformacion();
+      this.dataBase.guardarPlayList();
       this.playListGestion();
     });
   }
@@ -2284,7 +2285,7 @@ export class Interfaz {
       if (contador > 0) {
         this.añadirCancionPlayList(nombre, contador - 1);
       } else {
-        this.dataBase.almacenarInformacion();
+        this.dataBase.guardarPlayList();
         this.playListGestion();
       }
     });

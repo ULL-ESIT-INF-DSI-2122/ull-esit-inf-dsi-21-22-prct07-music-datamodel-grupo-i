@@ -39,6 +39,10 @@ export class Grupo {
       this.comprobarAlbumes(grupo.albumes);
       this.comprobarArtistas(grupo.artistas);
       this.comprobarCanciones(grupo.canciones);
+    } else {
+      this.grupo.albumes = grupo.albumes;
+      this.grupo.artistas = grupo.artistas;
+      this.grupo.canciones = grupo.canciones;
     }
   }
 
@@ -169,7 +173,7 @@ export class Grupo {
    * @param artistas nuevos artistas
    */
   setArtistas(artistas: Coleccion<Artista>): void {
-    this.comprobarArtistas(artistas);
+    this.grupo.artistas = artistas;
   }
 
   /**
@@ -193,7 +197,7 @@ export class Grupo {
    * @param albumes nuevos albumes
    */
   setAlbumes(albumes: Coleccion<Album>): void {
-    this.comprobarAlbumes(albumes);
+    this.grupo.albumes = albumes;
   }
 
   /**
@@ -201,7 +205,7 @@ export class Grupo {
    * @param canciones nuevas canciones
    */
   setCanciones(canciones: Coleccion<Cancion>): void {
-    this.comprobarCanciones(canciones);
+    this.grupo.canciones = canciones;
   }
 
   /**

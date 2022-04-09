@@ -38,6 +38,9 @@ export class Artista {
     if (memoria) {
       this.comprobarAlbumes(artista.albumes);
       this.comprobarCanciones(artista.canciones);
+    } else {
+      this.artista.albumes = artista.albumes;
+      this.artista.canciones = artista.canciones;
     }
   }
 
@@ -170,7 +173,7 @@ export class Artista {
    * @param albumes nueva coleccion de albumes
    */
   setAlbumes(albumes: Coleccion<Album>): void {
-    this.comprobarAlbumes(albumes);
+    this.artista.albumes = albumes;
   }
 
   /**
@@ -178,7 +181,7 @@ export class Artista {
    * @param canciones nueva coleccion de canciones
    */
   setCanciones(canciones: Coleccion<Cancion>): void {
-    this.comprobarCanciones(canciones);
+    this.artista.canciones = canciones;
   }
 
   /**

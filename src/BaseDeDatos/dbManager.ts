@@ -7,15 +7,14 @@ import {Artista} from '../Estructura/artistas';
 import {Grupo} from '../Estructura/grupo';
 import {Album} from '../Estructura/album';
 import {Cancion} from '../Estructura/cancion';
+import * as Data from "../BaseDeDatos/dataBase";
 
 /**
  * @type schemaType, tipo de dato que se va a guardar en la base de datos
  */
 type schemaType = {
-  datos: {
-    estructura: Coleccion<GenerosMusicales>,
-    playList: Coleccion<PlayList>,
-  }
+  estructura: Coleccion<GenerosMusicales>,
+  playList: Coleccion<PlayList>,
 }
 
 /**
@@ -135,8 +134,14 @@ export class JsonDataBase {
   /**
    * Guarda la nueva informacion en la base de datos
    */
-  almacenarInformacion() {
+  guardarEstructura() {
     this.database.set('estructura', this.estructura).write();
+  }
+
+  /**
+   * Guarda la nueva informacion en la base de datos
+   */
+  guardarPlayList() {
     this.database.set('playList', this.playList).write();
   }
 

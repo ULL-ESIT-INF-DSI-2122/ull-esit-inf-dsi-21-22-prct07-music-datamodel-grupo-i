@@ -42,8 +42,9 @@ export class PlayList {
     if (memoria) {
       this.incluirGeneros(playlist.canciones);
       this.calcularDuracion(playlist.canciones);
-      this.playlist.canciones = playlist.canciones;
     }
+    
+    this.playlist.canciones = playlist.canciones;
   }
 
   /**
@@ -156,8 +157,6 @@ export class PlayList {
    */
   setCanciones(canciones: Coleccion<Cancion>): void {
     this.playlist.canciones = canciones;
-    this.calcularDuracion(this.playlist.canciones);
-    this.incluirGeneros(this.playlist.canciones);
   }
 
   /**
@@ -218,5 +217,6 @@ export class PrintPlayList {
     console.log(`Canciones: ${result}`);
     console.log(`Duración: ${this.playlist.getDuracion().hor}h ${this.playlist.getDuracion().min}min`);
     console.log(`Generos: ${this.playlist.getGeneros().join(', ')}`);
+    console.log("/n");
   }
 }

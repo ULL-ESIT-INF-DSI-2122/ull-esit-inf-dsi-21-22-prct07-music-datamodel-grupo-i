@@ -33,6 +33,8 @@ export class Album {
 
     if (memoria) {
       this.comprobarCanciones(album.canciones);
+    } else {
+      this.album.canciones = album.canciones;
     }
   }
 

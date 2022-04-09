@@ -8456,6 +8456,40 @@
           ],
           "creador": "SYSTEM"
         }
+      },
+      {
+        "playlist": {
+          "nombre": "duro",
+          "canciones": {
+            "coleccion": [
+              {
+                "cancion": {
+                  "nombre": "Ular SciencE",
+                  "autor": "Bayside",
+                  "duracion": {
+                    "min": 2,
+                    "seg": 4
+                  },
+                  "generos": [
+                    "Pop",
+                    "Rock"
+                  ],
+                  "single": true,
+                  "reproducciones": 200
+                }
+              }
+            ]
+          },
+          "duracion": {
+            "hor": 0,
+            "min": 2
+          },
+          "generos": [
+            "Pop",
+            "Rock"
+          ],
+          "creador": "loco"
+        }
       }
     ]
   }
