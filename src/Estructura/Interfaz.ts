@@ -12,14 +12,18 @@ const inquirerPrompt = require('inquirer-autocomplete-prompt');
 const fuzzy = require('fuzzy');
 inquirer.registerPrompt('autocomplete', inquirerPrompt);
 
-
+/**
+ * enum para los tipos de busqueda
+ */
 enum visualizarEnum {
     canciones,
     albumes,
     playList,
 }
 
-
+/**
+ * enum para los distintos tipos de filtros.
+ */
 enum filterType {
     titulo,
     single,
@@ -30,15 +34,27 @@ enum filterType {
     genero,
 }
 
+/**
+ * enum para los distintos tipos de salida
+ */
 enum avanzadaPlaylist {
   playListInfoBasica,
   playListInfoAvanzada,
 }
 
-
+/**
+ * @class Interfaz
+ */
 export class Interfaz {
+  /**
+   * @param interfaz atributo estatico que nos permite seguir el patron de diseño Singleton.
+   */
   private static interfaz: Interfaz;
-
+  
+  /**
+   * Atributos que nos permiten buscar los distintos 
+   * tipos de informacion.
+  */
   private searchArtistas: string[];
   private searchGrupos: string[];
   private searchAlbumes: string[];
@@ -46,11 +62,22 @@ export class Interfaz {
   private searchGeneros: string[];
   private searchPlayList: string[];
 
+  /**
+   * @param generos base de datos de los generos
+   * @param playList base de datos de las playlists
+   */
   private generos: Coleccion<GenerosMusicales>;
   private playList: Coleccion<PlayList>;
 
+  /**
+   * @param usuarioNick nombre del usuario que está trabajando con las playlists.
+   */
   private usuarioNick: string = "";
 
+  /**
+   * Constructor.
+   * @param dataBase base de datos de la aplicacion
+   */
   private constructor(private dataBase: JsonDataBase) {
     this.generos = this.dataBase.getEstructura();
     this.playList = this.dataBase.getPlayList();
@@ -62,6 +89,11 @@ export class Interfaz {
     this.actualizarSearchPlalist();
   }
 
+  /**
+   * Metodo que hace posible el patrón de diseño Singleton.
+   * @param datos base de datos
+   * @returns objeto Interfaz
+   */
   public static getInterfazInstance(datos: JsonDataBase): Interfaz {
     if (!Interfaz.interfaz) {
       Interfaz.interfaz = new Interfaz(datos);
@@ -69,7 +101,10 @@ export class Interfaz {
     return Interfaz.interfaz;
   }
 
-  mirarGeneros(generos: string[], autorTeclado: string): number {
+  /**
+   * Metodo que comrpueba que unos generos son de un artista/grupo.
+   */
+  private mirarGeneros(generos: string[], autorTeclado: string): number {
     let contador: number = 0;
 
     generos.forEach((valores) => {
@@ -90,7 +125,10 @@ export class Interfaz {
     return contador;
   }
 
-  searchCancionesPlaylist(nombre: string): string[] {
+  /**
+   * Metodo que actualiza el vector de playlists
+   */
+  private searchCancionesPlaylist(nombre: string): string[] {
     const aux: string[] = [];
     [...this.playList].forEach((playList) => {
       if (playList.getNombre() === nombre) {
@@ -102,8 +140,11 @@ export class Interfaz {
 
     return aux;
   }
-
-  actualizarSearchGeneros(): void {
+  
+  /**
+   * Metodo que actualiza el vector de GenerosMusicales
+   */
+  private actualizarSearchGeneros(): void {
     this.searchGeneros = [];
     [...this.generos].forEach((genero) => {
       this.searchGeneros.push(genero.getNombre());
@@ -112,7 +153,10 @@ export class Interfaz {
     this.searchGeneros = [...new Set(this.searchGeneros)];
   }
 
-  actualizarSearchArtistasGrupos(): void {
+  /**
+   * Metodo que actualiza el vector de artistas y grupos
+   */
+  private actualizarSearchArtistasGrupos(): void {
     this.searchArtistas = [];
     this.searchGrupos = [];
     [...this.generos].forEach((genero) => {
@@ -128,7 +172,10 @@ export class Interfaz {
     this.searchGrupos = [...new Set(this.searchGrupos)];
   }
 
-  actualizarSearchAlbumes(): void {
+  /**
+   * Metodo que actualiza el vector de albumes
+   */
+  private actualizarSearchAlbumes(): void {
     this.searchAlbumes = [];
     [...this.generos].forEach((genero) => {
       [...genero.getAlbumes()].forEach((album) => {
@@ -138,7 +185,10 @@ export class Interfaz {
     this.searchAlbumes = [...new Set(this.searchAlbumes)];
   }
 
-  actualizarSearchCanciones(): void {
+  /**
+   * Metodo que actualiza el vector de canciones
+   */
+  private actualizarSearchCanciones(): void {
     this.searchCanciones = [];
     [...this.generos].forEach((genero) => {
       [...genero.getCanciones()].forEach((cancion) => {
@@ -148,7 +198,10 @@ export class Interfaz {
     this.searchArtistas = [...new Set(this.searchArtistas)];
   }
 
-  actualizarSearchPlalist(): void {
+  /**
+   * Metodo que actualiza el vector de playlists
+   */
+  private actualizarSearchPlalist(): void {
     this.searchPlayList = [];
     [...this.playList].forEach((playList) => {
       this.searchPlayList.push(playList.getNombre());
@@ -156,7 +209,12 @@ export class Interfaz {
     this.searchPlayList = [...new Set(this.searchPlayList)];
   }
 
-  searchStates(search: string[], input: string = "") {
+  /**
+   * Metodo que realiza búsqueda inteligente
+   * @param search array donde se realizará la búsqueda
+   * @param input string que se buscará en el array
+   */
+  private searchStates(search: string[], input: string = "") {
     return new Promise((resolve) => {
       setTimeout(() => {
         const results = fuzzy.filter(input, search).map((el: any) => el.original);
@@ -167,12 +225,10 @@ export class Interfaz {
       }, Math.random() * 470 + 30);
     });
   }
-  
-  
-  getGeneros(): Coleccion<GenerosMusicales> {
-    return this.generos;
-  }
 
+  /**
+   * Método principal de la interfaz que lanza el programa.
+   */
   run(): void {
     console.clear();
     inquirer.prompt([{
@@ -197,7 +253,10 @@ export class Interfaz {
     });
   }
 
-  añadirModificarEliminar(): void {
+  /**
+   * Método que permite eleguir al usuario que accion desea realizar.
+   */
+  private añadirModificarEliminar(): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -222,7 +281,10 @@ export class Interfaz {
     });
   }
 
-  eliminar(): void {
+  /**
+   * Metodo que permite eliminar una serie de elementos
+   */
+  private eliminar(): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -250,7 +312,10 @@ export class Interfaz {
     });
   }
 
-  eliminarGenero(): void {
+  /**
+   * Metodo que elimina un genero
+   */
+  private eliminarGenero(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -266,7 +331,10 @@ export class Interfaz {
     });
   }
 
-  eliminarArtistaGrupo(): void {
+  /**
+   * Método que elimina un artista o grupo
+   */
+  private eliminarArtistaGrupo(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -284,7 +352,10 @@ export class Interfaz {
     });
   }
 
-  eliminarAlbum(): void {
+  /**
+   * Método que elimina un album
+   */
+  private eliminarAlbum(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -306,7 +377,10 @@ export class Interfaz {
     });
   }
 
-  eliminarCancion(): void {
+  /**
+   * Metodo que permite eliminar una cancion
+   */
+  private eliminarCancion(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -322,6 +396,7 @@ export class Interfaz {
         });
 
         [...genero.getArtistaGrupos()].forEach((autor) => {
+          autor.getCanciones().removeElemento(answers["nombre"]);
           [...autor.getAlbumes()].forEach((album) => {
             album.getCanciones().removeElemento(answers["nombre"]);
           });
@@ -334,7 +409,10 @@ export class Interfaz {
     });
   }
 
-  modificar(): void {
+  /**
+   * Metodo que permite modificar un elemento
+   */  
+  private modificar(): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -365,7 +443,10 @@ export class Interfaz {
     });
   }
 
-  modificarGenero(): void {
+  /**
+   * Metodo que permite modificar un genero
+   */
+  private modificarGenero(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -389,7 +470,10 @@ export class Interfaz {
     });
   }
 
-  modificarGrupo(): void {
+  /**
+   * Metodo que permite modificar grupo
+   */
+  private modificarGrupo(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -439,7 +523,10 @@ export class Interfaz {
     });
   }
 
-  modificarArtista(): void {
+  /**
+   * Metodo que permite modificar un artista
+   */
+  private modificarArtista(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -477,7 +564,10 @@ export class Interfaz {
     });
   }
 
-  modificarAlbum(): void {
+  /**
+   * Metodo que permite modificar un album
+   */
+  private modificarAlbum(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -524,7 +614,10 @@ export class Interfaz {
     });
   }
 
-  modificarCancion(): void {
+  /**
+   * Metodo que permite modificar una cancion
+   */
+  private modificarCancion(): void {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -565,14 +658,14 @@ export class Interfaz {
         });
 
         [...genero.getArtistaGrupos()].forEach((autor) => {
+          [...autor.getCanciones()].forEach((cancion) => {
+            if (cancion.getNombre() === answers["nombre"]) {
+              cancion.setNombre(answers["nombreNuevo"]);
+              cancion.setReproducciones(parseInt(answers["reproduccionNuevo"]));
+            }
+          });
           [...autor.getAlbumes()].forEach((album) => {
             [...album.getCanciones()].forEach((cancion) => {
-              [...album.getCanciones()].forEach((cancion) => {
-                if (cancion.getNombre() === answers["nombre"]) {
-                  cancion.setNombre(answers["nombreNuevo"]);
-                  cancion.setReproducciones(parseInt(answers["reproduccionNuevo"]));
-                }
-              });
               if (cancion.getNombre() === answers["nombre"]) {
                 cancion.setNombre(answers["nombreNuevo"]);
                 cancion.setReproducciones(parseInt(answers["reproduccionNuevo"]));
@@ -588,16 +681,19 @@ export class Interfaz {
     });
   }
 
-  añadir(): void {
+  /**
+   * Metodo que permite añadir un elemento
+   */
+  private añadir(): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "comando",
       message: "¿Qué desea añadir?",
-      choices: ["Canción", "Album", "Canción a un album", "Artista", "Grupo", "Género", "Salir"],
+      choices: ["Canción", "Album", "Artista", "Grupo", "Género", "Salir"],
     }]).then((answers) => {
       switch (answers["comando"]) {
-        case "Canción":
+        case "Canción a un album":
           this.añadirCancion();
           break;
         case "Album":
@@ -619,7 +715,10 @@ export class Interfaz {
     });
   }
 
-  añadirGenero(): void {
+  /**
+   * Metodo que permite añadir un Genero
+   */
+  private añadirGenero(): void {
     console.clear();
     inquirer.prompt([{
       name: "nombre",
@@ -636,7 +735,10 @@ export class Interfaz {
     });
   }
 
-  añadirGrupo(): void {
+  /**
+   * Metodo que permite añadir un Grupo
+   */
+  private añadirGrupo(): void {
     console.clear();
     inquirer.prompt([{
       name: "nombre",
@@ -700,8 +802,10 @@ export class Interfaz {
     });
   }
 
-
-  añadirArtista(): void {
+  /**
+   * Metodo que permite añadir Artista
+   */
+  private añadirArtista(): void {
     console.clear();    
     inquirer.prompt([{
       name: "nombre",
@@ -763,7 +867,10 @@ export class Interfaz {
     });
   }
 
-  añadirAlbum(): void {
+  /**
+   * Metodo que permite añadir Album
+   */
+  private añadirAlbum(): void {
     console.clear();
     inquirer.prompt([{
       name: "nombre",
@@ -828,7 +935,7 @@ export class Interfaz {
       
       this.dataBase.almacenarInformacion();
       this.actualizarSearchAlbumes();
-      this.añadirCancion(false, answers["nombre"], parseInt(answers["canciones"]) - 1);
+      this.añadirCancion(answers["nombre"], parseInt(answers["canciones"]) - 1, answers["autor"]);
     }).catch((error) => {
       console.log(error.message);
       setTimeout(() => {
@@ -837,18 +944,58 @@ export class Interfaz {
     });
   }
 
-  
-  añadirCancion(single: boolean = true, nombreAlbum: string = "", cantidad: number = 0): void {
+  /**
+   * Metodo que permite añadir Cancion a un album
+   */
+  private añadirCancionAlbum() {
+    console.clear();
+    inquirer.prompt([{
+      type: "autocomplete",
+      name: "album",
+      message: "Nombre del album:",
+      source: (answersSoFar: any, input: string) => this.searchStates(this.searchAlbumes, input),
+    },
+    {
+      name: "canciones",
+      message: "Cantidad de canciones del album:",
+      validate: (value: any) => {
+        const regex: RegExp = /^[0-9]*$/;
+        if (!regex.test(value)) {
+          return "La cantidad debe ser un número";
+        }
+        if (parseInt(value) <= 0) {
+          return "La cantidad mínima es 1";
+        }
+        return true;
+      },
+    }]).then((answers) => {
+      let autor: string = "";
+      [...this.generos].forEach((genero) => {
+        [...genero.getArtistaGrupos()].forEach((autorGenero) => {
+          [...autorGenero.getAlbumes()].forEach((album) => {
+            if (album.getNombre() === answers["album"]) {
+              autor = autorGenero.getNombre();
+            }
+          });
+        });
+      });
+      this.añadirCancion(answers["album"], parseInt(answers["canciones"]) - 1, answers["autor"]);
+    });
+  }
+
+  /**
+   * Metodo que permite añadir una cancion a partir de un album 
+   */
+  private añadirCancion(nombreAlbum: string = "", cantidad: number = 0, autor: string = ""): void {
     console.clear();
     inquirer.prompt([{
       name: "nombre",
       message: "Nombre de la canción:",
     },
     {
-      type: "autocomplete",
-      name: "autor",
-      message: "Nombre del creador:",
-      source: (answersSoFar: any, input: string) => this.searchStates([...this.searchArtistas, ...this.searchGrupos], input),
+      type: "confirm",
+      name: "confirmacion",
+      message: "¿Es un single?",
     },
     {
       name: "duracion",
@@ -878,7 +1025,7 @@ export class Interfaz {
     }]).then((answers) => {  
       const generos: string[] = answers["generos"].split(' ');
   
-      if (this.mirarGeneros(generos, answers["autor"]) !== generos.length) {
+      if (this.mirarGeneros(generos, autor) !== generos.length) {
         throw new Error("¡¡¡¡¡ERROR: Géneros incorrectos!!!!!");
       }
   
@@ -886,30 +1033,25 @@ export class Interfaz {
       const seg = parseInt(answers["duracion"]) % 60;
       
       const cancion = new Cancion({nombre: answers["nombre"], autor: answers["autor"], 
-        duracion: {min: min, seg: seg}, generos: generos, single: single, reproducciones: parseInt(answers["reproducciones"])});
+        duracion: {min: min, seg: seg}, generos: generos, single: answers["confirmacion"], reproducciones: parseInt(answers["reproducciones"])});
   
       [...this.generos].forEach((genero) => {
         cancion.getGeneros().forEach((generoCancion) => {
           if (generoCancion === genero.getNombre()) {
             genero.addCancion(cancion);
-            if (!single) {
-              [...genero.getAlbumes()].forEach((album) => {
-                if (album.getNombre() === nombreAlbum) {
-                  album.addCancion(cancion);
-                }
-              });
-            }
+            [...genero.getAlbumes()].forEach((album) => {
+              if (album.getNombre() === nombreAlbum) {
+                album.addCancion(cancion);
+              }
+            });
             [...genero.getArtistaGrupos()].forEach((autor) => {
               if (autor.getNombre() === cancion.getAutor()) {
-                if (single) {
-                  autor.addCancion(cancion);  
-                } else {
-                  [...autor.getAlbumes()].forEach((album) => {
-                    if (album.getNombre() === nombreAlbum) {
-                      album.addCancion(cancion);
-                    }
-                  }); 
-                }
+                autor.addCancion(cancion);  
+                [...autor.getAlbumes()].forEach((album) => {
+                  if (album.getNombre() === nombreAlbum) {
+                    album.addCancion(cancion);
+                  }
+                });
               }
             });
           }
@@ -919,7 +1061,7 @@ export class Interfaz {
       this.dataBase.almacenarInformacion();
       this.actualizarSearchCanciones();
       if (cantidad) {
-        this.añadirCancion(single, nombreAlbum, cantidad - 1);
+        this.añadirCancion(nombreAlbum, cantidad - 1, autor);
       } else {
         this.añadir();
       }
@@ -931,8 +1073,10 @@ export class Interfaz {
     });
   }
   
-
-  visualizarLista(): void {
+  /**
+   * Metodo que permite visualizar la información básica
+   */
+  private visualizarLista(): void {
     console.clear();
     inquirer.prompt([{  
       type: "autocomplete",
@@ -963,7 +1107,10 @@ export class Interfaz {
     });
   }
 
-  visualizarSalir(): void {
+  /**
+   * Metodo que permite salir de la zona de visualización
+   */
+  private visualizarSalir(): void {
     inquirer.prompt([{
       type: "confirm",
       name: "confirmacion",
@@ -977,8 +1124,11 @@ export class Interfaz {
     });
   }
 
-
-  visualizarCanciones(opcion: string): void {
+  /**
+   * Metodo que permite visualizar Canciones
+   * @param autor Nombre del autor
+   */
+  private visualizarCanciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1004,8 +1154,11 @@ export class Interfaz {
     });
   }
 
-
-  visualizarAlbumes(opcion: string): void {
+  /**
+   * Metodo que permite visualizar la información de albumes
+   * @param opcion nombre del autor
+   */
+  private visualizarAlbumes(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1031,8 +1184,11 @@ export class Interfaz {
     });
   }
 
-
-  visualizarPlaylist(opcion: string): void {
+  /**
+   * Metodo que permite visualizar una Playlist
+   * @param opcion Nombre del autor
+   */
+  private visualizarPlaylist(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1055,8 +1211,12 @@ export class Interfaz {
     });
   }
 
-
-  filtradoTiTulo(opcion: string, tipo:number): void {
+  /**
+   * Metodo que filtra segun el titulo
+   * @param opcion Nombre del autor
+   * @param tipo si es un album, una canción o una playlist
+   */
+  private filtradoTiTulo(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1091,8 +1251,11 @@ export class Interfaz {
     });
   }
 
-
-  filtradoReproducciones(opcion: string): void {
+  /**
+   * Metodo que permite filtrar por Reproduciones
+   * @param opcion Nombre del autor
+   */
+  private filtradoReproducciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1126,8 +1289,13 @@ export class Interfaz {
     });
   }
 
+  /**
+   * Metodo que filtra por las reproducciones.
+   * @param opcion Nombre del autor
+   * @param tipo si es un album o una playlist
+   */
 
-  filtradoReproduccionesTotales(opcion: string, tipo:number): void {
+  private filtradoReproduccionesTotales(opcion: string, tipo:number): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1177,8 +1345,12 @@ export class Interfaz {
     });
   }
 
-
-  filtrosCanciones(opcion: string, value: number): string[] {
+  /**
+   * Metodo que permite aplicar filtro a la canciones
+   * @param opcion Nombre del autor
+   * @param value tipo de filtro
+   */
+  private filtrosCanciones(opcion: string, value: number): string[] {
     const aux: string[] = [];
     [...this.generos].forEach((genero) => {
       [...genero.getCanciones()].forEach((cancion) => {
@@ -1202,7 +1374,12 @@ export class Interfaz {
     }
   }
 
-  ordenar(numeros: string[]): string[] {
+  /**
+   * Metodo que ordena un array
+   * @param numeros numeros a ordenar
+   * @returns numeros ordenados
+   */
+  private ordenar(numeros: string[]): string[] {
     let aux: string;
     for (let i = 0; i < numeros.length; i++) {
       for (let j = i + 1; j < numeros.length; j++) {
@@ -1217,8 +1394,12 @@ export class Interfaz {
     return numeros;
   }
 
-
-  filtrosAlbumes(opcion:string, value: number): string[] {  
+  /**
+   * Metodo que permite aplicar filtro a la los albumes
+   * @param opcion Nombre del autor
+   * @param tipo tipo de filtro
+   */
+  private filtrosAlbumes(opcion:string, value: number): string[] {  
     const aux: string[] = [];
     [...this.generos].forEach((genero) => {
       [...genero.getAlbumes()].forEach((album) => {
@@ -1242,8 +1423,13 @@ export class Interfaz {
     }
   }
 
-
-  filtrosPlayList(opcion:string, value: number): string[] {  
+  /**
+   * Metodo que filtra playlists
+   * @param opcion nombre del autor
+   * @param value si son reproducciones o titulo
+   * @returns 
+   */
+  private filtrosPlayList(opcion:string, value: number): string[] {  
     const aux: string[] = [];
     [...this.playList].forEach((play) => {
       [...play.getCanciones()].forEach((cancion) => {
@@ -1264,8 +1450,12 @@ export class Interfaz {
     }
   }
 
-  
-  fechaPublicacion(opcion: any): void {
+
+  /**
+   * Metodo que permite aplicar filtro por fecha de publicacion
+   * @param opcion Nombre del autor
+   */
+  private fechaPublicacion(opcion: any): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1299,8 +1489,12 @@ export class Interfaz {
     });
   }
 
-
-  imprimirCanciones(aux: string[], value:boolean = true): void {
+  /**
+   * Metodo que permite imprimir canciones
+   * @param aux array de canciones
+   * @param value nos indica el tipo de visualizacion
+   */
+  private imprimirCanciones(aux: string[], value:boolean = true): void {
     let print;
     let primeraVez: boolean = false;
     if (aux.length === 0) {
@@ -1326,8 +1520,11 @@ export class Interfaz {
     }
   }
 
-
-  imprimirAlbumes(aux: string[]): void {
+  /**
+   * Metodo que impre la informacion de los albumes
+   * @param aux nombre de los albumes
+   */
+  private imprimirAlbumes(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
     if (aux.length === 0) {
@@ -1349,7 +1546,11 @@ export class Interfaz {
     this.visualizarSalir();
   }
 
-  imprimirPlaylist(aux: string[]): void {
+  /**
+   * Metodo que permite imprimir las playlist
+   * @param aux array de playlist
+   */
+  private imprimirPlaylist(aux: string[]): void {
     let print;
     let primeraVez: boolean = false;
     if (aux.length === 0) {
@@ -1369,7 +1570,10 @@ export class Interfaz {
     this.visualizarSalir();
   }
 
-  inicioPlayList(): void {
+  /**
+   * Metodo que inicia el modo playlists avanzadas.
+   */
+  private inicioPlayList(): void {
     console.clear();
     inquirer.prompt([{
       name: "nombre",
@@ -1386,7 +1590,10 @@ export class Interfaz {
     });
   }
 
-  gestionAvanzadaPlayList(): void {
+  /**
+   * Metodo que permite gestionar las playlist
+   */
+  private gestionAvanzadaPlayList(): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1412,10 +1619,13 @@ export class Interfaz {
     });
   }
 
-  playListInfoBasica() {
+  /**
+   * Metodo que permite gestionar la informacion básica de una playlist
+   */
+  private playListInfoBasica() {
     console.clear();
     inquirer.prompt([{
-      type: "list",
+      type: "autocomplete",
       name: "opcion",
       message: "Que playlist desea ver:",
       source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
@@ -1436,11 +1646,14 @@ export class Interfaz {
     });
   }
 
-
-  playListInfoAvanzada() {
+  /**
+   * Metodo que permite gestionar la informacion avanzada de una playlist
+   * y seleccionar que filtro desea aplicar el ususario
+   */
+  private playListInfoAvanzada() {
     console.clear();
     inquirer.prompt([{
-      type: "list",
+      type: "autocomplete",
       name: "opcion",
       message: "Que playlist desea navegar",
       source: (answersSoFar: any, input: string) => this.searchStates(this.searchPlayList, input),
@@ -1473,14 +1686,17 @@ export class Interfaz {
             this.filtradoAvanzadoReproducciones(answers["opcion"]);
             break;
         }
-        this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);
       } else {
         this.gestionAvanzadaPlayList();
       }
     });
   }
 
-  filtradoAvanzadoTiTulo(opcion: string): void {
+  /**
+   * Metodo que permite aplicar filtro de titulo a las canciones de una playlist
+   * @param opcion nombre de la playlist
+   */
+  private filtradoAvanzadoTiTulo(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1503,7 +1719,11 @@ export class Interfaz {
     });
   }
 
-  filtradoAvanzadoArtistaGrupo(opcion: string): void {
+  /**
+   * Metodo que permite aplicar filtro de artista/grupo a las canciones de una playlist
+   * @param opcion nombre de la playlist
+   */
+  private filtradoAvanzadoArtistaGrupo(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1537,7 +1757,11 @@ export class Interfaz {
     });
   }
 
-  filtradoAvanzadoLanzamiento(opcion: string): void {
+  /**
+   * Metodo que permite aplicar filtro de fecha de publicacion a las canciones de una playlist
+   * @param opcion nombre de la playlist
+   */
+  private filtradoAvanzadoLanzamiento(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1553,11 +1777,19 @@ export class Interfaz {
         } else {
           fechaspublicacion = this.filtrosAvanzadoPlayList(opcion, filterType.fechaPublicacion).reverse();
         }
+        const canciones: string[] = [];
+        [...this.playList].forEach((playlist) => {
+          if (playlist.getNombre() === opcion) {
+            [...playlist.getCanciones()].forEach((cancion) => {
+              canciones.push(cancion.getNombre());
+            });
+          }
+        });
         [...fechaspublicacion].forEach((elemento) => {
           [...this.generos].forEach((genero) => {
             [...genero.getAlbumes()].forEach((album) => {
               [...album.getCanciones()].forEach((cancion) => {
-                if (String(album.getFechaPublicacion()) === elemento) {
+                if (String(album.getFechaPublicacion()) === elemento && canciones.includes(cancion.getNombre())) {
                   nombreCancion.push(cancion.getNombre());
                 }
               });
@@ -1571,7 +1803,12 @@ export class Interfaz {
     });
   }
 
-  filtradoAvanzadoDuracion(opcion: string): void {
+
+  /**
+   * Metodo que permite aplicar filtro de duracion a las canciones de una playlist
+   * @param opcion nombre de la playlist
+   */
+  private filtradoAvanzadoDuracion(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1605,7 +1842,12 @@ export class Interfaz {
     });
   }
 
-  filtradoAvanzadoGenero(opcion: string): void {
+
+  /**
+   * Metodo que permite aplicar filtro de genero a las canciones de una playlist
+   * @param opcion nombre de la playlist
+   */
+  private filtradoAvanzadoGenero(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1639,7 +1881,12 @@ export class Interfaz {
     });
   }
 
-  filtradoAvanzadoReproducciones(opcion: string): void {
+
+  /**
+   * Metodo que permite aplicar filtro de reproducciones a las canciones de una playlist
+   * @param opcion nombre de la playlist
+   */
+  private filtradoAvanzadoReproducciones(opcion: string): void {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1673,30 +1920,39 @@ export class Interfaz {
     });
   }
   
-  // REVISAR
-  filtrosAvanzadoPlayList(nombre:string, tipoFiltro: number): string[] {  
+
+  /**
+   * Metodo que permite aplicar filtro dependiente de la opcion seleccionada
+   * @param nombre nombre de la playlist
+   * @param tipofiltro nombre de la playlist
+   */
+  private filtrosAvanzadoPlayList(nombre:string, tipoFiltro: number): string[] {  
     const aux: string[] = [];
     [...this.playList].forEach((playlist) => {
       if (playlist.getNombre() === nombre) {
         [...playlist.getCanciones()].forEach((cancion) => {
           switch (tipoFiltro) {
             case filterType.titulo:
+              console.log(cancion.getNombre());
               aux.push(cancion.getNombre());
               break;
             case filterType.nombreGrupoArtista:
               aux.push(cancion.getAutor());
               break;
             case filterType.fechaPublicacion:
-              const nombreAux = cancion.getAutor();
+              let primeraVez: boolean = true;
+              const nombreAux = cancion.getNombre();
               [...this.generos].forEach((genero) => {
                 [...genero.getAlbumes()].forEach((album) => {
                   [...album.getCanciones()].forEach((cancion) => {
-                    if (cancion.getAutor() === nombreAux) {
+                    if (cancion.getNombre() === nombreAux && primeraVez) {
                       aux.push(String(album.getFechaPublicacion()));
+                      primeraVez = false;
                     }
                   });
                 });
-              });    
+              });
+              primeraVez = false;
               break;
             case filterType.duracion:
               aux.push(String(cancion.devolverTiempoTotal()));
@@ -1718,7 +1974,12 @@ export class Interfaz {
     }
   }
 
-  visualizarAvanzadoSalir(opcion: number): void {
+
+  /**
+   * Metodo que permite salir de la opcion de filtrado avanzado
+   * @param opcion tipo de salida en la interfaz
+   */
+  private visualizarAvanzadoSalir(opcion: number): void {
     inquirer.prompt([{
       type: "confirm",
       name: "confirmacion",
@@ -1731,8 +1992,6 @@ export class Interfaz {
             break;
           case avanzadaPlaylist.playListInfoAvanzada:
             this.playListInfoAvanzada();
-          default:
-            break;
         }
       } else {
         this.gestionAvanzadaPlayList();
@@ -1740,7 +1999,10 @@ export class Interfaz {
     });
   }
 
-  playListGestion() {
+  /**
+   * Metodo que permite la gestion de las playlists
+   */
+  private playListGestion() {
     console.clear();
     inquirer.prompt([{
       type: "list",
@@ -1756,10 +2018,10 @@ export class Interfaz {
           this.crearPlayListDesde0();
           break;
         case "Modificar una playlist":
-          this.borrarPlayList();
+          this.modificarPlayList();
           break;
         case "Eliminar una playlist":
-          this.modificarPlayList();
+          this.borrarPlayList();
           break;
         case "Salir":
           this.gestionAvanzadaPlayList();
@@ -1768,7 +2030,10 @@ export class Interfaz {
     });
   }
   
-  crearPlayListExistente() {
+  /**
+   * Metodo que permite crear una playlist a partir de una existente
+   */
+  private crearPlayListExistente() {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -1795,11 +2060,11 @@ export class Interfaz {
         throw new Error("Ya existe una playlist con ese nombre");
       }
 
-      let play: PlayList = new PlayList({nombre: "", canciones: new Coleccion(), duracion: {hor: 0, min: 0}, generos: [], creador: ""});
+      const play: PlayList = new PlayList({nombre: "", canciones: new Coleccion(), duracion: {hor: 0, min: 0}, generos: [], creador: ""});
 
       [...this.playList].forEach((playlist) => {
         if (answers["nombre"] === playlist.getNombre()) {
-          play = playlist;
+          play.setCanciones(playlist.getCanciones());
           play.setCreador(this.usuarioNick);
           play.setNombre(answers["nuevoNombre"]);
         }
@@ -1817,7 +2082,10 @@ export class Interfaz {
     });
   }
 
-  crearPlayListDesde0() {
+  /**
+   * Metodo que crea una playlist desde 0.
+   */
+  private crearPlayListDesde0() {
     console.clear();
     inquirer.prompt([{
       name: "nuevoNombre",
@@ -1852,7 +2120,10 @@ export class Interfaz {
     });
   }
 
-  borrarPlayList() {
+  /**
+   * Metodo que borra una playlist
+   */
+  private borrarPlayList() {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -1881,7 +2152,10 @@ export class Interfaz {
     });
   }
 
-  modificarPlayList() {
+  /**
+   * Metodo que comprueba que un usuario tiene los permisos para modificar una playlist.
+   */
+  private modificarPlayList() {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -1897,6 +2171,7 @@ export class Interfaz {
           }
         }
       });
+      
       this.gestionModificarPlayList(answers["nombre"]);
     }).catch((error) => {
       console.log(error.message);
@@ -1906,19 +2181,17 @@ export class Interfaz {
     });
   }
 
-  gestionModificarPlayList(nombre: string) {
+  /**
+   * Meotodo que modifica las playlists
+   * @param nombre nombre de la playlist
+   */
+  private gestionModificarPlayList(nombre: string) {
     console.clear();
     inquirer.prompt([{
       type: "list",
       name: "comando",
       message: "¿Qué desea hacer?",
       choices: ["Cambiar nombre", "Eliminar canción", "Añadir canción", "Salir"],
-      validate: (value: any) => {
-        if (this.searchCancionesPlaylist(nombre) === [] && value === "Eliminar canción") {
-          return "No se puede eliminar un elemento de una playlist vacía";
-        }
-        return true;
-      },
     }]).then((answers) => {
       switch (answers["comando"]) {
         case "Cambiar nombre":
@@ -1937,7 +2210,11 @@ export class Interfaz {
     });
   }
   
-  modificarNombrePlayList(nombre: string) {
+  /**
+   * Metodo que modifica el nombre de una playlist
+   * @param nombre Nombre de la playlist
+   */
+  private modificarNombrePlayList(nombre: string) {
     console.clear();
     inquirer.prompt([{
       name: "nombreNuevo",
@@ -1955,7 +2232,11 @@ export class Interfaz {
     });
   }
 
-  eliminarCancionPlayList(nombre: string) {
+  /**
+   * Metodo que elimina una cancion de una playlist
+   * @param nombre nombre de la playlist
+   */
+  private eliminarCancionPlayList(nombre: string) {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",
@@ -1974,7 +2255,12 @@ export class Interfaz {
     });
   }
 
-  añadirCancionPlayList(nombre: string, contador: number = 0) {
+  /**
+   * Metodo que añade canciones a una playlist
+   * @param nombre Nombre de la playlist
+   * @param contador cantidad de canciones a añadir
+   */
+  private añadirCancionPlayList(nombre: string, contador: number = 0) {
     console.clear();
     inquirer.prompt([{
       type: "autocomplete",

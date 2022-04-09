@@ -3,12 +3,14 @@ import FileSync from 'lowdb/adapters/FileSync';
 import {PlayList} from "../Estructura/playlist";
 import {GenerosMusicales} from "../Estructura/generosMusicales";
 import {Coleccion} from "../Estructura/coleccionGenerica"; 
-import {Interfaz} from '../Estructura/Interfaz';
 import {Artista} from '../Estructura/artistas';
 import {Grupo} from '../Estructura/grupo';
 import {Album} from '../Estructura/album';
 import {Cancion} from '../Estructura/cancion';
 
+/**
+ * @type schemaType, tipo de dato que se va a guardar en la base de datos
+ */
 type schemaType = {
   datos: {
     estructura: Coleccion<GenerosMusicales>,
@@ -16,9 +18,20 @@ type schemaType = {
   }
 }
 
+/**
+ * @class JsonDataBase
+ */
 export class JsonDataBase {
+  /**
+   * @param estructura, estructura que se va a guardar en la base de datos.
+   */
   private database: lowdb.LowdbSync<schemaType>;
 
+  /**
+   * Cosntructor
+   * @param estructura Informacion de la estructura
+   * @param playList informacion de las playlist
+   */
   constructor(private estructura: Coleccion<GenerosMusicales>, private playList: Coleccion<PlayList>) {
     this.database = lowdb(new FileSync('src/BaseDeDatos/DataBase.json'));
     if (this.database.has('estructura').value()) {      
@@ -115,19 +128,30 @@ export class JsonDataBase {
       });
       this.playList = aux;
     } else {
-      this.database.set('playList', playList).write();
+      this.database.set('playList', this.playList).write();
     }
   }
 
+  /**
+   * Guarda la nueva informacion en la base de datos
+   */
   almacenarInformacion() {
     this.database.set('estructura', this.estructura).write();
     this.database.set('playList', this.playList).write();
   }
 
+  /**
+   * Metodo que retorna la estructura sacada de la base de datos
+   * @returns información de la estructura
+   */
   getEstructura(): Coleccion<GenerosMusicales> {
     return this.estructura;
   }
   
+  /**
+   * Metodo que retorna las playlist sacadas de la base de datos
+   * @returns información de la playlist
+   */
   getPlayList(): Coleccion<PlayList> {
     return this.playList;
   }

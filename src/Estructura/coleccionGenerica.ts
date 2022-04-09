@@ -1,48 +1,83 @@
 
+/**
+ * @interface NombreInterfaz Todos los elementos que se van a guardar en la colección deben implementar esta interfaz
+ */
 interface NombreInterfaz {
   getNombre: () => string,
 }
 
+/**
+ * @class Coleccion
+ */
 export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
+  /**
+   * @param coleccion almacen
+   */
   public coleccion: T[];
   
+  /**
+   * Cosntructor.
+   * @param coleccion coleccion a almacenar
+   */
   constructor(...coleccion: T[]) {
     this.coleccion = coleccion;
   }
 
-  getSize(): number {
-    return this.coleccion.length;
-  }
-
+  /**
+   * getter de un elemento segun el nombre
+   * @param nombre nombre del eleemnto
+   * @returns un elemento
+   */
   getElemento(nombre: string) {
     return [...this.coleccion.values()].find((elemento) =>
       elemento.getNombre() === nombre);
   }
 
+  /**
+   * elimina un elemento segun su nombre
+   * @param nombre nombre a eliminar
+   */
   removeElemento(nombre: string) {
     this.coleccion = this.coleccion.filter((item) => item.getNombre() !== nombre);
   }
 
+  /**
+   * Cambia un nuevo valor por otro
+   * @param valor nuevo valor
+   * @param posicion posicion del valor a cambiar
+   */
   changeElemento(valor: T, posicion: number): void {
     this.coleccion[posicion] = valor;
   }
 
+  /**
+   * Añade un elemento.
+   * @param elemento elemento a añadir
+   */
   addElemento(elemento: T) {
     this.coleccion.push(elemento);
   }
 
+  /**
+   * Metodo que vacía el almacen
+   */
   limpiarElementos(): void {
     this.coleccion = [];
   }
 
-  deleteElemento(elemento: T) { // Lo deja sin huecos revisar
+  /**
+   * Metodo que elimina un determinado objeto
+   * @param elemento elemento a eliminar
+   */
+  deleteElemento(elemento: T) {
     this.coleccion.splice(this.coleccion.indexOf(elemento), 1);
   }
 
+  /**
+   * Iterable
+   * @returns un iterador
+   */
   [Symbol.iterator](): Iterator<T> {
     return this.coleccion.values();
   }
 }
-
-
-// [...new Set(myArr)] 
