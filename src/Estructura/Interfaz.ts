@@ -1892,21 +1892,18 @@ export class Interfaz {
             });
           }
         });
-        // console.log(canciones);
-        // console.log(fechaspublicacion);
         [...fechaspublicacion].forEach((elemento) => {
           [...this.generos].forEach((genero) => {
             [...genero.getAlbumes()].forEach((album) => {
               [...album.getCanciones()].forEach((cancion) => {
                 if (String(album.getFechaPublicacion()) === elemento && canciones.includes(cancion.getNombre()) && !nombreCancion.includes(cancion.getNombre())) {
                   nombreCancion.push(cancion.getNombre());
-                  // console.log(cancion.getNombre() + " " + album.getFechaPublicacion() + " " + album.getNombre() + " " + cancion.getAutor() + " " + album.getAutor());
+                  this.dataBase.guardarEstructura();
                 }
               });
             });
           });
         });
-        // console.log(nombreCancion);
         this.imprimirCanciones(nombreCancion, false);
       } else {
         this.visualizarAvanzadoSalir(avanzadaPlaylist.playListInfoAvanzada);

@@ -7,7 +7,6 @@ import {Artista} from '../Estructura/artistas';
 import {Grupo} from '../Estructura/grupo';
 import {Album} from '../Estructura/album';
 import {Cancion} from '../Estructura/cancion';
-import * as Data from "../BaseDeDatos/dataBase";
 
 
 /**
@@ -48,7 +47,7 @@ export class JsonDataBase {
 
         [...genero.getAlbumes()].forEach((album) => {
           album = new Album(album.album, false);
-          album.setCanciones(new Coleccion<Cancion>(...genero.getCanciones().coleccion));
+          album.setCanciones(new Coleccion<Cancion>(...album.getCanciones().coleccion));
           genero.getAlbumes().changeElemento(album, contadorAlbum);
           contadorAlbum++;
           [...album.getCanciones()].forEach((cancion) => {
@@ -112,7 +111,7 @@ export class JsonDataBase {
 
         [...autor.getAlbumes()].forEach((album) => {
           album = new Album(album.album, false);
-          album.setCanciones(new Coleccion<Cancion>(...autor.getCanciones().coleccion));
+          album.setCanciones(new Coleccion<Cancion>(...album.getCanciones().coleccion));
           autor.getAlbumes().changeElemento(album, contadorAlbum);
           contadorAlbum++;
           [...album.getCanciones()].forEach((cancion) => {
@@ -177,7 +176,3 @@ export class JsonDataBase {
     return this.autores;
   }
 }
-
-const dataBase = new JsonDataBase(Data.generos, Data.playList, Data.autores);
-console.log("aa");
-

@@ -11,7 +11,7 @@ describe('JsonDataBase', () => {
     });
     it('Devuelve la informacion de la base de datos', () => {
         expect(dataBase.getEstructura()).eql(Data.generos);
-        //expect(dataBase.getPlayList()).eql(Data.playList);
-        //expect(dataBase.getAutores()).eql(Data.autores);
+        expect(dataBase.getPlayList()).eql(Data.playList);
+        expect(dataBase.getAutores()).eql(Data.autores);
     });
 });
