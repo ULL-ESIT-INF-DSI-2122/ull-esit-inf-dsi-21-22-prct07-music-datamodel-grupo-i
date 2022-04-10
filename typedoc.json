@@ -1,14 +1,14 @@
 {
     "entryPoints": [
         "./src/BaseDeDatos/dbManager.ts",
-        "./src/Estrutura/album.ts",
-        "./src/Estrutura/artista.ts",
-        "./src/Estrutura/cancion.ts",
-        "./src/Estrutura/coleccionGenerica.ts",
-        "./src/Estrutura/generosMusicales.ts",
-        "./src/Estrutura/grupo.ts",
-        "./src/Estrutura/interfaz.ts",
-        "./src/Estrutura/playlist.ts"
+        "./src/Estructura/album.ts",
+        "./src/Estructura/artistas.ts",
+        "./src/Estructura/cancion.ts",
+        "./src/Estructura/coleccionGenerica.ts",
+        "./src/Estructura/generosMusicales.ts",
+        "./src/Estructura/grupo.ts",
+        "./src/Estructura/Interfaz.ts",
+        "./src/Estructura/playlist.ts"
     ],
     "out": "./typedoc"
 }

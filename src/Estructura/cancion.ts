@@ -150,13 +150,15 @@ export class PrintCancion {
   /**
    * imprime la cancion
    */
-  print(): void {
-    console.log(`Nombre: ${this.cancion.getNombre()}`);
-    console.log(`Autor: ${this.cancion.getAutor()}`);
-    console.log(`Duracion: ${this.cancion.getDuracion().min}:${this.cancion.getDuracion().seg}`);
-    console.log(`Generos: ${this.cancion.getGeneros().join(', ')}`);
-    console.log(`Single: ${this.cancion.getSingle()}`);
-    console.log(`Reproducciones: ${this.cancion.getReproducciones()}`);
-    console.log("////////////////////\n\n");
+  print(): string {
+    const salida = `Nombre: ${this.cancion.getNombre()}` +
+      `\nAutor: ${this.cancion.getAutor()}` +
+      `\nDuracion: ${this.cancion.getDuracion().min}:${this.cancion.getDuracion().seg}` +
+      `\nGeneros: ${this.cancion.getGeneros().join(', ')}` +
+      `\nSingle: ${this.cancion.getSingle()}` +
+      `\nReproducciones: ${this.cancion.getReproducciones()}` +
+      `\n////////////////////\n\n`;
+    console.log(salida);
+    return salida;
   }
 }

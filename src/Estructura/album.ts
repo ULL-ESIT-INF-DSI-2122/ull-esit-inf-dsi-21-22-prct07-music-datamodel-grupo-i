@@ -45,7 +45,7 @@ export class Album {
   private comprobarCanciones(canciones: Coleccion<Cancion>): void {
     let aux = 0;
     [...canciones].forEach((cancion) => {
-      if (!cancion.getSingle() && this.album.autor === cancion.getAutor()) {
+      if (this.album.autor === cancion.getAutor()) {
         cancion.getGeneros().forEach((genero) => {
           this.album.generos.forEach((generosAlbum) => {
             if (generosAlbum === genero) {
@@ -56,6 +56,7 @@ export class Album {
         if (aux === cancion.getGeneros().length) {
           this.album.canciones.addElemento(cancion);
         }
+        aux = 0;
       }
     });
   }
@@ -182,16 +183,18 @@ export class PrintAlbum {
   /**
    * Método que imprime el album
    */
-  print(): void {
+  print(): string {
     let result = "";
     [...this.album.getCanciones()].forEach((cancion) => {
       result += cancion.getNombre() + "," + " ";
     });
-    console.log(`Nombre: ${this.album.getNombre()}`);
-    console.log(`Autor: ${this.album.getAutor()}`);
-    console.log(`Fecha Publicación: ${this.album.getFechaPublicacion()}`);
-    console.log(`Generos: ${this.album.getGeneros().join(', ')}`);
-    console.log(`Canciones: ${result}`);
-    console.log("////////////////////\n\n");  
+    const salida = `Nombre: ${this.album.getNombre()}` +
+    `\nAutor: ${this.album.getAutor()}` +
+    `\nFecha Publicación: ${this.album.getFechaPublicacion()}` +
+    `\nGeneros: ${this.album.getGeneros().join(', ')}` +
+    `\nCanciones: ${result}` +
+    `\n////////////////////\n\n`;
+    console.log(salida);
+    return salida;
   }
 }

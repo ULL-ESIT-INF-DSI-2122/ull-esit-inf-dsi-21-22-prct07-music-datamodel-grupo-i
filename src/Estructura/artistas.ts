@@ -62,6 +62,7 @@ export class Artista {
         if (aux === cancion.getGeneros().length) {
           this.artista.canciones.addElemento(cancion);
         }
+        aux = 0;
       }
     });
   }
@@ -215,12 +216,15 @@ export class PrintArtista {
    * método que imprime informacion del artista.
    * @returns string con la informacion del artista
   */
-  print(): void {
-    console.log(`Nombre: ${this.artista.getNombre()}`);
-    console.log(`Grupo: ${this.artista.getGrupos().join(", ")}`);
-    console.log(`Generos: ${this.artista.getGeneros().join(', ')}`);
-    console.log(`Albumes: ${[...this.artista.getAlbumes()].join(', ')}`);
-    console.log(`Canciones: ${[...this.artista.getCanciones()].join(', ')}`);
-    console.log(`Oyentes: ${this.artista.getOyentes()}`);
+  print(): string {
+    const salida = `Nombre: ${this.artista.getNombre()}` +
+    `\nGrupo: ${this.artista.getGrupos().join(", ")}` +
+    `\nGeneros: ${this.artista.getGeneros().join(', ')}` +
+    `\nAlbumes: ${[...this.artista.getAlbumes()].join(', ')}` +
+    `\nCanciones: ${[...this.artista.getCanciones()].join(', ')}` +
+    `\nOyentes: ${this.artista.getOyentes()}` +
+    `\n////////////////////\n\n`;
+    console.log(salida);
+    return salida;
   }
 }

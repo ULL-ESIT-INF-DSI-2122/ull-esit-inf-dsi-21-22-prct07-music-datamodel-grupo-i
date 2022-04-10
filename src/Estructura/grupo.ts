@@ -8,7 +8,7 @@ import {Cancion} from "./cancion";
  */
 export type grupoType = {
   nombre: string,
-  artistas: Coleccion<Artista>,
+  artistas: string[],
   fechaCreacion: number,
   generos: string[],
   albumes: Coleccion<Album>,
@@ -23,7 +23,7 @@ export class Grupo {
   /**
    * @param grupo grupotype
    */
-  public grupo: grupoType = {nombre: "", artistas: new Coleccion<Artista>(), fechaCreacion: 0, generos: [], 
+  public grupo: grupoType = {nombre: "", artistas: [], fechaCreacion: 0, generos: [], 
     albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>(), oyentes: 0};
   /**
    * Constructor de la clase Grupo
@@ -34,10 +34,11 @@ export class Grupo {
     this.grupo.nombre = grupo.nombre;
     this.grupo.fechaCreacion = grupo.fechaCreacion;
     this.grupo.generos = grupo.generos;
+    this.grupo.oyentes = grupo.oyentes;
+    this.grupo.artistas = grupo.artistas;
 
     if (memoria) {
       this.comprobarAlbumes(grupo.albumes);
-      this.comprobarArtistas(grupo.artistas);
       this.comprobarCanciones(grupo.canciones);
     } else {
       this.grupo.albumes = grupo.albumes;
@@ -64,6 +65,7 @@ export class Grupo {
         if (aux === cancion.getGeneros().length) {
           this.grupo.canciones.addElemento(cancion);
         }
+        aux = 0;
       }
     });
   }
@@ -91,20 +93,6 @@ export class Grupo {
   }
 
   /**
-   * Metodo que verifica si un grupo de artistas se pueden añadir a un grupo
-   * @param artistas Coleccion de artistas a comprobar
-   */
-  private comprobarArtistas(artistas: Coleccion<Artista>): void {
-    [...artistas].forEach((artista) => {
-      artista.getGrupos().forEach((grupo) => {
-        if (grupo === this.grupo.nombre) {
-          this.grupo.artistas.addElemento(artista);
-        }
-      });
-    });
-  }
-
-  /**
    * getter nombre grupo
    * @returns nombre del grupo
    */
@@ -116,7 +104,7 @@ export class Grupo {
    * getter artistas del grupo
    * @returns artistas del grupo
    */
-  getArtista(): Coleccion<Artista> {
+  getArtista(): string[] {
     return this.grupo.artistas;
   }
 
@@ -172,7 +160,7 @@ export class Grupo {
    * setter artistas
    * @param artistas nuevos artistas
    */
-  setArtistas(artistas: Coleccion<Artista>): void {
+  setArtistas(artistas: string[]): void {
     this.grupo.artistas = artistas;
   }
 
@@ -236,8 +224,8 @@ export class Grupo {
    * metodo que añade un nuevo artista
    * @param artista artista a añadir
    */
-  addArtista(artista: Artista): void {
-    this.grupo.artistas.addElemento(artista);
+  addArtista(artista: string): void {
+    this.grupo.artistas.push(artista);
   }
 }
 
@@ -254,13 +242,16 @@ export class PrintGrupo {
   /**
    * Metodo que imprime un grupo.
    */
-  print(): void {
-    console.log(`Nombre: ${this.grupo.getNombre()}`);
-    console.log(`Artistas: ${[...this.grupo.getArtista()].join(', ')}`);
-    console.log(`Fecha de Creación: ${this.grupo.getFechaCreacion()}`);
-    console.log(`Generos: ${[...this.grupo.getGeneros()].join(', ')}`);
-    console.log(`Albumes: ${[...this.grupo.getAlbumes()].join(', ')}`);
-    console.log(`Canciones: ${[...this.grupo.getCanciones()].join(', ')}`);
-    console.log(`Oyentes: ${this.grupo.getOyentes()}`);
+  print(): string {
+    const salida = `Nombre: ${this.grupo.getNombre()}` +
+    `\nArtistas: ${[...this.grupo.getArtista()].join(', ')}` +
+    `\nFecha de Creación: ${this.grupo.getFechaCreacion()}` +
+    `\nGeneros: ${[...this.grupo.getGeneros()].join(', ')}` +
+    `\nAlbumes: ${[...this.grupo.getAlbumes()].join(', ')}` +
+    `\nCanciones: ${[...this.grupo.getCanciones()].join(', ')}` +
+    `\nOyentes: ${this.grupo.getOyentes()}` +
+    `\n////////////////////\n\n`; 
+    console.log(salida);
+    return salida;
   }
 }

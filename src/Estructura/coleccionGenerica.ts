@@ -3,6 +3,10 @@
  * @interface NombreInterfaz Todos los elementos que se van a guardar en la colección deben implementar esta interfaz
  */
 interface NombreInterfaz {
+  /**
+   * Todos los elementos que se van a guardar en la colección deben tener metodo
+   * getNombre() que devuelva el nombre del elemento
+   */
   getNombre: () => string,
 }
 
@@ -71,6 +75,13 @@ export class Coleccion<T extends NombreInterfaz> implements Iterable<T> {
    */
   deleteElemento(elemento: T) {
     this.coleccion.splice(this.coleccion.indexOf(elemento), 1);
+  }
+
+  /**
+   * Metodo que devuelve el tamaño del almacen
+   */
+  longitudColeccion(): number {
+    return this.coleccion.length;
   }
 
   /**

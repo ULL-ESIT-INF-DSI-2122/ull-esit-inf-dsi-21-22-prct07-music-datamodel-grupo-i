@@ -181,40 +181,40 @@ const artista8 = new Artista({nombre: "Mesita", grupos: ["Iron Maiden"], generos
 const artista9 = new Artista({nombre: "Duki", grupos: ["Iron Maiden"], generos: ["Trap", "Drill", "Metal", "Jazz", "Rap"], 
   albumes: new Coleccion<Album>(album8), canciones: new Coleccion<Cancion>(cancion11, cancion25, cancion33, cancion44), oyentes: 123}); // 2
 
-const grupo1 = new Grupo({nombre: "AC/DC", artistas: new Coleccion<Artista>(artista1, artista2), fechaCreacion: 2008, 
+const grupo1 = new Grupo({nombre: "AC/DC", artistas: ["Bayside", "John Lennon"], fechaCreacion: 2008, 
   generos: ["Rock", "Trap", "Metal", "Jazz", "Flamenco"], albumes: new Coleccion<Album>(album2), 
   canciones: new Coleccion<Cancion>(cancion47, cancion31, cancion18, cancion5), oyentes: 300});
-const grupo2 = new Grupo({nombre: "Pink Floyd", artistas: new Coleccion<Artista>(artista3, artista4), fechaCreacion: 2012, 
+const grupo2 = new Grupo({nombre: "Pink Floyd", artistas: ["Stephen Malkmus", "Gunna"], fechaCreacion: 2012, 
   generos: ["Pop", "Trap", "Drill", "Metal", "Rap"], albumes: new Coleccion<Album>(album13), 
   canciones: new Coleccion<Cancion>(cancion41, cancion22, cancion16, cancion15), oyentes: 500});
-const grupo3 = new Grupo({nombre: "The Beatles", artistas: new Coleccion<Artista>(artista5, artista6), fechaCreacion: 2005, 
+const grupo3 = new Grupo({nombre: "The Beatles", artistas: ["George Harrison", "Paul McCartney"], fechaCreacion: 2005, 
   generos: ["Pop", "Trap", "K-pop", "Flamenco"], albumes: new Coleccion<Album>(album14),
   canciones: new Coleccion<Cancion>(cancion8, cancion10, cancion27, cancion46), oyentes: 700});
-const grupo4 = new Grupo({nombre: "Queen", artistas: new Coleccion<Artista>(artista2, artista7), fechaCreacion: 1865, 
+const grupo4 = new Grupo({nombre: "Queen", artistas: ["John Lennon", "Breach"], fechaCreacion: 1865, 
   generos: ["Trap", "Drill", "Country"], albumes: new Coleccion<Album>(album7), canciones: new Coleccion<Cancion>(cancion36, cancion21, cancion12), oyentes: 900});
-const grupo5 = new Grupo({nombre: "Iron Maiden", artistas: new Coleccion<Artista>(artista8, artista9), fechaCreacion: 2060,
+const grupo5 = new Grupo({nombre: "Iron Maiden", artistas: ["Mesita", "Duki"], fechaCreacion: 2060,
   generos: ["Pop", "Jazz", "K-pop", "Rap", "Country"], albumes: new Coleccion<Album>(album4),
   canciones: new Coleccion<Cancion>(cancion7, cancion26, cancion42), oyentes: 1100});
 
-const genero1 = new GenerosMusicales({nombre: "Rock", artistasGrupos: new Coleccion<Artista | Grupo>(artista1, artista2, artista3, artista4, grupo1), 
+const genero1 = new GenerosMusicales({nombre: "Rock", artistasGrupos: ["Bayside", "John Lennon", "Stephen Malkmus", "Gunna", "AC/DC"], 
   albumes: new Coleccion<Album>(album2, album3, album6), canciones: new Coleccion<Cancion>(cancion1, cancion2, cancion3, cancion4, cancion5)});
-const genero3 = new GenerosMusicales({nombre: "Trap", artistasGrupos: new Coleccion<Artista | Grupo>(artista5, artista6, artista7, grupo1, grupo2, grupo3, grupo4), 
+const genero3 = new GenerosMusicales({nombre: "Trap", artistasGrupos: ["George Harrison", "Paul McCartney", "Breach", "AC/DC", "Pink Floyd", "The Beatles", "Queen"], 
   albumes: new Coleccion<Album>(album8, album7, album2), canciones: new Coleccion<Cancion>(cancion5, cancion10, cancion11, cancion12, cancion13, cancion14, cancion15)});
-const genero5 = new GenerosMusicales({nombre: "Drill", artistasGrupos: new Coleccion<Artista | Grupo>(artista6, artista7, artista9, grupo2, grupo4), 
+const genero5 = new GenerosMusicales({nombre: "Drill", artistasGrupos: ["Paul McCartney", "Breach", "Duki", "Pink Floyd", "Queen"], 
   albumes: new Coleccion<Album>(album7, album8), canciones: new Coleccion<Cancion>(cancion6, cancion21, cancion22, cancion23, cancion24, cancion25)});
-const genero7 = new GenerosMusicales({nombre: "Jazz", artistasGrupos: new Coleccion<Artista | Grupo>(artista1, artista4, artista8, artista9, grupo1, grupo5), 
+const genero7 = new GenerosMusicales({nombre: "Jazz", artistasGrupos: ["Bayside", "Gunna", "Mesita", "Duki", "AC/DC", "Iron Maiden"], 
   albumes: new Coleccion<Album>(album1, album2, album4, album5, album6, album8), canciones: new Coleccion<Cancion>(cancion26, cancion31, cancion32, cancion33, cancion34, cancion35)});
-const genero9 = new GenerosMusicales({nombre: "Rap", artistasGrupos: new Coleccion<Artista | Grupo>(artista1, artista6, artista9, grupo2, grupo5), 
+const genero9 = new GenerosMusicales({nombre: "Rap", artistasGrupos: ["Bayside", "Paul McCartney", "Duki", "Pink Floyd", "Iron Maiden"], 
   albumes: new Coleccion<Album>(album1, album4, album8), canciones: new Coleccion<Cancion>(cancion41, cancion42, cancion43, cancion44, cancion45)});
-const genero2 = new GenerosMusicales({nombre: "Pop", artistasGrupos: new Coleccion<Artista | Grupo>(artista1, artista8, artista7, grupo5, grupo3, grupo2),
+const genero2 = new GenerosMusicales({nombre: "Pop", artistasGrupos: ["Bayside", "Mesita", "Breach", "Iron Maiden", "The Beatles", "Pink Floyd"],
   albumes: new Coleccion<Album>(album4), canciones: new Coleccion<Cancion>(cancion6, cancion7, cancion8, cancion9, cancion10, cancion15)});
-const genero4 = new GenerosMusicales({nombre: "Metal", artistasGrupos: new Coleccion<Artista | Grupo>(artista1, artista2, artista4, artista9, grupo1, grupo2),
+const genero4 = new GenerosMusicales({nombre: "Metal", artistasGrupos: ["Bayside", "John Lennon", "Gunna", "Duki", "AC/DC", "Pink Floyd"],
   albumes: new Coleccion<Album>(album2, album3, album6, album8), canciones: new Coleccion<Cancion>(cancion16, cancion17, cancion18, cancion19, cancion20, cancion15, cancion11)});
-const genero6 = new GenerosMusicales({nombre: "K-pop", artistasGrupos: new Coleccion<Artista | Grupo>(artista2, artista5, artista8, grupo3, grupo5),
+const genero6 = new GenerosMusicales({nombre: "K-pop", artistasGrupos: ["John Lennon", "George Harrison", "Mesita", "The Beatles", "Iron Maiden"],
   albumes: new Coleccion<Album>(album3, album4, album5), canciones: new Coleccion<Cancion>(cancion26, cancion27, cancion28, cancion29, cancion30)});
-const genero8 = new GenerosMusicales({nombre: "Country", artistasGrupos: new Coleccion<Artista | Grupo>(artista2, artista3, artista7, artista8, grupo4, grupo5),
+const genero8 = new GenerosMusicales({nombre: "Country", artistasGrupos: ["John Lennon", "Stephen Malkmus", "Breach", "Mesita", "Queen", "Iron Maiden"],
   albumes: new Coleccion<Album>(album3, album4, album5, album7), canciones: new Coleccion<Cancion>(cancion36, cancion37, cancion38, cancion39, cancion30, cancion42)});
-const genero10 = new GenerosMusicales({nombre: "Flamenco", artistasGrupos: new Coleccion<Artista | Grupo>(artista3, artista4, artista7, grupo3, grupo1),
+const genero10 = new GenerosMusicales({nombre: "Flamenco", artistasGrupos: ["Stephen Malkmus", "Gunna", "Breach", "The Beatles", "AC/DC"],
   albumes: new Coleccion<Album>(album3, album4, album7), canciones: new Coleccion<Cancion>(cancion46, cancion47, cancion48, cancion49, cancion50)});
 
 export const generos = new Coleccion<GenerosMusicales>(genero1, genero2, genero3, genero4, genero5, genero6, genero7, genero8, genero9, genero10);
@@ -227,3 +227,5 @@ const playlist3 = new PlayList({nombre: "Los de Socorro", canciones: new Colecci
   duracion: {hor: 0, min: 0}, generos: [], creador: "SYSTEM"});
 
 export const playList = new Coleccion<PlayList>(playlist1, playlist2, playlist3);
+
+export const autores = new Coleccion<Artista | Grupo>(grupo1, grupo2, grupo3, grupo4, grupo5, artista1, artista2, artista3, artista4, artista5, artista6, artista7, artista8, artista9);

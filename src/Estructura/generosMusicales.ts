@@ -1,15 +1,13 @@
 import {Coleccion} from "./coleccionGenerica";
 import {Cancion} from "./cancion";
 import {Album} from "./album";
-import {Artista} from "./artistas";
-import {Grupo} from "./grupo";
 
 /**
  * @type generoMusicalType, tipo de dato que representa un genero musical
  */
 type generoMusicalType = {
   nombre: string,
-  artistasGrupos: Coleccion<Artista | Grupo>,
+  artistasGrupos: string[],
   albumes: Coleccion<Album>,
   canciones: Coleccion<Cancion>
 }
@@ -21,7 +19,7 @@ export class GenerosMusicales {
   /**
    * @param genero, genero que almacena la información.
    */
-  public genero: generoMusicalType = {nombre: "", artistasGrupos: new Coleccion<Artista | Grupo>(), 
+  public genero: generoMusicalType = {nombre: "", artistasGrupos: [], 
     albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
   /**
    * Constructor de la clase GeneroMusical
@@ -30,31 +28,17 @@ export class GenerosMusicales {
   */
   constructor(genero: generoMusicalType, memoria: boolean = true) {
     this.genero.nombre = genero.nombre;
+    this.genero.artistasGrupos = genero.artistasGrupos;
 
     
     if (memoria) {
       this.comprobarAlbumes(genero.albumes);
       this.comprobarCanciones(genero.canciones);
-      this.comprobarArtistasGrupos(genero.artistasGrupos);
     } else {
       this.genero.artistasGrupos = genero.artistasGrupos;
       this.genero.albumes = genero.albumes;
       this.genero.canciones = genero.canciones;
     }
-  }
-
-  /**
-   * Método que comprueba que los artistas o grupos cumplan los requisitos.
-   * @param artistasGrupos Coleccion de artistas o grupos a revisar.
-   */
-  private comprobarArtistasGrupos(artistasGrupos: Coleccion<Artista | Grupo>): void {
-    [...artistasGrupos].forEach((creador) => {
-      creador.getGeneros().forEach((genero) => {
-        if (genero === this.genero.nombre) {
-          this.genero.artistasGrupos.addElemento(creador);
-        }
-      });
-    });
   }
 
   /**
@@ -97,7 +81,7 @@ export class GenerosMusicales {
    * getter del artista o grupo.
    * @returns Coleccion de artistas o grupos.
    */
-  getArtistaGrupos(): Coleccion<Artista | Grupo> {
+  getArtistaGrupos(): string[] {
     return this.genero.artistasGrupos;
   }
 
@@ -129,7 +113,7 @@ export class GenerosMusicales {
    * setter de los artistas o grupos.
    * @param artistasGrupos nueva coleccion de artistas o grupos.
    */
-  setArtistasGrupos(artistasGrupos: Coleccion<Artista | Grupo>): void {
+  setArtistasGrupos(artistasGrupos: string[]): void {
     this.genero.artistasGrupos = artistasGrupos;
   }
 
@@ -169,8 +153,8 @@ export class GenerosMusicales {
    * método que añade un nuevo artista o grupo al genero.
    * @param nombre nuevo artista o grupo
    */
-  addArtistaGrupo(nombre: Artista | Grupo): void {
-    this.genero.artistasGrupos.addElemento(nombre);
+  addArtistaGrupo(nombre: string): void {
+    this.genero.artistasGrupos.push(nombre);
   }
 }
 
@@ -188,10 +172,13 @@ export class PrintGenerosMusicales {
    * método que imprime informacion del genero.
    * @returns string con la informacion del genero
   */
-  print(): void {
-    console.log(`Nombre: ${this.genero.getNombre()}`);
-    console.log(`Artistas: ${[...this.genero.getArtistaGrupos()].join(', ')}`);
-    console.log(`Albunes: ${[...this.genero.getAlbumes()].join(', ')}`);
-    console.log(`Canciones: ${[...this.genero.getCanciones()].join(', ')}`);
+  print(): string {
+    const salida = `Nombre: ${this.genero.getNombre()}` +
+    `\nArtistas: ${[...this.genero.getArtistaGrupos()].join(', ')}` +
+    `\nAlbunes: ${[...this.genero.getAlbumes()].join(', ')}` +
+    `\nCanciones: ${[...this.genero.getCanciones()].join(', ')}` +
+    `\n////////////////////\n\n`;
+    console.log(salida);
+    return salida;
   }
 }

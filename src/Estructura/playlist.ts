@@ -9,7 +9,7 @@ type playlistType = {
   canciones: Coleccion<Cancion>,
   duracion: duracionHorMinType,
   generos: string[],
-  creador: string
+  creador: string,
 }
 
 /**
@@ -208,15 +208,17 @@ export class PrintPlayList {
    * método que imprime informacion de la playlist.
    * @returns string con la informacion de la playlist
   */
-  print(): void {
+  print(): string {
     let result = "";
     [...this.playlist.getCanciones()].forEach((cancion) => {
       result += cancion.getNombre() + "," + " ";
     });
-    console.log(`Nombre: ${this.playlist.getNombre()}`);
-    console.log(`Canciones: ${result}`);
-    console.log(`Duración: ${this.playlist.getDuracion().hor}h ${this.playlist.getDuracion().min}min`);
-    console.log(`Generos: ${this.playlist.getGeneros().join(', ')}`);
-    console.log("/n");
+    const salida = `Nombre: ${this.playlist.getNombre()}` +
+    `\nCanciones: ${result}` +
+    `\nDuración: ${this.playlist.getDuracion().hor}h ${this.playlist.getDuracion().min}min` +
+    `\nGeneros: ${this.playlist.getGeneros().join(', ')}` +
+    `\n////////////////////\n\n`;
+    console.log(salida);
+    return salida;
   }
 }
