@@ -8,8 +8,8 @@ import {Album} from "./album";
 type generoMusicalType = {
   nombre: string,
   artistasGrupos: string[],
-  albumes: Coleccion<Album>,
-  canciones: Coleccion<Cancion>
+  albumes: string[],
+  canciones: string[]
 }
 
 /**
@@ -20,7 +20,7 @@ export class GenerosMusicales {
    * @param genero, genero que almacena la información.
    */
   public genero: generoMusicalType = {nombre: "", artistasGrupos: [], 
-    albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()};
+    albumes: [], canciones: []};
   /**
    * Constructor de la clase GeneroMusical
    * @param genero, genero que almacena.
@@ -30,43 +30,9 @@ export class GenerosMusicales {
     this.genero.nombre = genero.nombre;
     this.genero.artistasGrupos = genero.artistasGrupos;
 
-    
-    if (memoria) {
-      this.comprobarAlbumes(genero.albumes);
-      this.comprobarCanciones(genero.canciones);
-    } else {
-      this.genero.artistasGrupos = genero.artistasGrupos;
-      this.genero.albumes = genero.albumes;
-      this.genero.canciones = genero.canciones;
-    }
-  }
-
-  /**
-   * Método que comprueba que los albumes cumplan con los requisitos.
-   * @param albumes Coleccion de albumes a revisar.
-   */
-  private comprobarAlbumes(albumes: Coleccion<Album>): void {
-    [...albumes].forEach((album) => {
-      album.getGeneros().forEach((genero) => {
-        if (genero === this.genero.nombre) {
-          this.genero.albumes.addElemento(album);
-        }
-      });
-    });
-  }
-
-  /**
-   * Método que comprueba que las canciones cumplan los requisitos.
-   * @param canciones Coleccion de canciones a comprobar
-   */
-  private comprobarCanciones(canciones: Coleccion<Cancion>): void {
-    [...canciones].forEach((cancion) => {
-      cancion.getGeneros().forEach((genero) => {
-        if (genero === this.genero.nombre) {
-          this.genero.canciones.addElemento(cancion);
-        }
-      });
-    });
+    this.genero.artistasGrupos = genero.artistasGrupos;
+    this.genero.albumes = genero.albumes;
+    this.genero.canciones = genero.canciones;
   }
 
   /**
@@ -89,7 +55,7 @@ export class GenerosMusicales {
    * getter del los albumes.
    * @returns Coleccion de albumes.
    */
-  getAlbumes(): Coleccion<Album> {
+  getAlbumes(): string[] {
     return this.genero.albumes;
   }
 
@@ -97,7 +63,7 @@ export class GenerosMusicales {
    * getter de las canciones.
    * @returns Coleccion de canciones.
    */
-  getCanciones(): Coleccion<Cancion> {
+  getCanciones(): string[] {
     return this.genero.canciones;
   }
 
@@ -121,7 +87,7 @@ export class GenerosMusicales {
    * setter de los albumes.
    * @param albumes nueva coleccion de albumes.
    */
-  setAlbumes(albumes: Coleccion<Album>): void {
+  setAlbumes(albumes: string[]): void {
     this.genero.albumes = albumes;
   }
 
@@ -129,7 +95,7 @@ export class GenerosMusicales {
    * setter de las canciones.
    * @param canciones nueva coleccion de canciones.
    */
-  setCanciones(canciones: Coleccion<Cancion>): void {
+  setCanciones(canciones: string[]): void {
     this.genero.canciones = canciones;
   }
 
@@ -137,16 +103,16 @@ export class GenerosMusicales {
    * método que añade una canción al genero.
    * @param canciones nueva canción
    */
-  addCancion(canciones: Cancion): void {
-    this.genero.canciones.addElemento(canciones);
+  addCancion(canciones: string): void {
+    this.genero.canciones.push(canciones);
   }
 
   /**
    * método que añade un nuevo album al genero.
    * @param album nuevo album
    */
-  addAlbum(album: Album): void {
-    this.genero.albumes.addElemento(album);
+  addAlbum(album: string): void {
+    this.genero.albumes.push(album);
   }
 
   /**

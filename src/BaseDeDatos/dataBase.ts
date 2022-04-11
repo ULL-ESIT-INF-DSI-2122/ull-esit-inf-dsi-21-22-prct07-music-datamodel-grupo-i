@@ -68,7 +68,7 @@ const cancion22 = new Cancion({nombre: "La Turra Rica", autor: "Pink Floyd",
   duracion: {min: 3, seg: 33}, generos: ["Drill"], single: true, reproducciones: 555555});
 const cancion23 = new Cancion({nombre: "R.I.C.O.", autor: "Paul McCartney",
   duracion: {min: 12, seg: 0}, generos: ["Drill"], single: true, reproducciones: 990});
-const cancion24 = new Cancion({nombre: "R.A.T.S ", autor: "Breach", 
+const cancion24 = new Cancion({nombre: "R.A.T.S", autor: "Breach", 
   duracion: {min: 10, seg: 0}, generos: ["Drill"], single: true, reproducciones: 111000});
 const cancion25 = new Cancion({nombre: "R.A.F.", autor: "Duki",
   duracion: {min: 8, seg: 11}, generos: ["Drill"], single: false, reproducciones: 2348});
@@ -197,25 +197,25 @@ const grupo5 = new Grupo({nombre: "Iron Maiden", artistas: ["Mesita", "Duki"], f
   canciones: new Coleccion<Cancion>(cancion7, cancion26, cancion42), oyentes: 1100});
 
 const genero1 = new GenerosMusicales({nombre: "Rock", artistasGrupos: ["Bayside", "John Lennon", "Stephen Malkmus", "Gunna", "AC/DC"], 
-  albumes: new Coleccion<Album>(album2, album3, album6), canciones: new Coleccion<Cancion>(cancion1, cancion2, cancion3, cancion4, cancion5)});
+  albumes: ["Ahora soy peor", "Mala vida", "Tvrp House"], canciones: ["Ular SciencE", "Starting Over", "J Smoov", "P Power", "Jack"]});
 const genero3 = new GenerosMusicales({nombre: "Trap", artistasGrupos: ["George Harrison", "Paul McCartney", "Breach", "AC/DC", "Pink Floyd", "The Beatles", "Queen"], 
-  albumes: new Coleccion<Album>(album8, album7, album2), canciones: new Coleccion<Cancion>(cancion5, cancion10, cancion11, cancion12, cancion13, cancion14, cancion15)});
+  albumes: ["Tvrp Housing", "Las mamis saben bien rico", "Ahora soy peor"], canciones: ["Jack", "Ndael", "Karate Chop", "Kate", "Pacific Rim", "Pack Up", "Pacer"]});
 const genero5 = new GenerosMusicales({nombre: "Drill", artistasGrupos: ["Paul McCartney", "Breach", "Duki", "Pink Floyd", "Queen"], 
-  albumes: new Coleccion<Album>(album7, album8), canciones: new Coleccion<Cancion>(cancion6, cancion21, cancion22, cancion23, cancion24, cancion25)});
+  albumes: ["Las mamis saben bien rico", "Tvrp Housing"], canciones: ["Jack Rabbit", "Lady Black", "La Turra Rica", "R.I.C.O.", "R.A.T.S", "R.A.F."]});
 const genero7 = new GenerosMusicales({nombre: "Jazz", artistasGrupos: ["Bayside", "Gunna", "Mesita", "Duki", "AC/DC", "Iron Maiden"], 
-  albumes: new Coleccion<Album>(album1, album2, album4, album5, album6, album8), canciones: new Coleccion<Cancion>(cancion26, cancion31, cancion32, cancion33, cancion34, cancion35)});
+  albumes: ["Hola bby", "Ahora soy peor", "Sin City", "La calle es MALA", "Tvrp House", "Tvrp Housing"], canciones: ["M", "M79", "Ma and Pa", "S.A.D", "Bad Tattoo", "S&M"]});
 const genero9 = new GenerosMusicales({nombre: "Rap", artistasGrupos: ["Bayside", "Paul McCartney", "Duki", "Pink Floyd", "Iron Maiden"], 
-  albumes: new Coleccion<Album>(album1, album4, album8), canciones: new Coleccion<Cancion>(cancion41, cancion42, cancion43, cancion44, cancion45)});
+  albumes: ["Hola bby", "Sin City", "Tvrp Housing"], canciones: ["Na na na Batman", "Nashii", "U Got the Look", "U Get Me High", "U 2 Luv"]});
 const genero2 = new GenerosMusicales({nombre: "Pop", artistasGrupos: ["Bayside", "Mesita", "Breach", "Iron Maiden", "The Beatles", "Pink Floyd"],
-  albumes: new Coleccion<Album>(album4), canciones: new Coleccion<Cancion>(cancion6, cancion7, cancion8, cancion9, cancion10, cancion15)});
+  albumes: ["Sin City"], canciones: ["Jack Rabbit", "K", "M.vlopp", "Kali Ma", "Ndael", "Pacer"]});
 const genero4 = new GenerosMusicales({nombre: "Metal", artistasGrupos: ["Bayside", "John Lennon", "Gunna", "Duki", "AC/DC", "Pink Floyd"],
-  albumes: new Coleccion<Album>(album2, album3, album6, album8), canciones: new Coleccion<Cancion>(cancion16, cancion17, cancion18, cancion19, cancion20, cancion15, cancion11)});
+  albumes: ["Ahora soy peor", "Mala vida", "Tvrp House", "Tvrp Housing"], canciones: ["LOVE", "L.A.", "La Rosa", "La La", "La Di Da Di", "Karate Chop"]});
 const genero6 = new GenerosMusicales({nombre: "K-pop", artistasGrupos: ["John Lennon", "George Harrison", "Mesita", "The Beatles", "Iron Maiden"],
-  albumes: new Coleccion<Album>(album3, album4, album5), canciones: new Coleccion<Cancion>(cancion26, cancion27, cancion28, cancion29, cancion30)});
+  albumes: ["Mala vida", "Sin City", "La calle es MALA"], canciones: ["M", "Mamasita Sabrosa", "So Strong", "Glad To Be Gay", "$(dollar sign)"]});
 const genero8 = new GenerosMusicales({nombre: "Country", artistasGrupos: ["John Lennon", "Stephen Malkmus", "Breach", "Mesita", "Queen", "Iron Maiden"],
-  albumes: new Coleccion<Album>(album3, album4, album5, album7), canciones: new Coleccion<Cancion>(cancion36, cancion37, cancion38, cancion39, cancion30, cancion42)});
+  albumes: ["Mala vida", "Sin City", "La calle es MALA", "Las mamis saben bien rico"], canciones: ["Mamon Loco", "No Mames Wey", "The Monkees", "is the Damn Season", "Til Kingdom Come", "Nashii"]});
 const genero10 = new GenerosMusicales({nombre: "Flamenco", artistasGrupos: ["Stephen Malkmus", "Gunna", "Breach", "The Beatles", "AC/DC"],
-  albumes: new Coleccion<Album>(album3, album4, album7), canciones: new Coleccion<Cancion>(cancion46, cancion47, cancion48, cancion49, cancion50)});
+  albumes: ["Mala vida", "Sin City", "Las mamis saben bien rico"], canciones: ["S.O.S", "Sad Angel", "Vacancy", "V.E.N.O.M", "V-2 Schneider"]});
 
 export const generos = new Coleccion<GenerosMusicales>(genero1, genero2, genero3, genero4, genero5, genero6, genero7, genero8, genero9, genero10);
 

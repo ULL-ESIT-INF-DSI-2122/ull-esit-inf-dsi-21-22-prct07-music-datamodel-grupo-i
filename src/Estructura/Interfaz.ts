@@ -183,8 +183,8 @@ export class Interfaz {
    */
   private actualizarSearchAlbumes(): void {
     this.searchAlbumes = [];
-    [...this.generos].forEach((genero) => {
-      [...genero.getAlbumes()].forEach((album) => {
+    [...this.autores].forEach((autor) => {
+      [...autor.getAlbumes()].forEach((album) => {
         this.searchAlbumes.push(album.getNombre());
       });
     });
@@ -196,8 +196,8 @@ export class Interfaz {
    */
   private actualizarSearchCanciones(): void {
     this.searchCanciones = [];
-    [...this.generos].forEach((genero) => {
-      [...genero.getCanciones()].forEach((cancion) => {
+    [...this.autores].forEach((autor) => {
+      [...autor.getCanciones()].forEach((cancion) => {
         this.searchCanciones.push(cancion.getNombre());
       });
     });
@@ -329,13 +329,11 @@ export class Interfaz {
       message: "Nombre del genero:",
       source: (answersSoFar: any, input: string) => this.searchStates(this.searchGeneros, input),
     }]).then((answers) => {
-      const aux: string[] = [];
+      let aux: string[] = [];
       
       [...this.generos].forEach((genero) => {
         if (genero.getNombre() === answers["nombre"]) {
-          [...genero.getCanciones()].forEach((cancion) => {
-            aux.push(cancion.getNombre());
-          });
+          aux = genero.getCanciones();
         }
       });
       this.generos.removeElemento(answers["nombre"]);
@@ -405,7 +403,7 @@ export class Interfaz {
     }]).then((answers) => {
       const aux: string [] = [];
       [...this.generos].forEach((genero) => {
-        genero.getAlbumes().removeElemento(answers["nombre"]);
+        genero.setAlbumes(genero.getAlbumes().filter((album) => album !== answers["nombre"]));
       });
       [...this.autores].forEach((autor) => {
         [...autor.getAlbumes()].forEach((album) => {
@@ -443,11 +441,7 @@ export class Interfaz {
       source: (answersSoFar: any, input: string) => this.searchStates(this.searchCanciones, input),
     }]).then((answers) => {
       [...this.generos].forEach((genero) => {
-        genero.getCanciones().removeElemento(answers["nombre"]);
-
-        [...genero.getAlbumes()].forEach((album) => {
-          album.getCanciones().removeElemento(answers["nombre"]);
-        });
+        genero.setCanciones(genero.getCanciones().filter((cancion) => cancion !== answers["nombre"]));
       });
 
       [...this.autores].forEach((autor) => {
@@ -689,18 +683,13 @@ export class Interfaz {
       },
     }]).then((answers) => {
       [...this.generos].forEach((genero) => {
-        [...genero.getAlbumes()].forEach((album) => {
-          if (album.getNombre() === answers["nombre"]) {
-            album.setNombre(answers["nombre"]);
-            album.setFechaPublicacion(parseInt(answers["fechaNuevo"]));
-          }
-        });
+        genero.setAlbumes(genero.getAlbumes().splice(answers["nombre"], 1, answers["nombreNuevo"]));
       });
 
       [...this.autores].forEach((autor) => {
         [...autor.getAlbumes()].forEach((album) => {
           if (album.getNombre() === answers["nombre"]) {
-            album.setNombre(answers["nombre"]);
+            album.setNombre(answers["nombreNuevo"]);
             album.setFechaPublicacion(parseInt(answers["fechaNuevo"]));
           }
         });
@@ -739,21 +728,7 @@ export class Interfaz {
       },
     }]).then((answers) => {
       [...this.generos].forEach((genero) => {
-        [...genero.getCanciones()].forEach((cancion) => {
-          if (cancion.getNombre() === answers["nombre"]) {
-            cancion.setNombre(answers["nombreNuevo"]);
-            cancion.setReproducciones(parseInt(answers["reproduccionNuevo"]));
-          }
-        });
-
-        [...genero.getAlbumes()].forEach((album) => {
-          [...album.getCanciones()].forEach((cancion) => {
-            if (cancion.getNombre() === answers["nombre"]) {
-              cancion.setNombre(answers["nombreNuevo"]);
-              cancion.setReproducciones(parseInt(answers["reproduccionNuevo"]));
-            }
-          });
-        });
+        genero.setCanciones(genero.getCanciones().splice(answers["nombre"], 1, answers["nombreNuevo"]));
       });
 
       [...this.autores].forEach((autor) => {
@@ -832,7 +807,7 @@ export class Interfaz {
       message: "Nombre del género:",
     }]).then((answers) => { 
       const genero = new GenerosMusicales({nombre: answers["nombre"], artistasGrupos: [], 
-        albumes: new Coleccion<Album>(), canciones: new Coleccion<Cancion>()});
+        albumes: [], canciones: []});
 
       this.generos.addElemento(genero);
 
@@ -1029,7 +1004,7 @@ export class Interfaz {
       [...this.generos].forEach((genero) => {
         album.getGeneros().forEach((generoAlbum) => {
           if (generoAlbum === genero.getNombre()) {
-            genero.addAlbum(album);
+            genero.addAlbum(album.getNombre());
           }
         });
       });
@@ -1094,7 +1069,7 @@ export class Interfaz {
    * Metodo que permite añadir una cancion a partir de un album 
    */
   private añadirCancion(nombreAlbum: string = "", cantidad: number = 0, autorAlbum: string = ""): void {
-    // console.clear();
+    console.clear();
     inquirer.prompt([{
       name: "nombre",
       message: "Nombre de la canción:",
@@ -1145,12 +1120,7 @@ export class Interfaz {
       [...this.generos].forEach((genero) => {
         cancion.getGeneros().forEach((generoCancion) => {
           if (generoCancion === genero.getNombre()) {
-            genero.addCancion(cancion);
-            [...genero.getAlbumes()].forEach((album) => {
-              if (album.getNombre() === nombreAlbum) {
-                album.addCancion(cancion);
-              }
-            });
+            genero.addCancion(cancion.getNombre());
           }
         });
       });
@@ -1382,12 +1352,14 @@ export class Interfaz {
           reproducciones = this.filtrosCanciones(opcion, filterType.reproducciones).reverse();
         }
         [...reproducciones].forEach((element) => {
-          [...this.generos].forEach((genero) => {
-            [...genero.getCanciones()].forEach((cancion) => {
-              if (cancion.getAutor() === opcion && cancion.getReproducciones() === +element) {
-                nombre.push(cancion.getNombre());
-              }
-            });
+          [...this.autores].forEach((autor) => {
+            if (autor.getNombre() === opcion) {
+              [...autor.getCanciones()].forEach((cancion) => {
+                if (cancion.getReproducciones() === +element) {
+                  nombre.push(cancion.getNombre());
+                }
+              });
+            }
           });
         });
         this.imprimirCanciones([...new Set(nombre)]);
@@ -1427,12 +1399,14 @@ export class Interfaz {
 
       if (answers["filtroReproducionesTotales"] !== "Salir" && tipo === visualizarEnum.albumes) {
         [...reproducciones].forEach((element) => {
-          [...this.generos].forEach((genero) => {
-            [...genero.getAlbumes()].forEach((album) => {
-              if (album.getAutor() === opcion && album.calcularReproduccionesTotales() === +element) {
-                nombre.push(album.getNombre());
-              }
-            });
+          [...this.autores].forEach((autor) => {
+            if (autor.getNombre() === opcion) {
+              [...autor.getAlbumes()].forEach((album) => {
+                if (album.calcularReproduccionesTotales() === +element) {
+                  nombre.push(album.getNombre());
+                }
+              });
+            }
           });
         });
         this.imprimirAlbumes([...new Set(nombre)]);
@@ -1460,9 +1434,9 @@ export class Interfaz {
    */
   private filtrosCanciones(opcion: string, value: number): string[] {
     const aux: string[] = [];
-    [...this.generos].forEach((genero) => {
-      [...genero.getCanciones()].forEach((cancion) => {
-        if (cancion.getAutor() === opcion) {
+    [...this.autores].forEach((autor) => {
+      if (autor.getNombre() === opcion) {
+        [...autor.getCanciones()].forEach((cancion) => {
           if (value === filterType.titulo) {
             aux.push(cancion.getNombre());
           }
@@ -1472,8 +1446,8 @@ export class Interfaz {
           if (value === filterType.reproducciones) {
             aux.push(String(cancion.getReproducciones()));
           }
-        }
-      });
+        });
+      }
     });
     if (value === filterType.reproducciones) {
       return this.ordenar([...new Set(aux)]);
@@ -1509,9 +1483,9 @@ export class Interfaz {
    */
   private filtrosAlbumes(opcion:string, value: number): string[] {  
     const aux: string[] = [];
-    [...this.generos].forEach((genero) => {
-      [...genero.getAlbumes()].forEach((album) => {
-        if (album.getAutor() === opcion) {
+    [...this.autores].forEach((autor) => {
+      if (autor.getNombre() === opcion) {
+        [...autor.getAlbumes()].forEach((album) => {
           if (value === filterType.titulo) {
             aux.push(album.getNombre());
           }
@@ -1521,8 +1495,8 @@ export class Interfaz {
           if (value === filterType.reproducciones) {
             aux.push(String(album.calcularReproduccionesTotales()));
           }
-        }
-      });
+        });
+      }
     });
     if (value !== filterType.titulo) {
       return this.ordenar([...new Set(aux)]);
@@ -1582,12 +1556,14 @@ export class Interfaz {
           publicaciones = this.filtrosAlbumes(opcion, filterType.fechaPublicacion).reverse();
         }
         [...publicaciones].forEach((element) => {
-          [...this.generos].forEach((genero) => {
-            [...genero.getAlbumes()].forEach((album) => {
-              if (album.getAutor() === opcion && album.getFechaPublicacion() === +element) {
-                nombre.push(album.getNombre());
-              }
-            });
+          [...this.autores].forEach((autor) => {
+            if (autor.getNombre() === opcion) {
+              [...autor.getAlbumes()].forEach((album) => {
+                if (album.getFechaPublicacion() === +element) {
+                  nombre.push(album.getNombre());
+                }
+              });
+            }
           });
         });
         this.imprimirAlbumes([...new Set(nombre)]);
@@ -1609,8 +1585,8 @@ export class Interfaz {
       console.log("No hay canciones disponibles con los requisitos especificados");
     } else {
       aux.forEach((cancion) => {
-        [...this.generos].forEach((genero) => {
-          [...genero.getCanciones()].forEach((cancionGenero) => {
+        [...this.autores].forEach((autor) => {
+          [...autor.getCanciones()].forEach((cancionGenero) => {
             if (cancion === cancionGenero.getNombre() && !primeraVez) {
               print = new PrintCancion(cancionGenero);
               print.print();
@@ -1639,8 +1615,8 @@ export class Interfaz {
       console.log("No hay albumes disponibles con los requisitos especificados");
     } else {
       aux.forEach((cancion) => {
-        [...this.generos].forEach((genero) => {
-          [...genero.getAlbumes()].forEach((albumGenero) => {
+        [...this.autores].forEach((autor) => {
+          [...autor.getAlbumes()].forEach((albumGenero) => {
             if (cancion === albumGenero.getNombre() && !primeraVez) {
               print = new PrintAlbum(albumGenero);
               primeraVez = true;
@@ -1893,8 +1869,8 @@ export class Interfaz {
           }
         });
         [...fechaspublicacion].forEach((elemento) => {
-          [...this.generos].forEach((genero) => {
-            [...genero.getAlbumes()].forEach((album) => {
+          [...this.autores].forEach((autor) => {
+            [...autor.getAlbumes()].forEach((album) => {
               [...album.getCanciones()].forEach((cancion) => {
                 if (String(album.getFechaPublicacion()) === elemento && canciones.includes(cancion.getNombre()) && !nombreCancion.includes(cancion.getNombre())) {
                   nombreCancion.push(cancion.getNombre());
@@ -2049,8 +2025,8 @@ export class Interfaz {
             case filterType.fechaPublicacion:
               let primeraVez: boolean = true;
               const nombreAux = cancion.getNombre();
-              [...this.generos].forEach((genero) => {
-                [...genero.getAlbumes()].forEach((album) => {
+              [...this.autores].forEach((autor) => {
+                [...autor.getAlbumes()].forEach((album) => {
                   [...album.getCanciones()].forEach((cancion) => {
                     if (cancion.getNombre() === nombreAux && primeraVez) {
                       aux.push(String(album.getFechaPublicacion()));
@@ -2378,8 +2354,8 @@ export class Interfaz {
           if (this.usuarioNick !== playlist.getCreador()) {
             throw new Error("No tiene permisos para modificar esta playlist");
           } else {
-            [...this.generos].forEach((genero) => {
-              [...genero.getCanciones()].forEach((cancion) => {
+            [...this.autores].forEach((autor) => {
+              [...autor.getCanciones()].forEach((cancion) => {
                 if (cancion.getNombre() === answers["nombre"] && !primeraVez) {
                   playlist.addCancion(cancion);
                   primeraVez = true;

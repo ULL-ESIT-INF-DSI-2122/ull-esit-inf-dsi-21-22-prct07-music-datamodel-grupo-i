@@ -38,33 +38,8 @@ export class JsonDataBase {
       const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
     
       let contadorGenero = 0;
-      let contadorAlbum = 0;
-      let contadorCancion = 0;
       [...aux].forEach((genero) => {
         genero = new GenerosMusicales(genero.genero, false);
-        genero.setAlbumes(new Coleccion<Album>(...genero.getAlbumes().coleccion));
-        genero.setCanciones(new Coleccion<Cancion>(...genero.getCanciones().coleccion));
-
-        [...genero.getAlbumes()].forEach((album) => {
-          album = new Album(album.album, false);
-          album.setCanciones(new Coleccion<Cancion>(...album.getCanciones().coleccion));
-          genero.getAlbumes().changeElemento(album, contadorAlbum);
-          contadorAlbum++;
-          [...album.getCanciones()].forEach((cancion) => {
-            cancion = new Cancion(cancion.cancion);
-            album.getCanciones().changeElemento(cancion, contadorCancion);
-            contadorCancion ++;
-          });
-          contadorCancion = 0;
-        });
-        contadorAlbum = 0;
-
-        [...genero.getCanciones()].forEach((cancion) => {
-          cancion = new Cancion(cancion.cancion);
-          genero.getCanciones().changeElemento(cancion, contadorCancion);
-          contadorCancion ++;
-        });
-        contadorCancion = 0;
         
         aux.changeElemento(genero, contadorGenero);
         contadorGenero++;

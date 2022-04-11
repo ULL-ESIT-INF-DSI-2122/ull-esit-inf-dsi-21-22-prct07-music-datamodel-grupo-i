@@ -75,8 +75,8 @@ export class PlayList {
 
     // seg = seg % 60;
     min += seg / 60 >> 0;
-    this.playlist.duracion.hor += min / 60 >> 0;
-    this.playlist.duracion.min += min % 60;
+    this.playlist.duracion.hor = min / 60 >> 0;
+    this.playlist.duracion.min = min % 60;
   }
 
   /**
