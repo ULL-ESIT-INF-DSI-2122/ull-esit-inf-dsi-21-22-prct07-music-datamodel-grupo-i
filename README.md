@@ -11,4 +11,4 @@
 * José Antonio Trujillo Mendoza | alu0101059037@ull.edu.es 
 * Javier Mendoza López          | alu0101320779@ull.edu.es 
 
-En esta práctica se hará un modelo de datos de un sistema de información que permite almacenar una biblioteca musical.
+En esta práctica se hará un modelo de datos de un sistema de información que permite almacenar una [biblioteca musical](https://ull-esit-inf-dsi-2122.github.io/ull-esit-inf-dsi-21-22-prct07-music-datamodel-grupo-i/).
