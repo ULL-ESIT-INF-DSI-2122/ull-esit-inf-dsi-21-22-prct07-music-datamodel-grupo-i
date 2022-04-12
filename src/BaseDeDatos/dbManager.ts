@@ -107,7 +107,6 @@ export class JsonDataBase {
         aux.changeElemento(autor, contadorAutor);
         contadorAutor++;
       });
-      this.autores = aux;
     } else {
       this.database.set('autores', this.autores).write();
     }
