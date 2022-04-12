@@ -186,26 +186,26 @@ Cuando empezamos a desarrollar empezamos por las pruebas de las diferentes clase
 La codificación hasta llegar a la clase JsonDataBase no tuvo complicación alguna ya que simplemente son clases que almacenan información y toda la información tiene que estar relacionada, con la clase JsonDataBase las cosas se complican un poco más ya que hay que entender como funciona el módulo LowDB, este en sí mismo no es complicado cuando se miran varios ejemplos, el problema surge cuando en la base de datos guardamos instancias de la clase Coleccion<GenerosMusicales>,  Coleccion<PlayList> y Coleccion<Artista | Grupo>, ya que estas instancias guardan dentro de sí otras colecciones, por ejemplo, la clase PlayList tiene dentro un atributo Coleccion<Canciones>. El error se produce cuando al intentar sacar de la base de datos un objeto Coleccion<X> siendo X cualquier clase, en tiempo de compilación no habrá ningún problema ya que estamos asignando a un Coleccion<X> el valor de otro Coleccion<X> que está en la base de datos, el problema surge en tiempo de ejecución ya que al intentar usar algún método de la clase Coleccion<X> nos dirá que esa clase no tiene definido ese método, este mismo error ocurre con cualquier clase que se guarde en la base de datos. Veamoslo con un ejemplo:
 
 Fragmento de código donde se guarda la información en la base de datos.
-typescript
+```typescript
 this.database.set('estructura', this.estructura).write();
-
+```
 
 Error en tiempo de ejecución ya que `aux` no va a tener ningún método de la clase Coleccion<T>
-typescript
+```typescript
 let aux: Coleccion<GenerosMusicales> = this.database.get('estructura').value();
-
+```
 
 Solución del error en tiempo de ejecución ya que se crea un nuevo objeto Coleccion
-typescript
+```typescript
 const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
-
+```
 
 El fragmento de código anterior soluciona el problema del error en tiempo de ejecución para la clase Colección pero no lo soluciona para la clase que es almacena por Coleccion ni para cualquier otra clase que haya dentro de la misma. Además añade otro problema, y es que ya no puede haber en el cosntructor métodos que utilicen métodos de algún atributo para realizar algún tipo de comprobación, por ejemplo, un método en el constructor de la clase Artista que compruebe que las canciones pasadas son de dicho artista, ya que esto nos obligaría a iterar la clase Coleccion<Canciones> que no es iterable porque acaba de ser sacade de la base de datos y no tiene métodos y el método getAutor() de la clase Canciones que tampoco lo tiene (hasta que solucionemos el problema).
 
 Para solucionar este gran problema que en principio viene dado por seguir los principios SOLID(uso de la clase Coleccion<T> en vez de utilizar un simple array) y realizar una estructura de datos tan relacionada y lógica, lo que haremos es crear las estructuras principales (Coleccion<GenerosMusicales>,  Coleccion<PlayList> y Coleccion<Artista | Grupo>), recorrerlas con bucles y crear dentro cada estructura y así hasta llegar al final. El código es el siguiente:
  
 Para Coleccion<GenerosMusicales>:
-typescript
+```typescript
    const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
     
       let contadorGenero = 0;
@@ -217,9 +217,9 @@ typescript
       });
       this.estructura = aux;
 
-  
+  ```
 Para Coleccion<Coleccion<Artista | Grupo>:
-typescript
+```typescript
    const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
       let contadorPlayList: number = 0;
       let contadorCancion: number = 0;
@@ -238,9 +238,9 @@ typescript
       });
       this.playList = aux;
 
-  
+ ``` 
 Para Coleccion<Coleccion<PlayList>:
-typescript
+```
       const aux = new Coleccion<Artista | Grupo>(...this.database.get('autores').value().coleccion);
       let contadorAutor: number = 0;
       let contadorAlbum: number = 0;
@@ -280,7 +280,7 @@ typescript
       });
   this.autores = aux;
 
-  
+  ```
 Al utilizar bucles forEach es necesario utilizar contadores ya que el valor del objeto que recorre cada elemento en el bucle solo se cambia dentro del bucle, es por esto que en la clase Coleccion fue necesario un método que cambie un valor en una cierta posición, al usar contadores somos capaces de saber por cual iteración va el bucle forEach y sustituir ese valor en esa misma posición.
   
 Luego de solucionar todos los problemas con la clase JsonDataBase empezamos la codificación de la clase Interfaz que será el corazón de nuestro programa, en esta clase hay casi 2500 líneas de código que permiten que el programa sea usable por el usuario y que la información se mantenga coherente y lógica. En principio la mayor dificultad de esta parte fue la instalación del módulo Inquire y aprender a utilizarlo, aunque tuvimos ciertos problemas ya que el módulo tiene limitaciones bastantes importantes, es decir, nosotros teníamos la siguiente jerarquia: Inicio -> Gestión avanzada de playlists -> Gestionar playlist -> Modificar playlist -> Verificar que la playlist sea del usuario -> Cambiar X; con esta jerarquía si nosotros modificamos alguna playlist nos arrojará un error el módulo inquire diciendo que hay demasiados escuchadores a la vez, la solución fue quitar un paso, pero por otro lado si decidimos añadir un album y meterle 20 canciones no se producirá ningún error.
