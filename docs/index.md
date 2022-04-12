@@ -219,7 +219,7 @@ Para Coleccion<GenerosMusicales>:
       this.estructura = aux;
 
   ```
-Para Coleccion<Artista | Grupo>:
+Para Coleccion<PlayList>:
   
 ```typescript
    const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
@@ -242,7 +242,7 @@ Para Coleccion<Artista | Grupo>:
 
  ``` 
   
-Para Coleccion<PlayList>:
+Para Coleccion<Artista | Grupo>:
   
 ```typescript
       const aux = new Coleccion<Artista | Grupo>(...this.database.get('autores').value().coleccion);
