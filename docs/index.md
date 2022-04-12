@@ -205,6 +205,7 @@ El fragmento de código anterior soluciona el problema del error en tiempo de ej
 Para solucionar este gran problema que en principio viene dado por seguir los principios SOLID(uso de la clase Coleccion<T> en vez de utilizar un simple array) y realizar una estructura de datos tan relacionada y lógica, lo que haremos es crear las estructuras principales (Coleccion<GenerosMusicales>,  Coleccion<PlayList> y Coleccion<Artista | Grupo>), recorrerlas con bucles y crear dentro cada estructura y así hasta llegar al final. El código es el siguiente:
  
 Para Coleccion<GenerosMusicales>:
+  
 ```typescript
    const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
     
@@ -218,7 +219,8 @@ Para Coleccion<GenerosMusicales>:
       this.estructura = aux;
 
   ```
-Para Coleccion<Coleccion<Artista | Grupo>:
+Para Coleccion<Artista | Grupo>:
+  
 ```typescript
    const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
       let contadorPlayList: number = 0;
@@ -239,8 +241,10 @@ Para Coleccion<Coleccion<Artista | Grupo>:
       this.playList = aux;
 
  ``` 
-Para Coleccion<Coleccion<PlayList>:
-```
+  
+Para Coleccion<PlayList>:
+  
+```typescript
       const aux = new Coleccion<Artista | Grupo>(...this.database.get('autores').value().coleccion);
       let contadorAutor: number = 0;
       let contadorAlbum: number = 0;
