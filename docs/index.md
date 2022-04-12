@@ -204,7 +204,7 @@ El fragmento de código anterior soluciona el problema del error en tiempo de ej
 
 Para solucionar este gran problema que en principio viene dado por seguir los principios SOLID(uso de la clase Coleccion<T> en vez de utilizar un simple array) y realizar una estructura de datos tan relacionada y lógica, lo que haremos es crear las estructuras principales (Coleccion<GenerosMusicales>,  Coleccion<PlayList> y Coleccion<Artista | Grupo>), recorrerlas con bucles y crear dentro cada estructura y así hasta llegar al final. El código es el siguiente:
  
-Para Coleccion<GenerosMusicales>:
+Para `Coleccion<GenerosMusicales>`:
   
 ```typescript
    const aux = new Coleccion<GenerosMusicales>(...this.database.get('estructura').value().coleccion);
@@ -219,7 +219,7 @@ Para Coleccion<GenerosMusicales>:
       this.estructura = aux;
 
   ```
-Para Coleccion<PlayList>:
+Para `Coleccion<PlayList>`:
   
 ```typescript
    const aux = new Coleccion<PlayList>(...this.database.get('playList').value().coleccion);
@@ -242,7 +242,7 @@ Para Coleccion<PlayList>:
 
  ``` 
   
-Para Coleccion<Artista | Grupo>:
+Para `Coleccion<Artista | Grupo>`:
   
 ```typescript
       const aux = new Coleccion<Artista | Grupo>(...this.database.get('autores').value().coleccion);
@@ -285,9 +285,9 @@ Para Coleccion<Artista | Grupo>:
   this.autores = aux;
 
   ```
-Al utilizar bucles forEach es necesario utilizar contadores ya que el valor del objeto que recorre cada elemento en el bucle solo se cambia dentro del bucle, es por esto que en la clase Coleccion fue necesario un método que cambie un valor en una cierta posición, al usar contadores somos capaces de saber por cual iteración va el bucle forEach y sustituir ese valor en esa misma posición.
+Al utilizar bucles `forEach` es necesario utilizar contadores ya que el valor del objeto que recorre cada elemento en el bucle solo se cambia dentro del bucle, es por esto que en la clase Coleccion fue necesario un método que cambie un valor en una cierta posición, al usar contadores somos capaces de saber por cual iteración va el bucle forEach y sustituir ese valor en esa misma posición.
   
-Luego de solucionar todos los problemas con la clase JsonDataBase empezamos la codificación de la clase Interfaz que será el corazón de nuestro programa, en esta clase hay casi 2500 líneas de código que permiten que el programa sea usable por el usuario y que la información se mantenga coherente y lógica. En principio la mayor dificultad de esta parte fue la instalación del módulo Inquire y aprender a utilizarlo, aunque tuvimos ciertos problemas ya que el módulo tiene limitaciones bastantes importantes, es decir, nosotros teníamos la siguiente jerarquia: Inicio -> Gestión avanzada de playlists -> Gestionar playlist -> Modificar playlist -> Verificar que la playlist sea del usuario -> Cambiar X; con esta jerarquía si nosotros modificamos alguna playlist nos arrojará un error el módulo inquire diciendo que hay demasiados escuchadores a la vez, la solución fue quitar un paso, pero por otro lado si decidimos añadir un album y meterle 20 canciones no se producirá ningún error.
+Luego de solucionar todos los problemas con la clase `JsonDataBase` empezamos la codificación de la clase Interfaz que será el corazón de nuestro programa, en esta clase hay casi 2500 líneas de código que permiten que el programa sea usable por el usuario y que la información se mantenga coherente y lógica. En principio la mayor dificultad de esta parte fue la instalación del módulo Inquire y aprender a utilizarlo, aunque tuvimos ciertos problemas ya que el módulo tiene limitaciones bastantes importantes, es decir, nosotros teníamos la siguiente jerarquia: `Inicio -> Gestión avanzada de playlists -> Gestionar playlist -> Modificar playlist -> Verificar que la playlist sea del usuario -> Cambiar X`; con esta jerarquía si nosotros modificamos alguna playlist nos arrojará un `error` el módulo inquire diciendo que hay demasiados escuchadores a la vez, la solución fue quitar un paso, pero por otro lado si decidimos añadir un album y añadirle 20 canciones no se producirá ningún error.
   
-Por último comentar que cuando empezamos a practicar con el módulo inquirer intentamos poner en medio de una promesa un método que llamara a otra promesa, por ejemplo, dentro de la promesa que crea un album un bucle que cree tantas canciones como el usuario haya indicado. Las promesas tiene un comportamiento algo "parecido" a los hilos, es decir, se ejecutan a la vez, es por esto que tuvimos que cambiar esta forma de crear canciones apartir de un album, lo que hicimos es crear una especie de recursividad de forma que el método que crea las canciones recibe algunos datos del album y la cantidad de canciones que se quiere crear, de esta forma al final de la promesa del método de las canciones hay un condicional, si el número de canciones es 0 sale y si es mayor que 0 se llama a si mismo otra vez restando 1 al número de canciones.
+Por último comentar que cuando empezamos a practicar con el `módulo inquirer` intentamos poner en medio de una `promesa` un método que llamara a otra promesa, por ejemplo, dentro de la promesa que crea un album un bucle que cree tantas canciones como el usuario haya indicado. Las promesas tiene un comportamiento algo "parecido" a los `hilos`, es decir, se ejecutan a la vez, es por esto que tuvimos que cambiar esta forma de crear canciones apartir de un album, lo que hicimos es crear una especie de recursividad de forma que el método que crea las canciones recibe algunos datos del album y la cantidad de canciones que se quiere crear, de esta forma al final de la promesa del método de las canciones hay un condicional, si el número de canciones es 0 sale y si es mayor que 0 se llama a si mismo otra vez restando 1 al número de canciones.
 
