@@ -27,16 +27,19 @@
 
 > [Inquirer](https://www.npmjs.com/package/inquirer) Módulo que nos permitirá integrar una consola interactiva para que el usuario este más comodo con la interacción con el programa.
 
-> [Inquirer](https://www.npmjs.com/package/lowdb) Módulo que nos permitirá tener una base de datos propia donde guardar nuestra colección de canciones, autores, albumes y demás.
+> [Lowdb](https://www.npmjs.com/package/lowdb) Módulo que nos permitirá tener una base de datos propia donde guardar nuestra colección de canciones, autores, albumes y demás.
 
 <div id='dv2'/>
 
 ## Metodología de trabajo.
 
-Al tratarse esta práctica de una práctica grupal la organización entre los miembros del equipo juega un papel super importante, en nuestro caso hemos optado por realizar un desarrollo del código de manera grupal y síncrona, es decir, todos los miembros del equipo nos reuniamos y utilizando la extensión del VSCode Live Share codificabamos a la vez, esta forma de trabajar tiene diferentes aspectos positivos y negativos. Los aspectos positivos es que todos codificabamos a la vez por ende no nos pisabamos, la comunicación era fluida, no necesitabamos trabajar en diferentes ramas ya que todos estabamos trabajando en los mismos ficheros de la misma rama y no teniamos que esperar a que otro miembro del equipo terminara su parte para empezar la nuestra; el principal aspecto negativo es que todos los miembros tienen que cuadrar sus horarios para poder trabajar aunque este punto no es tan malo ya que no siempre necesitamos que estén todos lo miembros para codificar algunos aspectos.
+Al tratarse esta práctica de una práctica `grupal` la organización entre los miembros del equipo juega un papel super importante, en nuestro caso hemos optado por realizar un desarrollo del código de manera grupal y síncrona, es decir, todos los miembros del equipo nos reuniamos y utilizando la extensión del VSCode [Live Share](https://visualstudio.microsoft.com/es/services/live-share/) codificabamos a la vez, esta forma de trabajar tiene diferentes `aspectos positivos` y negativos. Los aspectos positivos es que todos codificabamos a la vez por ende no nos pisabamos, la comunicación era fluida, no necesitabamos trabajar en diferentes ramas ya que todos estabamos trabajando en los mismos ficheros de la misma rama y no teniamos que esperar a que otro miembro del equipo terminara su parte para empezar la nuestra; el principal `aspecto negativo` es que todos los miembros tienen que cuadrar sus horarios para poder trabajar aunque este punto no es tan malo ya que no siempre necesitamos que estén todos lo miembros para codificar ciertas partes.
 
 
+<div id='dv3'/>
 
+## Planteamiento del problema.
+![](./img/diagrama.png)
 
 
 
