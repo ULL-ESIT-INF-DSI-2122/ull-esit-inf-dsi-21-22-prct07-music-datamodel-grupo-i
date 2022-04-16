@@ -4,8 +4,8 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct07-music-datamodel-grupo-i&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct07-music-datamodel-grupo-i)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct07-music-datamodel-grupo-i&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=ULL-ESIT-INF-DSI-2122_ull-esit-inf-dsi-21-22-prct07-music-datamodel-grupo-i)
 
-# Práctica 7: Modelo de datos
-## Asignatura: Desarrollo en Sistemas Informáticos
+# Práctica 7: Modelo de datos.
+## Asignatura: Desarrollo en Sistemas Informáticos.
 * Alejandro Lugo Fumero         | alu0101329185@ull.edu.es
 * Joseph Gabino Rodríguez       | alu0101329161@ull.edu.es 
 * José Antonio Trujillo Mendoza | alu0101059037@ull.edu.es 
