@@ -1,4 +1,4 @@
-# Práctica 7, 
+# Práctica 7 
 
 ## **Índice**
  * [Tareas Previas](#dv1)
@@ -295,5 +295,5 @@ Por último comentar que cuando empezamos a practicar con el `módulo inquirer` 
 
 ## Conclusión
   
-Al principio parecía que la práctica no era de gran volumen pero a medida que nos ibamos adentrando en la base de datos y las relaciones entre clases nos dimos cuenta que quizás era mucho más densa que lo que pensábamos. Se le dedico mucho tiempo a lo que sería el planteamiento de la base de datos ya que queríamos que la informacion dentro de esta fuera lógica y sin redundancia. Hemos aprendido a utilizar de manera bastante fluida los módulos de inquirer y lowdb gracias al gran tiempo dedicado.
+Al principio parecía que la práctica no era de gran volumen pero a medida que nos ibamos adentrando en la base de datos y las relaciones entre clases nos dimos cuenta que quizás era mucho más densa que lo que pensábamos. Se le dedico mucho tiempo a lo que sería el planteamiento de la base de datos ya que queríamos que la información dentro de esta fuera lógica y sin redundancia. Hemos aprendido a utilizar de manera bastante fluida los módulos de inquirer y lowdb gracias al gran tiempo dedicado.
 
